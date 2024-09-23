@@ -10,13 +10,15 @@ import android.webkit.CookieManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.onesignal.Continue;
+import com.onesignal.OneSignal;
+import com.onesignal.debug.LogLevel;
 import com.permissionx.guolindev.PermissionX;
 import com.permissionx.guolindev.callback.RequestCallback;
 
@@ -41,6 +43,12 @@ public class MainActivity extends AppCompatActivity {
         Log.d(MainActivity.class.getSimpleName(), "Wifi Name list : " + new WifiScanner(this).getWifiList(this).toString());
         checkForWifi();
         loadWebview();
+        setupOneSignal();
+    }
+
+    private void setupOneSignal() {
+        String externalId = "241100112233"; // You will supply the external id to the OneSignal SDK
+        OneSignal.login(externalId);
     }
 
     private void loadWebview() {
@@ -104,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onPageFinished(WebView view, String url) {
             splash.animate().alpha(0).setDuration(300).start();
-            splash.postDelayed(() -> splash.setVisibility(View.GONE),300);
+            splash.postDelayed(() -> splash.setVisibility(View.GONE), 300);
             super.onPageFinished(view, url);
         }
     }
