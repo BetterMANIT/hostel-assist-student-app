@@ -1,10 +1,12 @@
 package com.manit.hostel.assist.students;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -13,6 +15,7 @@ import com.permissionx.guolindev.PermissionX;
 
 import java.util.List;
 
+@SuppressLint("MissingPermission")
 public class WifiScanner {
     private WifiManager wifiManager;
 
@@ -29,7 +32,7 @@ public class WifiScanner {
         return wifiList;
     }
 
-    boolean sufficientPermissionForWifiAccessAllowed(AppCompatActivity mAppCompatActivity){
+    boolean sufficientPermissionForWifiAccessAllowed(AppCompatActivity mAppCompatActivity) {
         if (ActivityCompat.checkSelfPermission(mAppCompatActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             return true;
         PermissionX.init(mAppCompatActivity).permissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION);
