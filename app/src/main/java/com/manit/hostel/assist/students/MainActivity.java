@@ -26,7 +26,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String URL = "http://4.186.57.254/";
+    public static final String URL = "http://4.186.57.254/index.php";
     private String HOSTEL_WIFI_MAC_ADDRESS = "00:00:00:00:00:00";
     private boolean allowInVicinity = true;
     private boolean isPresentAtGate = false;

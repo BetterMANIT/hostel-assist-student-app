@@ -17,12 +17,7 @@ public class ManitApplication extends Application {
 
         // Verbose Logging set to help debug issues, remove before releasing your app.
         OneSignal.getDebug().setLogLevel(LogLevel.VERBOSE);
-
-        // OneSignal Initialization
         OneSignal.initWithContext(this, ONESIGNAL_APP_ID);
-
-        // requestPermission will show the native Android notification permission prompt.
-        // NOTE: It's recommended to use a OneSignal In-App Message to prompt instead.
         OneSignal.getNotifications().requestPermission(false, Continue.none());
 
     }
