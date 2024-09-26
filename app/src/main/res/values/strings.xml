@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MANIT-Hostel-Assist-students</string>
+    <string name="wifi_instructions">If not working check :-\n1. All permissions are given to the app\n2. Location and wifi of device is enabled\n\nElse contact admin</string>
 </resources>
