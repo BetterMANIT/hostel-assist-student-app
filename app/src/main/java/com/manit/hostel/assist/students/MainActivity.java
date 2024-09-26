@@ -1,10 +1,14 @@
 package com.manit.hostel.assist.students;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.LocationManager;
 import android.net.wifi.ScanResult;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.webkit.CookieManager;
@@ -19,9 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.onesignal.Continue;
 import com.onesignal.OneSignal;
-import com.onesignal.debug.LogLevel;
 import com.permissionx.guolindev.PermissionX;
 import com.permissionx.guolindev.callback.RequestCallback;
 
@@ -35,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean isPresentAtGate = false;
     private WebView webview;
     private LinearLayout splash;
+    boolean isComingBack = false;
+    final Handler wifiScannerHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +48,34 @@ public class MainActivity extends AppCompatActivity {
         splash = findViewById(R.id.splash);
         requestPermissions();
         Log.d(MainActivity.class.getSimpleName(), "Wifi Name list : " + new WifiScanner(this).getWifiList(this).toString());
-        showWifiCheckDialog();
+        if (isLocationEnabled()) {
+            // Start Wi-Fi scanning
+            showWifiCheckDialog();
+        } else {
+            promptEnableLocation();
+        }
         setupOneSignal();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isComingBack) {
+            isComingBack = false;
+            if (isLocationEnabled()) {
+                showWifiCheckDialog();
+            } else {
+                promptEnableLocation();
+            }
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        wifiScannerHandler.removeCallbacksAndMessages(null);
+        isComingBack = true;
+        isPresentAtGate = false;
     }
 
     private void showWifiCheckDialog() {
@@ -57,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
 
         // Schedule a task to scan Wi-Fi every 5 seconds
-        final Handler handler = new Handler();
+
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -66,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                 ((TextView)dialog.findViewById(R.id.wifi_status)).setText("Scanning Hostel Wifi");
                 checkForWifi();  // Function to scan Wi-Fi
                 if(!isPresentAtGate){
-                    handler.postDelayed(this, 3000); // Repeat every 5 seconds
+                    wifiScannerHandler.postDelayed(this, 3000); // Repeat every 5 seconds
                 }else{
                     ((TextView)dialog.findViewById(R.id.wifi_status)).setText("Found Hostel Wifi");
                     dialog.findViewById(R.id.success_icon).setVisibility(View.VISIBLE);
@@ -80,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-        handler.post(runnable);
+        wifiScannerHandler.post(runnable);
     }
 
 
@@ -154,4 +184,28 @@ public class MainActivity extends AppCompatActivity {
             super.onPageFinished(view, url);
         }
     }
+
+
+    private void promptEnableLocation() {
+        if (!isLocationEnabled()) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Enable Location")
+                    .setMessage("Location is required for scanning Wi-Fi networks. Please enable it in settings.")
+                    .setPositiveButton("Enable", (dialogInterface, i) -> {
+                        // Direct user to location settings
+                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(intent);
+                        isComingBack = true;
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
+        }
+    }
+
+    private boolean isLocationEnabled() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
 }
