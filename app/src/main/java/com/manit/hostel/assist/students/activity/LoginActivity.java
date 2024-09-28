@@ -2,7 +2,6 @@ package com.manit.hostel.assist.students.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -29,9 +28,9 @@ public class LoginActivity extends AppCompatActivity {
         dbConnection = new MariaDBConnection(this);
         lb = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(lb.getRoot());
-        if(AppPref.getLoggedInStudent(this) == null){
+        if (AppPref.getLoggedInStudent(this) == null) {
             setScholarNoEnteringView();
-        }else{
+        } else {
             startActivity(new Intent(this, HomeActivity.class));
             finish();
         }
@@ -52,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(String error) {
-                            Toast.makeText(LoginActivity.this, error, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, error, Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
@@ -63,10 +62,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void displayConfirmOtpDialog(StudentInfo student) {
-       //show a alert dialog for confirming otp dialog
+        //show a alert dialog for confirming otp dialog
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle("Hello "+student.getName());
-        alertDialog.setMessage("Is "+student.getPhoneNo()+" your mobile number?");
+        alertDialog.setTitle("Hello " + student.getName());
+        alertDialog.setMessage("Is " + student.getPhoneNo() + " your mobile number?");
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes", (dialog, which) -> {
             sendOtp(student);
         });
@@ -87,9 +86,9 @@ public class LoginActivity extends AppCompatActivity {
                 lb.schnoEditText.setEnabled(false);
                 lb.loginButton.setOnClickListener(v -> {
                     if (!lb.otpEditText.getText().toString().isEmpty()) {
-                        if(lb.otpEditText.getText().toString().equals(otpId)) {
-                            loginStudent(student);
-                        }
+                        // if(lb.otpEditText.getText().toString().equals(otpId)) {
+                        loginStudent(student);
+                        //}
                     }
                 });
 
@@ -104,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void loginStudent(StudentInfo student) {
         AppPref.loginStudent(this, student);
-        if(AppPref.getLoggedInStudent(this) != null){
+        if (AppPref.getLoggedInStudent(this) != null) {
             Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, UpdateInfoActivity.class));
             finish();

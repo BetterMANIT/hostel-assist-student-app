@@ -105,9 +105,32 @@ public class MariaDBConnection {
         mQueue.add(jsonObjectRequest);
     }
 
-    public void sendOtp(String string, OtpCallBack otpCallBack) {
-        if (!string.isEmpty()) {
-            otpCallBack.otpSent("1234");
+    public void sendOtp(String mobile, OtpCallBack otpCallBack) {
+        //===/API/send_otp_to_phone_no.php?phone_no=8021229292
+        if (!mobile.isEmpty()) {
+            String url = BASE_URL + "/API/send_otp_to_phone_no.php?phone_no=" + mobile;
+
+
+            Log.d("URL", url);
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                    response -> {
+                        try {
+                            // Extract the 'data' object
+                            Log.d("Response", response.toString());
+
+                            if (response.getString("otp") != null) {
+                                otpCallBack.otpSent(response.getString("otp"));
+                            } else  {
+                                otpCallBack.onError("Error in sending OTP");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            otpCallBack.onError(e.getMessage());
+                        }
+                    },
+                    error -> otpCallBack.onError(error.getMessage())
+            );
+            mQueue.add(jsonObjectRequest);
         } else {
             otpCallBack.onError("Mobile Number is required");
         }
