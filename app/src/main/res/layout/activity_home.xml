@@ -42,80 +42,142 @@
                 android:textColor="@color/white"
                 android:textSize="26sp"
                 android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/setting"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center|right"
+                android:layout_margin="20dp"
+                android:background="#00000000"
+                android:src="@drawable/settings"
+                android:tint="@color/white"
+                tools:ignore="UseAppTint" />
         </FrameLayout>
 
     </FrameLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
+        android:id="@+id/quickCard"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp"
-        >
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="@drawable/rounded_bg"
+        android:layout_margin="16dp"
+        android:gravity="center_vertical"
+        android:elevation="4dp"
+        android:backgroundTint="@color/white"
+        android:layout_gravity="center_horizontal"
+        android:paddingVertical="12dp"
+        android:paddingHorizontal="16dp">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <!-- Student Photo -->
+        <ImageView
+            android:id="@+id/student_photo"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/img"
+            android:contentDescription="Student Photo"
+            android:layout_marginEnd="16dp"
+            android:scaleType="centerCrop" />
+
+        <!-- Right Side Details -->
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="LOCATION"
-            android:textColor="#AB2A295E"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="start">
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_marginBottom="10dp"
-            android:hint="Select Hostel"
-            app:boxBackgroundColor="@color/color2_light"
-            app:endIconMode="dropdown_menu"
-            app:startIconDrawable="@drawable/hostel">
+            <!-- Scholar Number -->
+            <TextView
+                android:id="@+id/scholar_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Scholar No: 12345678901"
+                android:textColor="@color/color1"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-            <AutoCompleteTextView
-                android:id="@+id/classSpinner"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clickable="true"
-                android:focusable="false"
-                android:inputType="none"
-                android:paddingStart="50dp" />
-        </com.google.android.material.textfield.TextInputLayout>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Date"
-            android:textColor="#AB2A295E"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            <!-- Name -->
+            <TextView
+                android:id="@+id/student_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="John Doe"
+                android:textColor="@color/color1"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="4dp" />
 
-        <TextView
-            android:id="@+id/date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="22 - 09 - 2024"
-            android:textColor="@color/color1"
-            android:textSize="26sp"
-            android:textStyle="bold" />
+            <!-- Room Number -->
+            <TextView
+                android:id="@+id/room_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Room No: 304C"
+                android:textColor="@color/color2"
+                android:textSize="16sp"
+                android:layout_marginTop="2dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Total Entry/Exit"
-            android:textColor="#AB2A295E"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            <!-- Hostel Name -->
+            <TextView
+                android:id="@+id/hostel_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hostel Name: 238HD"
+                android:textColor="@color/color2"
+                android:textSize="16sp"
+                android:layout_marginTop="2dp" />
 
-        <TextView
-            android:id="@+id/entries_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0/0"
-            android:textColor="@color/color1"
-            android:textSize="26sp"
-            android:textStyle="bold" />
+            <!-- Phone Number -->
+            <TextView
+                android:id="@+id/phone_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Phone: +91 8765432109"
+                android:textColor="@color/color2"
+                android:textSize="16sp"
+                android:layout_marginTop="2dp" />
 
+            <!-- Section -->
+            <TextView
+                android:id="@+id/section"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Section: A"
+                android:textColor="@color/color2"
+                android:textSize="16sp"
+                android:layout_marginTop="2dp" />
+
+            <!-- Guardian Number -->
+            <TextView
+                android:id="@+id/guardian_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Guardian: +91 9876543210"
+                android:textColor="@color/color2"
+                android:textSize="16sp"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
     </LinearLayout>
 
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/classes_entry_exit"
+        style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:backgroundTint="#C30859"
+        android:textSize="18sp"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:text="Exit For Class"
+        android:textColor="?attr/colorOnPrimary"
+        app:icon="@drawable/logout_24dp_5f6368_fill0_wght400_grad0_opsz24"
+        app:iconGravity="textStart"
+        app:elevation="4dp"
+        app:iconTint="@color/white" />
     <com.google.android.material.button.MaterialButton
         android:id="@+id/view_entries"
         style="@style/Widget.Material3.Button.ElevatedButton.Icon"
@@ -124,12 +186,12 @@
         android:backgroundTint="#C30859"
         android:textSize="18sp"
         android:padding="10dp"
-        android:alpha="0.5"
         android:layout_margin="10dp"
-        android:text="View Entries"
+        android:text="View Last Slip"
         android:textColor="?attr/colorOnPrimary"
-        app:icon="@drawable/person_check_24dp_5f6368_fill1_wght400_grad0_opsz24"
+        app:icon="@drawable/history_24dp_5f6368_fill0_wght400_grad0_opsz24"
         app:iconGravity="textStart"
+        app:elevation="4dp"
         app:iconTint="@color/white" />
 
 </LinearLayout>

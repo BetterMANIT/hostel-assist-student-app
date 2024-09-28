@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_horizontal"
     android:orientation="vertical">
 
     <FrameLayout
@@ -38,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="20dp"
-                android:text="Student Login"
+                android:text="Settings"
                 android:textColor="@color/white"
                 android:textSize="26sp"
                 android:textStyle="bold" />
@@ -78,62 +79,24 @@
         android:layout_marginRight="20dp"
         android:orientation="vertical">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/schnoBox"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Scholar No"
-            app:boxBackgroundColor="#102A295E"
-            app:startIconDrawable="@drawable/alternate_email_24dp_5f6368_fill0_wght400_grad0_opsz24">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/schnoEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:paddingStart="50dp" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Spacer -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="16dp" />
-
-        <!-- Password Input Field -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/otpNoBox"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="OTP"
-            app:boxBackgroundColor="#102A295E"
-            app:startIconDrawable="@drawable/password_24dp_5f6368_fill0_wght400_grad0_opsz24">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/otpEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:gravity="center_vertical"
-                android:paddingStart="50dp" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
-            android:id="@+id/forgotPasswordTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:clickable="true"
-            android:focusable="true"
-            android:paddingTop="18dp"
-            android:text="Resend Otp"
-            android:textColor="@color/color1" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="12dp" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/changeInfo"
+            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:backgroundTint="@color/color2"
+            android:padding="10dp"
+            android:text="Change Information"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="20sp"
+            app:icon="@drawable/alternate_email_24dp_5f6368_fill0_wght400_grad0_opsz24"
+            app:iconGravity="textStart"
+            app:iconTint="@color/white" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/loginButton"
             style="@style/Widget.Material3.Button.ElevatedButton.Icon"
@@ -141,12 +104,22 @@
             android:layout_height="58dp"
             android:backgroundTint="@color/color2"
             android:padding="10dp"
-            android:text="Send OTP"
+            android:layout_marginTop="10dp"
+            android:text="Logout"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="20sp"
-            app:icon="@drawable/login_24dp_5f6368_fill0_wght400_grad0_opsz24"
+            app:icon="@drawable/logout_24dp_5f6368_fill0_wght400_grad0_opsz24"
             app:iconGravity="textStart"
             app:iconTint="@color/white" />
     </LinearLayout>
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:layout_margin="20dp"
+        android:text="@string/about"
+        android:gravity="center"
+        android:textColor="@color/color1"
+        android:textFontWeight="500"
+        android:textSize="18sp" />
 </LinearLayout>

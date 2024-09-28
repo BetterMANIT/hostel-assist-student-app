@@ -93,4 +93,16 @@ public class StudentInfo {
                 jsonObject.optString("entryExitTableName")
         );
     }
+
+    public void setRoomNo(String roomNo) {
+        this.roomNo = roomNo;
+    }
+
+    public void setSection(String section) {
+        this.section = section;
+    }
+
+    public void setGuardianNo(String guardianNo) {
+        this.guardianNo = guardianNo;
+    }
 }

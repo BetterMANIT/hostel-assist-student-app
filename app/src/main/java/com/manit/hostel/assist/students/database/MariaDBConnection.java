@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
@@ -47,7 +46,7 @@ public class MariaDBConnection {
                         // Extract the 'data' object
                         Log.d("Response", response.toString());
 
-                        if(response.getString("status").equals("success")){
+                        if (response.getString("status").equals("success")) {
                             JSONObject data = response.getJSONObject("data");
                             // Parsing the data into StudentInfo
                             StudentInfo student = new StudentInfo(
@@ -64,6 +63,35 @@ public class MariaDBConnection {
 
                             // Pass the parsed student data to the callback
                             callback.onStudentInfoReceived(student);
+                        } else if (response.getString("status").equals("error")) {
+                            callback.onError(response.getString("message"));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        callback.onError(e.getMessage());
+                    }
+                },
+                error -> callback.onError(error.getMessage())
+        );
+        mQueue.add(jsonObjectRequest);
+    }
+
+    public void updateStudentInfo(StudentInfo studentInfo, StudentCallback callback) {
+        String url = BASE_URL + "/API/set_student_info.php?scholar_no=" + studentInfo.getScholarNo();
+        url = url + "&room_no=" + studentInfo.getRoomNo();
+        url = url + "&guardian_no=" + studentInfo.getGuardianNo();
+        url = url + "&section=" + studentInfo.getSection();
+
+
+        Log.d("URL", url);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        // Extract the 'data' object
+                        Log.d("Response", response.toString());
+
+                        if (response.getString("status").equals("success")) {
+                            callback.onStudentInfoReceived(studentInfo);
                         } else if (response.getString("status").equals("error")) {
                             callback.onError(response.getString("message"));
                         }

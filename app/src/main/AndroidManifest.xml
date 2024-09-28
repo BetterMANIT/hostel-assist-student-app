@@ -40,6 +40,8 @@
         <activity
             android:name=".activity.HomeActivity"
             android:exported="false" />
+        <activity android:name=".activity.UpdateInfoActivity" android:exported="false"/>
+<activity android:name=".activity.SettingsActivity" android:exported="false"/>
 
     </application>
 

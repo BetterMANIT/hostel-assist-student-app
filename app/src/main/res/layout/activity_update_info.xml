@@ -23,7 +23,6 @@
             <ImageButton
                 android:id="@+id/backbtn"
                 android:layout_width="48dp"
-                android:visibility="gone"
                 android:layout_height="48dp"
                 android:layout_gravity="center|left"
                 android:layout_margin="20dp"
@@ -38,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="20dp"
-                android:text="Student Login"
+                android:text="Update Details"
                 android:textColor="@color/white"
                 android:textSize="26sp"
                 android:textStyle="bold" />
@@ -46,30 +45,6 @@
 
     </FrameLayout>
 
-    <LinearLayout
-        android:id="@+id/splash"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:background="@color/white"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginRight="20dp"
-            android:src="@drawable/manit_logo" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif"
-            android:text="Hostel Assist"
-            android:textColor="@color/color1"
-            android:textFontWeight="800"
-            android:textSize="22sp" />
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -77,46 +52,84 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:orientation="vertical">
-
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/schnoBox"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Scholar No"
-            app:boxBackgroundColor="#102A295E"
-            app:startIconDrawable="@drawable/alternate_email_24dp_5f6368_fill0_wght400_grad0_opsz24">
+            app:boxBackgroundColor="#102A295E">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/schnoEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
-                android:paddingStart="50dp" />
+                android:paddingStart="10dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Spacer -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="16dp" />
-
-        <!-- Password Input Field -->
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/otpNoBox"
+            android:id="@+id/nameBox"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="OTP"
-            app:boxBackgroundColor="#102A295E"
-            app:startIconDrawable="@drawable/password_24dp_5f6368_fill0_wght400_grad0_opsz24">
+            android:hint="Scholar No"
+            app:boxBackgroundColor="#102A295E">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/otpEditText"
+                android:id="@+id/nameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:paddingStart="10dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/roomBox"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Room No"
+            app:boxBackgroundColor="#102A295E">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/roomEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:paddingStart="10dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/sectionBox"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Section"
+            app:boxBackgroundColor="#102A295E">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/sectionEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:paddingStart="10dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/guardianBox"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Guardian No"
+            app:boxBackgroundColor="#102A295E">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/guardianEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
-                android:gravity="center_vertical"
-                android:paddingStart="50dp" />
+                android:paddingStart="10dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -127,7 +140,7 @@
             android:clickable="true"
             android:focusable="true"
             android:paddingTop="18dp"
-            android:text="Resend Otp"
+            android:text="Ensure that all info is correct and you are responsible for any mistake..."
             android:textColor="@color/color1" />
 
         <View
@@ -141,7 +154,7 @@
             android:layout_height="58dp"
             android:backgroundTint="@color/color2"
             android:padding="10dp"
-            android:text="Send OTP"
+            android:text="Update Details"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="20sp"
             app:icon="@drawable/login_24dp_5f6368_fill0_wght400_grad0_opsz24"

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">MANIT-Hostel-Assist-students</string>
     <string name="wifi_instructions">If not working check :-\n1. All permissions are given to the app\n2. Location and wifi of device is enabled\n\nElse contact admin</string>
+    <string name="about">"Developed by -\n2024 batch in first year \nAradhya Jain\nAnuj Shrivastava\nMithil\nAshish Mishra\nKrish\nunder the guidance of our respected \nBN Roy Sir\n© MANIT "</string>
 </resources>

@@ -106,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
         AppPref.loginStudent(this, student);
         if(AppPref.getLoggedInStudent(this) != null){
             Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, HomeActivity.class));
+            startActivity(new Intent(this, UpdateInfoActivity.class));
             finish();
         }
     }
