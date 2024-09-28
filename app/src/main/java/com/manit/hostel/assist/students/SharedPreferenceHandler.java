@@ -20,6 +20,7 @@ public class SharedPreferenceHandler {
     }
 
     private static final String SHARED_PREFERENCES_KEY_MAC_ADDRESS = "MAC_ADDRESSES";
+
     public static Set<String> getListOfAlreadyExistingMACAddresses(@NonNull Context mContext){
       return getSharedPreferences(mContext).getStringSet(SHARED_PREFERENCES_KEY_MAC_ADDRESS, new HashSet<>());
     }

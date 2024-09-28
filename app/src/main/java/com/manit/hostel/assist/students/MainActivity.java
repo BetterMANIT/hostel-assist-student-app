@@ -23,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.manit.hostel.assist.students.activity.LoginActivity;
 import com.onesignal.OneSignal;
 import com.permissionx.guolindev.PermissionX;
 import com.permissionx.guolindev.callback.RequestCallback;
@@ -46,7 +47,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         webview = findViewById(R.id.webview);
         splash = findViewById(R.id.splash);
-        requestPermissions();
+        startActivity(new Intent(this, LoginActivity.class));
+        finish();
+        /*  requestPermissions();
         Log.d(MainActivity.class.getSimpleName(), "Wifi Name list : " + new WifiScanner(this).getWifiList(this).toString());
         if (isLocationEnabled()) {
             // Start Wi-Fi scanning
@@ -54,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             promptEnableLocation();
         }
-        setupOneSignal();
+        setupOneSignal();*/
     }
 
     @Override
