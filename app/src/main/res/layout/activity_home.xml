@@ -74,12 +74,12 @@
         <!-- Student Photo -->
         <ImageView
             android:id="@+id/student_photo"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="70dp"
+            android:layout_height="90dp"
             android:src="@drawable/img"
             android:contentDescription="Student Photo"
             android:layout_marginEnd="16dp"
-            android:scaleType="centerCrop" />
+            android:scaleType="fitXY" />
 
         <!-- Right Side Details -->
         <LinearLayout
@@ -162,36 +162,45 @@
         </LinearLayout>
     </LinearLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_margin="20dp"
+        android:hint="Going to"
+        app:boxBackgroundColor="@color/color2_light"
+        app:boxCornerRadiusBottomEnd="40dp"
+        app:boxCornerRadiusBottomStart="40dp"
+        app:boxCornerRadiusTopEnd="40dp"
+        app:boxCornerRadiusTopStart="40dp"
+        app:endIconMode="dropdown_menu">
+
+        <AutoCompleteTextView
+            android:id="@+id/placeSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:focusable="false"
+            android:inputType="none"
+            android:paddingStart="50dp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/classes_entry_exit"
+        android:id="@+id/goout"
         style="@style/Widget.Material3.Button.ElevatedButton.Icon"
         android:layout_width="match_parent"
         android:layout_height="58dp"
-        android:backgroundTint="#C30859"
-        android:textSize="18sp"
-        android:padding="10dp"
         android:layout_margin="10dp"
-        android:text="Exit For Class"
+        android:backgroundTint="#C30859"
+        android:padding="10dp"
+        android:enabled="false"
+        android:text="Exit"
         android:textColor="?attr/colorOnPrimary"
+        android:textSize="18sp"
+        app:elevation="4dp"
         app:icon="@drawable/logout_24dp_5f6368_fill0_wght400_grad0_opsz24"
         app:iconGravity="textStart"
-        app:elevation="4dp"
         app:iconTint="@color/white" />
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/view_entries"
-        style="@style/Widget.Material3.Button.ElevatedButton.Icon"
-        android:layout_width="match_parent"
-        android:layout_height="58dp"
-        android:backgroundTint="#C30859"
-        android:textSize="18sp"
-        android:padding="10dp"
-        android:layout_margin="10dp"
-        android:text="View Last Slip"
-        android:textColor="?attr/colorOnPrimary"
-        app:icon="@drawable/history_24dp_5f6368_fill0_wght400_grad0_opsz24"
-        app:iconGravity="textStart"
-        app:elevation="4dp"
-        app:iconTint="@color/white" />
+
 
 </LinearLayout>

@@ -22,7 +22,6 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         dbConnection = new MariaDBConnection(this);
         lb = ActivitySettingsBinding.inflate(getLayoutInflater());
         setContentView(lb.getRoot());

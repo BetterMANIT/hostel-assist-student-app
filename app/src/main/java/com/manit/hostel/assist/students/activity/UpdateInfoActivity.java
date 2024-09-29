@@ -21,6 +21,7 @@ import com.manit.hostel.assist.students.data.AppPref;
 import com.manit.hostel.assist.students.data.StudentInfo;
 import com.manit.hostel.assist.students.database.MariaDBConnection;
 import com.manit.hostel.assist.students.databinding.ActivityUpdateInfoBinding;
+import com.manit.hostel.assist.students.utils.Utility;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
@@ -38,7 +39,6 @@ public class UpdateInfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         dbConnection = new MariaDBConnection(this);
         lb = ActivityUpdateInfoBinding.inflate(getLayoutInflater());
         setContentView(lb.getRoot());
@@ -80,6 +80,11 @@ public class UpdateInfoActivity extends AppCompatActivity {
                     @Override
                     public void onError(String error) {
                         Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void networkError() {
+                        Utility.showNoInternetDialog(UpdateInfoActivity.this);
                     }
                 });
             } else {

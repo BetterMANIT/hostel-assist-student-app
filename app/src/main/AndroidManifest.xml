@@ -54,6 +54,9 @@
             android:name=".activity.SettingsActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.EntryExitSlipActivityActivity"
+            android:exported="false" />
+        <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>

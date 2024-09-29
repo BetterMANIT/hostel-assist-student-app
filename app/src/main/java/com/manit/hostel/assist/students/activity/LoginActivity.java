@@ -2,6 +2,7 @@ package com.manit.hostel.assist.students.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -14,6 +15,7 @@ import com.manit.hostel.assist.students.data.AppPref;
 import com.manit.hostel.assist.students.data.StudentInfo;
 import com.manit.hostel.assist.students.database.MariaDBConnection;
 import com.manit.hostel.assist.students.databinding.ActivityLoginBinding;
+import com.manit.hostel.assist.students.utils.Utility;
 
 public class LoginActivity extends AppCompatActivity {
     @NonNull
@@ -24,7 +26,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         dbConnection = new MariaDBConnection(this);
         lb = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(lb.getRoot());
@@ -32,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
             setScholarNoEnteringView();
         } else {
             startActivity(new Intent(this, HomeActivity.class));
+            Log.d(LoginActivity.class.getSimpleName(), "Logged in student: " + AppPref.getLoggedInStudent(this));
             finish();
         }
     }
@@ -52,6 +54,10 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onError(String error) {
                         Toast.makeText(LoginActivity.this, error, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public void networkError() {
+                        Utility.showNoInternetDialog(LoginActivity.this);
                     }
                 });
             } else {
@@ -96,7 +102,12 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onError(String error) {
+                Toast.makeText(LoginActivity.this, error, Toast.LENGTH_SHORT).show();
+            }
 
+            @Override
+            public void networkError() {
+                Utility.showNoInternetDialog(LoginActivity.this);
             }
         });
     }
