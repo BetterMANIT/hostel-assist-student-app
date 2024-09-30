@@ -14,13 +14,13 @@ import com.bumptech.glide.Glide;
 import com.manit.hostel.assist.students.R;
 import com.manit.hostel.assist.students.data.AppPref;
 import com.manit.hostel.assist.students.data.EntryDetail;
+import com.manit.hostel.assist.students.data.HostelTable;
 import com.manit.hostel.assist.students.data.StudentInfo;
 import com.manit.hostel.assist.students.database.MariaDBConnection;
 import com.manit.hostel.assist.students.databinding.ActivityHomeBinding;
 import com.manit.hostel.assist.students.utils.Utility;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class HomeActivity extends AppCompatActivity {
     @NonNull
@@ -76,6 +76,7 @@ public class HomeActivity extends AppCompatActivity {
     private void openSlipActivity(EntryDetail entryDetail) {
         Intent intent = new Intent(this, EntryExitSlipActivityActivity.class);
         startActivity(intent);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         finish();
     }
 
@@ -107,23 +108,38 @@ public class HomeActivity extends AppCompatActivity {
 
     private void setupPlacesAdapter() {
 
-        ArrayList<String> classes = new ArrayList<>(Arrays.asList("Collage", "Market", "Home", "Toorynad", "Maffick"));
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, classes);
-        lb.placeSpinner.setAdapter(adapter);
-        lb.placeSpinner.setOnItemClickListener((parent, view, position, id) -> {
-            Log.d(HomeActivity.this.toString(), "onItemSelected");
-            lb.goout.setEnabled(true);
-            placeSelected = classes.get(position);
-            lb.goout.setText("Exit for " + placeSelected);
-            lb.goout.setOnClickListener(v -> {
-                addNewEntry(placeSelected);
-            });
+        dbConnection.getTablesForHostel(loggedInStudent.getHostelName(), new MariaDBConnection.TablesStatusCallback() {
+            @Override
+            public void onSuccess(ArrayList<HostelTable> table) {
+                ArrayList<String> tableNames = new ArrayList<>();
+                for (HostelTable hostelTable : table) {
+                    tableNames.add(hostelTable.getCategoryName());
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(HomeActivity.this, android.R.layout.simple_dropdown_item_1line, tableNames);
+                lb.placeSpinner.setAdapter(adapter);
+                lb.placeSpinner.setOnItemClickListener((parent, view, position, id) -> {
+                    Log.d(HomeActivity.this.toString(), "onItemSelected");
+                    lb.goout.setEnabled(true);
+                    placeSelected = tableNames.get(position);
+                    lb.goout.setText("Exit for " + placeSelected);
+                    lb.goout.setOnClickListener(v -> {
+                        AppPref.setCurrentPlaceWent(HomeActivity.this, placeSelected);
+                        addNewEntry(table.get(position).getTableName());
+                    });
+                });
+            }
+
+            @Override
+            public void onError(String error) {
+
+            }
         });
+
     }
 
 
-    private void addNewEntry(String placeSelected) {
-        dbConnection.openNewEntry(loggedInStudent, new MariaDBConnection.AddNewEntryCallback() {
+    private void addNewEntry(String placeSelectedTable) {
+        dbConnection.openNewEntry(loggedInStudent, placeSelectedTable, new MariaDBConnection.AddNewEntryCallback() {
             @Override
             public void onAddedSuccess(String scholarNo) {
                 checkStatusOfStudent();
@@ -142,11 +158,12 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void addClickLogic() {
-        lb.goout.setOnClickListener((view)->{
+        lb.goout.setOnClickListener((view) -> {
             Toast.makeText(this, "select place you are going!", Toast.LENGTH_SHORT).show();
         });
         lb.setting.setOnClickListener(v -> {
             startActivity(new Intent(this, SettingsActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
     }
 

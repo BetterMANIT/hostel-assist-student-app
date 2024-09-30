@@ -73,6 +73,7 @@ public class UpdateInfoActivity extends AppCompatActivity {
                         if (AppPref.getLoggedInStudent(UpdateInfoActivity.this) != null) {
                             Toast.makeText(getApplicationContext(), "Update Successful", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             finish();
                         }
                     }

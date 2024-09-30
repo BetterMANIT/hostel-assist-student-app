@@ -14,6 +14,7 @@ public class AppPref {
     private static final String APREF = "apref";
     private static final String SELECTED_HOSTEL = "selected_hostel";
     private static final String STUDENT_LOGIN = "selected_hostel";
+    private static String PLACE_WENT = "place_went";
 
     public static void setSelectedHostel(HomeActivity c, String string) {
         c.getSharedPreferences(APREF, MODE_PRIVATE).edit().putString(SELECTED_HOSTEL, string).apply();
@@ -48,5 +49,13 @@ public class AppPref {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public static void setCurrentPlaceWent(Activity activity, String place) {
+        activity.getSharedPreferences(APREF, MODE_PRIVATE).edit().putString(PLACE_WENT, place).apply();
+    }
+
+    public static String getCurrentPlaceWent(Activity activity) {
+        return activity.getSharedPreferences(APREF, MODE_PRIVATE).getString(PLACE_WENT, "");
     }
 }

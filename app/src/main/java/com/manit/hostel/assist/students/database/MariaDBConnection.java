@@ -12,11 +12,14 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.firebase.BuildConfig;
 import com.manit.hostel.assist.students.data.EntryDetail;
+import com.manit.hostel.assist.students.data.HostelTable;
 import com.manit.hostel.assist.students.data.StudentInfo;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -162,6 +165,42 @@ public class MariaDBConnection {
         }
     }
 
+    public void getTablesForHostel(String hostelName, TablesStatusCallback statusCallback) {
+        if (!hostelName.isEmpty()) {
+            String url = BASE_URL + "API/student/get_categories_from_hostel_name.php?hostel_name="+hostelName;
+            Log.d("URL", url);
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
+                try {
+                    Log.d("Response", response.toString());
+                    if (response.getString("status").equals("success")) {
+                        ArrayList<HostelTable> tables = new ArrayList<>();
+                        JSONArray dataArray = response.getJSONArray("data");
+
+                        for (int i = 0; i < dataArray.length(); i++) {
+                            JSONObject tableObject = dataArray.getJSONObject(i);
+
+                            HostelTable table = new HostelTable(tableObject.getInt("id"), tableObject.getString("table_name"), tableObject.getString("hostel_name"), tableObject.getString("category_name"));
+
+                            tables.add(table);
+                        }
+
+                        // Pass the list to the callback
+                        statusCallback.onSuccess(tables);
+                    } else {
+                        statusCallback.onError("Unexpected response from server.");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    statusCallback.onError(e.getMessage());
+                }
+            }, error -> statusCallback.onError(error.getMessage()));
+
+            mQueue.add(jsonObjectRequest);
+        } else {
+            statusCallback.onError("Scholar Number is required");
+        }
+    }
+
 
     public void checkForUpdate(UpdateCallback updateCallback) {
         // Assuming you fetch the app version from an API
@@ -195,7 +234,7 @@ public class MariaDBConnection {
         mQueue.add(jsonObjectRequest);
     }
 
-    public void openNewEntry(StudentInfo studentInfo, AddNewEntryCallback callback) {
+    public void openNewEntry(StudentInfo studentInfo, String table, AddNewEntryCallback callback) {
         final String BASE_URL_PLUS_SUFFIX = BASE_URL + "API/open_new_entry.php";
 
         final StringRequest mStringRequest = new StringRequest(Request.Method.POST, BASE_URL_PLUS_SUFFIX, response -> {
@@ -215,6 +254,7 @@ public class MariaDBConnection {
                 params.put("room_no", studentInfo.getRoomNo());
                 params.put("photo_url", studentInfo.getPhotoUrl());
                 params.put("phone_no", studentInfo.getPhoneNo());
+                params.put("table_name", table);
                 params.put("section", studentInfo.getSection());
                 params.put("hostel_name", studentInfo.getHostelName());
                 return params;
@@ -313,6 +353,11 @@ public class MariaDBConnection {
         void onSuccess(String response);
 
         void onErrorResponse(String error);
+    }
+
+    public interface TablesStatusCallback {
+        void onSuccess(ArrayList<HostelTable> table);
+        void onError(String error);
     }
 
 }

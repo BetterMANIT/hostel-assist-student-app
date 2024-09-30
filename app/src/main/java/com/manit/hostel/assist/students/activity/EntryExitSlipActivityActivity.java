@@ -33,10 +33,13 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
         setContentView(lb.getRoot());
         loggedInStudent = AppPref.getLoggedInStudent(this);
         lb.slipframe.setVisibility(View.GONE);
+        lb.heading.setTranslationY(-500);
+        lb.heading.animate().translationY(0).setDuration(1000).start();
         if (loggedInStudent != null) {
             showDetails();
         } else {
             startActivity(new Intent(this, HomeActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             Log.d(EntryExitSlipActivityActivity.class.getSimpleName(), "Logged in student: " + loggedInStudent);
             finish();
         }
@@ -64,22 +67,39 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
             @Override
             public void insideHostel(String message) {
                 startActivity(new Intent(EntryExitSlipActivityActivity.this, HomeActivity.class));
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             }
         });
     }
 
     private void fillDetails(EntryDetail entryDetail) {
         // Assuming lb is already initialized in onCreate or elsewhere
-        lb.studentName.setText("Name: " + entryDetail.getName());
+        lb.studentName.setText(entryDetail.getName());
+        lb.title.setText(AppPref.getCurrentPlaceWent(this) + " Exit Slip");
         lb.entryNo.setText("Entry No: " + entryDetail.getId());
         lb.roomNo.setText("Room: " + entryDetail.getRoomNo());
-        lb.date.setText("Date: " + entryDetail.getOpenTime().split(" ")[0]); // Assuming date comes as part of openTime
-        lb.exitTime.setText("Time: " + entryDetail.getOpenTime().split(" ")[1]); // Time part from openTime
-        lb.scholarNo.setText("Scholar No: " + entryDetail.getScholarNo());
+        try {
+            lb.date.setText("Date: " + entryDetail.getOpenTime().split(" ")[0]); // Assuming date comes as part of openTime
+            lb.exitTime.setText(entryDetail.getOpenTime().split(" ")[1]); // Time part from openTime
+            if (entryDetail.getCloseTime() != null) {
+                lb.entryTime.setText(entryDetail.getCloseTime().split(" ")[1]);
+            } else {
+                lb.entryTime.setText("-----");
+            }
+        } catch (Exception e) {
+            lb.entryTime.setText("-----");
+            // Time part from openTime
+        }
+        lb.scholarNo.setText(entryDetail.getScholarNo());
         lb.watermark.setText(entryDetail.getOpenTime());
+        lb.mobileNo.setText("Mobile: " + loggedInStudent.getPhoneNo());
+        lb.mobileNo.setText("Mobile: " + loggedInStudent.getPhoneNo());
         lb.slipframe.setVisibility(View.VISIBLE);
         lb.slipframe.setAlpha(0f);
-        lb.slipframe.animate().alpha(1f).setDuration(300).start();
+        lb.slipframe.animate().alpha(1f).setDuration(500).start();
+        lb.slipframe.setTranslationY(500);
+        lb.slipframe.animate().translationY(0).setDuration(500).start();
+
         // Assuming you're using a URL for the photo and have an image loading library like Glide or Picasso
         Glide.with(this).load(loggedInStudent.getPhotoUrl()).placeholder(R.drawable.img) // Add a placeholder image in case the URL is null or slow to load
                 .into(lb.stuPic); // The ImageView bound by LayoutBinding
@@ -91,6 +111,7 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
                     startActivity(new Intent(EntryExitSlipActivityActivity.this, HomeActivity.class));
                     finish();
                 }
+
                 @Override
                 public void onErrorResponse(String error) {
                     Toast.makeText(EntryExitSlipActivityActivity.this, error, Toast.LENGTH_SHORT).show();

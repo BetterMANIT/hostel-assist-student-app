@@ -33,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
             setScholarNoEnteringView();
         } else {
             startActivity(new Intent(this, HomeActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             Log.d(LoginActivity.class.getSimpleName(), "Logged in student: " + AppPref.getLoggedInStudent(this));
             finish();
         }
@@ -117,6 +118,7 @@ public class LoginActivity extends AppCompatActivity {
         if (AppPref.getLoggedInStudent(this) != null) {
             Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, UpdateInfoActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             finish();
         }
     }

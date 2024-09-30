@@ -1,25 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color2_light"
     android:orientation="vertical">
 
     <FrameLayout
         android:id="@+id/backspan"
+        android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rounded_bg"
-        android:elevation="10dp"
-        android:translationY="-20dp">
+        android:layout_height="wrap_content">
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="40dp">
+            android:layout_height="match_parent">
 
             <ImageButton
                 android:id="@+id/backbtn"
@@ -27,20 +23,20 @@
                 android:layout_height="48dp"
                 android:layout_gravity="center|left"
                 android:layout_margin="20dp"
-                android:background="#00000000"
                 android:src="@drawable/arrow_back_ios_24dp_5f6368_fill0_wght400_grad0_opsz24"
                 android:tint="@color/white"
                 android:visibility="gone"
                 tools:ignore="UseAppTint" />
 
             <TextView
-                android:id="@+id/name"
+                android:id="@+id/heading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="20dp"
+                android:fontFamily="@font/noto_sans"
                 android:text="Hostel Assist"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textSize="26sp"
                 android:textStyle="bold" />
         </FrameLayout>
@@ -48,9 +44,10 @@
     </FrameLayout>
 
     <FrameLayout
-        android:layout_width="match_parent"
         android:id="@+id/exit_slip"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/white"
         android:padding="10dp">
 
         <TextView
@@ -60,138 +57,241 @@
             android:layout_gravity="center"
             android:layout_margin="20dp"
             android:text="Loading...."
+
             android:textColor="@color/color2"
             android:textSize="28sp"
             android:textStyle="bold" />
-        <LinearLayout
-            android:id="@+id/slipframe"
+
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/rounded_bg"
-            android:backgroundTint="@color/color1"
-            android:elevation="8dp"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="20dp">
-
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Exit Slip"
-                android:textColor="#e4e4e4"
-                android:textSize="32sp" />
-
-            <ImageView
-                android:id="@+id/stu_pic"
-                android:layout_width="105dp"
-                android:layout_height="135dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                android:scaleType="fitXY"
-                android:layout_marginBottom="10dp"
-                android:src="@drawable/img" />
+            android:layout_marginBottom="70dp"
+            android:layout_height="match_parent">
 
             <LinearLayout
-                android:id="@+id/info"
+                android:id="@+id/slipframe"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="10dp"
-                android:background="@drawable/rounded_bg"
-                android:backgroundTint="#e4c5df"
-                android:gravity="left"
-                android:orientation="vertical"
-                android:padding="20dp">
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Exit Slip"
+                    android:textColor="#000404"
+                    android:textSize="32sp" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/img_border"
+                    android:layout_marginBottom="10dp"
+                    android:padding="10dp"
+                    app:cardBackgroundColor="#C30859"
+                    app:cardCornerRadius="100dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_margin="5dp"
+                        app:cardCornerRadius="100dp">
+
+                        <ImageView
+                            android:id="@+id/stu_pic"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/img" />
+                    </androidx.cardview.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
                 <TextView
                     android:id="@+id/student_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text="Name: Salmon Khan"
+                    android:fontFamily="@font/roboto_bold"
+                    android:text="Salmon Khan"
                     android:textColor="#000"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/entry_no"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text="Entry No: 22092024C1003"
-                    android:textColor="#000"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/room_no"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text="Room: C101"
-                    android:textColor="#000"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text="Date: 22/09/2024"
-                    android:textColor="#000"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/exit_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text="Exit Time: 10:30 AM"
-                    android:textColor="#000"
-                    android:textSize="18sp" />
+                    android:textFontWeight="1000"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/scholar_no"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Scholar No: 1234567"
-                    android:textColor="#000"
-                    android:textSize="18sp" />
+                    android:fontFamily="@font/roboto_bold"
+                    android:text="12345678901"
+                    android:textColor="#4D4D4D"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_bold"
+                            android:text="Exit Time"
+                            android:textColor="#13141B"
+                            android:textFontWeight="1000"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/exit_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_bold"
+                            android:text="10:30 AM"
+                            android:textColor="#4D4D4D"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="5dp"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/rounded_bg"
+                        android:backgroundTint="#C30859" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_bold"
+                            android:text="Entry Time"
+                            android:textColor="#13141B"
+                            android:textFontWeight="1000"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/entry_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_bold"
+                            android:text="--------"
+                            android:textColor="#4D4D4D"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:gravity="left"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="Student Details"
+                        android:textColor="#000"
+                        android:textFontWeight="1000"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:id="@+id/entry_no"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="Entry No: 22092024C1003"
+                        android:textColor="#444444"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/room_no"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="Room: C101"
+                        android:textColor="#444444"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="Date: 22/09/2024"
+                        android:textColor="#444444"
+                        android:textSize="18sp" />
+                    <TextView
+                        android:id="@+id/mobile_no"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="Mobile: 110022330022"
+                        android:textColor="#444444"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+
             </LinearLayout>
+        </ScrollView>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/enter_again"
-                style="@style/Widget.Material3.Button.ElevatedButton.Icon"
-                android:layout_width="match_parent"
-                android:layout_height="58dp"
-                android:backgroundTint="#C30859"
-                android:textSize="18sp"
-                android:padding="10dp"
-                android:layout_margin="10dp"
-                android:text="Enter Again"
-                android:textColor="?attr/colorOnPrimary"
-                app:icon="@drawable/login_24dp_5f6368_fill0_wght400_grad0_opsz24"
-                app:iconGravity="textStart"
-                app:elevation="4dp"
-                app:iconTint="@color/white" />
-
-        </LinearLayout>
         <!-- Watermark -->
         <TextView
             android:id="@+id/watermark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="120dp"
             android:layout_gravity="center_vertical"
+            android:layout_marginBottom="120dp"
             android:alpha="0.7"
             android:animation="@anim/watermark_animation"
-            android:rotation="-35"
             android:elevation="10dp"
+            android:rotation="-35"
             android:text=""
             android:textColor="#FF0000"
-            android:textSize="20sp" />
+            android:textSize="32sp" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/enter_again"
+            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:layout_gravity="bottom"
+            android:layout_margin="10dp"
+            android:backgroundTint="#C30859"
+            android:padding="10dp"
+            android:text="Enter Again"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="18sp"
+            app:elevation="4dp"
+            app:icon="@drawable/login_24dp_5f6368_fill0_wght400_grad0_opsz24"
+            app:iconGravity="textStart"
+            app:iconTint="@color/white" />
 
     </FrameLayout>
 
