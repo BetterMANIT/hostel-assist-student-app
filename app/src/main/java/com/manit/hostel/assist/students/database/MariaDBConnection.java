@@ -172,7 +172,7 @@ public class MariaDBConnection {
 
     public void getTablesForHostel(String hostelName, TablesStatusCallback statusCallback) {
         if (!hostelName.isEmpty()) {
-            String url = BASE_URL + "API/student/get_categories_from_hostel_name.php?hostel_name=" + hostelName;
+            String url = BASE_URL + "API/student/get_purposes_by_hostel_name.php?hostel_name=" + hostelName;
             Log.d("URL", url);
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
                 try {
@@ -184,7 +184,7 @@ public class MariaDBConnection {
                         for (int i = 0; i < dataArray.length(); i++) {
                             JSONObject tableObject = dataArray.getJSONObject(i);
 
-                            HostelTable table = new HostelTable(tableObject.getInt("id"), tableObject.getString("table_name"), tableObject.getString("hostel_name"), tableObject.getString("category_name"));
+                            HostelTable table = new HostelTable(tableObject.getInt("id"), tableObject.getString("table_name"), tableObject.getString("hostel_name"), tableObject.getString("purpose"));
 
                             tables.add(table);
                         }
