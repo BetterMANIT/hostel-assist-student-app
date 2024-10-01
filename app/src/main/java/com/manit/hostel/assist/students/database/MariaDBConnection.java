@@ -1,5 +1,7 @@
 package com.manit.hostel.assist.students.database;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,7 +12,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.firebase.BuildConfig;
 import com.manit.hostel.assist.students.data.EntryDetail;
 import com.manit.hostel.assist.students.data.HostelTable;
 import com.manit.hostel.assist.students.data.StudentInfo;
@@ -19,6 +20,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -75,10 +80,11 @@ public class MariaDBConnection {
     }
 
     public void updateStudentInfo(StudentInfo studentInfo, StudentCallback callback) {
-        String url = BASE_URL + "/API/set_student_info.php?scholar_no=" + studentInfo.getScholarNo();
+        String url = BASE_URL + "/API/student/set_student_info.php?scholar_no=" + studentInfo.getScholarNo();
         url = url + "&room_no=" + studentInfo.getRoomNo();
         url = url + "&guardian_no=" + studentInfo.getGuardianNo();
         url = url + "&section=" + studentInfo.getSection();
+        url = url + "&photo_url=" + studentInfo.getPhotoUrl();
 
 
         Log.d("URL", url);
@@ -138,9 +144,8 @@ public class MariaDBConnection {
                     Log.d("Response", response.toString());
 
                     if (response.getString("status").equals("success")) {
-                        String entryExitTableName = response.optString("entry_exit_table_name");
 
-                        if (entryExitTableName.isEmpty()) {
+                        if (!response.has("data")) {
                             // Student is currently inside the hostel
                             statusCallback.insideHostel("Student is currently in hostel.");
                         } else {
@@ -167,7 +172,7 @@ public class MariaDBConnection {
 
     public void getTablesForHostel(String hostelName, TablesStatusCallback statusCallback) {
         if (!hostelName.isEmpty()) {
-            String url = BASE_URL + "API/student/get_categories_from_hostel_name.php?hostel_name="+hostelName;
+            String url = BASE_URL + "API/student/get_categories_from_hostel_name.php?hostel_name=" + hostelName;
             Log.d("URL", url);
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
                 try {
@@ -204,33 +209,53 @@ public class MariaDBConnection {
 
     public void checkForUpdate(UpdateCallback updateCallback) {
         // Assuming you fetch the app version from an API
-        String url = BASE_URL + "/API/latest_version_android.php";  // Replace with your actual API URL
+        String url = BASE_URL + "API/student/is_app_update_available.php";  // Replace with your actual API URL
 
         Log.d("URL", url);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null, response -> {
             try {
-                // Assuming the response contains a 'version_name' field
-                String serverVersion = response.getString("latest_version");
-                String link = response.getString("link");
-                String installedVersion = BuildConfig.VERSION_NAME;  // Get the installed app version
-
-                Log.d("Installed Version", installedVersion);
-                Log.d("Server Version", serverVersion);
-
-                if (serverVersion != null && installedVersion != null) {
-                    if (installedVersion.compareTo(serverVersion) < 0) {
-                        updateCallback.onUpdateAvailable(true, link);
+                //{
+                //    "status": "success",
+                //    "is_update_available": true,
+                //    "apk_download_link": "https://example.com/latest_app.apk"
+                //}
+                Log.e("Response", response.toString());
+                if (response.getString("status").equals("success")) {
+                    if (response.getBoolean("is_update_available")) {
+                        updateCallback.onUpdateAvailable(true, response.getString("apk_download_link"));
                     } else {
-                        updateCallback.onUpdateAvailable(false, link);
+                        updateCallback.onUpdateAvailable(false, response.getString("apk_download_link"));
                     }
                 } else {
-                    updateCallback.onError("Version information missing");
+                    updateCallback.onError("Unexpected response from server.");
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
                 updateCallback.onError(e.getMessage());
             }
-        }, error -> updateCallback.onError(error.getMessage()));
+        }, error -> updateCallback.onError(error.getMessage()))
+        {
+            @Override
+            public byte[] getBody() {
+                PackageInfo pInfo = null;
+                try {
+                    pInfo = mAppCompatActivity.getPackageManager().getPackageInfo(mAppCompatActivity.getPackageName(), 0);
+                    int versionCode = pInfo.versionCode;
+                    Log.d("Version Code", String.valueOf(versionCode));
+                    return ("version_code=" + versionCode).getBytes("UTF-8");
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
+                return super.getBody();
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded; charset=UTF-8";  // Proper content type for sending form data
+            }
+        };
         mQueue.add(jsonObjectRequest);
     }
 
@@ -298,15 +323,51 @@ public class MariaDBConnection {
         mQueue.add(mStringRequest);
     }
 
+    public void uploadPhoto(String scholarNo, File imageFile, PhotoUploadCallBack callback) {
+        final String BASE_URL_PLUS_SUFFIX = BASE_URL + "API/student/upload_profile_photo.php";
 
-    // Interface for the entry-exit list callback
+        // Convert the image file to a Base64 string
+        // Create a VolleyMultipartRequest
+        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, BASE_URL_PLUS_SUFFIX, response -> {
+            Log.d("Upload Response", new String(response.data));
+
+        }, error -> {
+            Log.e("Upload Error", error.toString());
+        }) {
+            @Override
+            protected Map<String, DataPart> getByteData() {
+                Map<String, DataPart> params = new HashMap<>();
+                params.put("image", new DataPart(imageFile.getName(), getFileData(imageFile)));
+                return params;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("scholar_no", scholarNo);
+                return params;
+            }
+        };
+        mQueue.add(multipartRequest);
+    }
+
+    private static byte[] getFileData(File file) {
+        byte[] data = null;
+        try (FileInputStream fis = new FileInputStream(file)) {
+            data = new byte[(int) file.length()];
+            fis.read(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return data;
+    }
+
     public interface Callback {
         void onResponse(String result);
 
         void onErrorResponse(VolleyError error);
     }
 
-    // Interface for the student info callback
     public interface StudentCallback {
         void onStudentInfoReceived(StudentInfo student);
 
@@ -349,6 +410,14 @@ public class MariaDBConnection {
         void networkError();
     }
 
+    public interface PhotoUploadCallBack {
+        void onAddedSuccess(String scholarNo);
+
+        void onError(String message);
+
+        void networkError();
+    }
+
     public interface CloseEntryCallback {
         void onSuccess(String response);
 
@@ -357,6 +426,7 @@ public class MariaDBConnection {
 
     public interface TablesStatusCallback {
         void onSuccess(ArrayList<HostelTable> table);
+
         void onError(String error);
     }
 

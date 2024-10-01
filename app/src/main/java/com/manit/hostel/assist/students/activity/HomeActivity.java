@@ -45,40 +45,8 @@ public class HomeActivity extends AppCompatActivity {
         addClickLogic();
         updateStudentDetails();
         setupPlacesAdapter();
-        checkStatusOfStudent();
     }
 
-    private void checkStatusOfStudent() {
-        dbConnection.getStudentStatus(loggedInStudent.getScholarNo(), new MariaDBConnection.StatusCallback() {
-            @Override
-            public void outsideHostel(EntryDetail entryDetail) {
-                openSlipActivity(entryDetail);
-            }
-
-            @Override
-            public void onError(String message) {
-
-            }
-
-            @Override
-            public void networkError() {
-
-            }
-
-            @Override
-            public void insideHostel(String message) {
-
-            }
-        });
-
-    }
-
-    private void openSlipActivity(EntryDetail entryDetail) {
-        Intent intent = new Intent(this, EntryExitSlipActivityActivity.class);
-        startActivity(intent);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        finish();
-    }
 
     private void updateStudentDetails() {
         dbConnection.fetchStudentInfo(loggedInStudent.getScholarNo(), new MariaDBConnection.StudentCallback() {
@@ -165,6 +133,17 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(new Intent(this, SettingsActivity.class));
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
+        lb.latestSlip.setOnClickListener(v -> {
+            try {
+                AppPref.getLastEntryDetails(HomeActivity.this);
+                Intent intent = new Intent(this, EntryExitSlipActivityActivity.class);
+                intent.putExtra("LATEST", "true");
+                startActivity(intent);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            } catch (Exception e) {
+                Toast.makeText(this, "No entry saved", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void updateInfo(StudentInfo studentInfo) {
@@ -180,5 +159,39 @@ public class HomeActivity extends AppCompatActivity {
         Glide.with(this).load(studentInfo.getPhotoUrl()) // Assuming `photoUrl` is a valid URL or local URI
                 .placeholder(R.drawable.img) // Optional placeholder
                 .into(lb.studentPhoto);
+    }
+
+    private void checkStatusOfStudent() {
+        dbConnection.getStudentStatus(loggedInStudent.getScholarNo(), new MariaDBConnection.StatusCallback() {
+            @Override
+            public void outsideHostel(EntryDetail entryDetail) {
+                openSlipActivity(entryDetail);
+            }
+
+            @Override
+            public void onError(String message) {
+
+            }
+
+            @Override
+            public void networkError() {
+
+            }
+
+            @Override
+            public void insideHostel(String message) {
+                startActivity(new Intent(HomeActivity.this, HomeActivity.class));
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                Log.d(LoginActivity.class.getSimpleName(), "Logged in student: " + loggedInStudent);
+                finish();
+            }
+        });
+    }
+
+    private void openSlipActivity(EntryDetail entryDetail) {
+        Intent intent = new Intent(this, EntryExitSlipActivityActivity.class);
+        startActivity(intent);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        finish();
     }
 }

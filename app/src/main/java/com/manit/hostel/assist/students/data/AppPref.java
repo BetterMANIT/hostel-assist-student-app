@@ -4,6 +4,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
 
+import com.manit.hostel.assist.students.activity.EntryExitSlipActivityActivity;
 import com.manit.hostel.assist.students.activity.HomeActivity;
 import com.manit.hostel.assist.students.activity.LoginActivity;
 import com.manit.hostel.assist.students.activity.SettingsActivity;
@@ -57,5 +58,12 @@ public class AppPref {
 
     public static String getCurrentPlaceWent(Activity activity) {
         return activity.getSharedPreferences(APREF, MODE_PRIVATE).getString(PLACE_WENT, "");
+    }
+
+    public static void saveLastEntryDetails(Activity activity, EntryDetail entryDetail) throws JSONException {
+        activity.getSharedPreferences(APREF, MODE_PRIVATE).edit().putString("entry_details", entryDetail.getJSON()).apply();
+    }
+    public static EntryDetail getLastEntryDetails(Activity activity) throws JSONException {
+        return EntryDetail.fromJSON(activity.getSharedPreferences(APREF, MODE_PRIVATE).getString("entry_details", ""));
     }
 }

@@ -105,4 +105,8 @@ public class StudentInfo {
     public void setGuardianNo(String guardianNo) {
         this.guardianNo = guardianNo;
     }
+
+    public void setPhotoUrl(String s) {
+        this.photoUrl = s;
+    }
 }

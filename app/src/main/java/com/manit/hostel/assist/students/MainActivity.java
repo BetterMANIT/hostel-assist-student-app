@@ -1,9 +1,14 @@
 package com.manit.hostel.assist.students;
 
 import android.Manifest;
-import android.content.ActivityNotFoundException;
+import android.app.Activity;
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -12,6 +17,7 @@ import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
@@ -27,14 +33,23 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 
+import com.manit.hostel.assist.students.activity.EntryExitSlipActivityActivity;
+import com.manit.hostel.assist.students.activity.HomeActivity;
 import com.manit.hostel.assist.students.activity.LoginActivity;
+import com.manit.hostel.assist.students.data.AppPref;
+import com.manit.hostel.assist.students.data.EntryDetail;
+import com.manit.hostel.assist.students.data.StudentInfo;
 import com.manit.hostel.assist.students.database.MariaDBConnection;
+import com.manit.hostel.assist.students.utils.UpdateDownloader;
 import com.manit.hostel.assist.students.utils.Utility;
 import com.onesignal.OneSignal;
 import com.permissionx.guolindev.PermissionX;
 import com.permissionx.guolindev.callback.RequestCallback;
 
+import java.io.File;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout splash;
     boolean isComingBack = false;
     final Handler wifiScannerHandler = new Handler();
+    StudentInfo loggedInStudent;
 
     MariaDBConnection dbConnection;
 
@@ -82,16 +98,15 @@ public class MainActivity extends AppCompatActivity {
                 if (b) {
                     showUpdateDialog(link);
                 } else {
-                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                    finish();
+                    checkForStudentOut();
                 }
             }
 
             @Override
             public void onError(String message) {
-                if(message != null) Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                finish();
+                if (message != null)
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                checkForStudentOut();
             }
 
             @Override
@@ -101,17 +116,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void showUpdateDialog(String url) {
-        Toast.makeText(getApplicationContext(), "Update Availabel", Toast.LENGTH_SHORT).show();
-        Toast.makeText(getApplicationContext(), "Please install this downloading apk", Toast.LENGTH_SHORT).show();
-        try {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            intent.setPackage("com.android.chrome");  // Force the intent to open in Chrome
-            startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            // Chrome is not installed, so open with default browser
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            startActivity(intent);
+    private void checkForStudentOut() {
+        loggedInStudent = AppPref.getLoggedInStudent(this);
+        if (loggedInStudent == null) {
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            finish();
+        } else {
+            checkStatusOfStudent();
         }
     }
 
@@ -281,5 +292,59 @@ public class MainActivity extends AppCompatActivity {
         });
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    private void checkStatusOfStudent() {
+        dbConnection.getStudentStatus(loggedInStudent.getScholarNo(), new MariaDBConnection.StatusCallback() {
+            @Override
+            public void outsideHostel(EntryDetail entryDetail) {
+                openSlipActivity(entryDetail);
+            }
+
+            @Override
+            public void onError(String message) {
+
+            }
+
+            @Override
+            public void networkError() {
+
+            }
+
+            @Override
+            public void insideHostel(String message) {
+                startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                Log.d(LoginActivity.class.getSimpleName(), "Logged in student: " + loggedInStudent);
+                finish();
+            }
+        });
+    }
+
+    private void openSlipActivity(EntryDetail entryDetail) {
+        Intent intent = new Intent(this, EntryExitSlipActivityActivity.class);
+        startActivity(intent);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        finish();
+    }
+
+
+    private void showUpdateDialog(String link) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Update Available")
+                .setMessage("A new version is available. Do you want to update?")
+                .setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        downloadApk(link);
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void downloadApk(String link) {; // Replace with your APK URL
+        UpdateDownloader customDownloader = new UpdateDownloader(this, link);
+        customDownloader.startDownload();
     }
 }

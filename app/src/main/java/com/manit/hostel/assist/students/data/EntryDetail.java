@@ -1,5 +1,8 @@
 package com.manit.hostel.assist.students.data;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class EntryDetail {
     private String id;
     private String scholarNo;
@@ -107,4 +110,26 @@ public class EntryDetail {
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public String getJSON() throws JSONException {
+        // Implement this method to convert the object to a JSON string using JSONObject
+        JSONObject entry = new JSONObject();
+        entry.put("id", id);
+        entry.put("scholarNo", scholarNo);
+        entry.put("name", name);
+        entry.put("roomNo", roomNo);
+        entry.put("photoUrl", photoUrl);
+        entry.put("phoneNo", phoneNo);
+        entry.put("section", section);
+        entry.put("openTime", openTime);
+        entry.put("closeTime", closeTime);
+        entry.put("updatedAt", updatedAt);
+        return entry.toString();
+    }
+
+    public static EntryDetail fromJSON(String json) throws JSONException {
+        JSONObject entry = new JSONObject(json);
+        return new EntryDetail(entry.getString("id"), entry.getString("scholarNo"), entry.getString("name"),entry.getString("roomNo"),entry.getString("photoUrl"),entry.getString("phoneNo"),entry.getString("section"),entry.getString("openTime"),entry.getString("closeTime"),entry.getString("updatedAt"));
+    }
+
 }

@@ -193,12 +193,26 @@
         android:layout_margin="10dp"
         android:backgroundTint="#C30859"
         android:padding="10dp"
-        android:enabled="false"
         android:text="Exit"
         android:textColor="?attr/colorOnPrimary"
         android:textSize="18sp"
         app:elevation="4dp"
         app:icon="@drawable/logout_24dp_5f6368_fill0_wght400_grad0_opsz24"
+        app:iconGravity="textStart"
+        app:iconTint="@color/white" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/latestSlip"
+        style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:layout_margin="10dp"
+        android:backgroundTint="#7508C3"
+        android:padding="10dp"
+        android:text="View Last Slip"
+        android:textColor="?attr/colorOnPrimary"
+        android:textSize="18sp"
+        app:elevation="4dp"
+        app:icon="@drawable/history_24dp_5f6368_fill0_wght400_grad0_opsz24"
         app:iconGravity="textStart"
         app:iconTint="@color/white" />
 

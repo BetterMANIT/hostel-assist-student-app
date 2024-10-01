@@ -10,8 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.manit.hostel.assist.students.R;
 import com.manit.hostel.assist.students.data.AppPref;
+import com.manit.hostel.assist.students.data.EntryDetail;
 import com.manit.hostel.assist.students.data.StudentInfo;
 import com.manit.hostel.assist.students.database.MariaDBConnection;
 import com.manit.hostel.assist.students.databinding.ActivityLoginBinding;
@@ -21,6 +21,7 @@ public class LoginActivity extends AppCompatActivity {
     @NonNull
     ActivityLoginBinding lb;
     MariaDBConnection dbConnection;
+    StudentInfo loggedInStudent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,13 +30,12 @@ public class LoginActivity extends AppCompatActivity {
         dbConnection = new MariaDBConnection(this);
         lb = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(lb.getRoot());
-        if (AppPref.getLoggedInStudent(this) == null) {
+
+        loggedInStudent = AppPref.getLoggedInStudent(this);
+        if (loggedInStudent == null) {
             setScholarNoEnteringView();
         } else {
-            startActivity(new Intent(this, HomeActivity.class));
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-            Log.d(LoginActivity.class.getSimpleName(), "Logged in student: " + AppPref.getLoggedInStudent(this));
-            finish();
+            checkStatusOfStudent();
         }
     }
 
@@ -56,6 +56,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onError(String error) {
                         Toast.makeText(LoginActivity.this, error, Toast.LENGTH_SHORT).show();
                     }
+
                     @Override
                     public void networkError() {
                         Utility.showNoInternetDialog(LoginActivity.this);
@@ -121,5 +122,39 @@ public class LoginActivity extends AppCompatActivity {
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             finish();
         }
+    }
+
+    private void checkStatusOfStudent() {
+        dbConnection.getStudentStatus(loggedInStudent.getScholarNo(), new MariaDBConnection.StatusCallback() {
+            @Override
+            public void outsideHostel(EntryDetail entryDetail) {
+                openSlipActivity(entryDetail);
+            }
+
+            @Override
+            public void onError(String message) {
+
+            }
+
+            @Override
+            public void networkError() {
+
+            }
+
+            @Override
+            public void insideHostel(String message) {
+                startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                Log.d(LoginActivity.class.getSimpleName(), "Logged in student: " + loggedInStudent);
+                finish();
+            }
+        });
+    }
+
+    private void openSlipActivity(EntryDetail entryDetail) {
+        Intent intent = new Intent(this, EntryExitSlipActivityActivity.class);
+        startActivity(intent);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        finish();
     }
 }

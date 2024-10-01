@@ -1,6 +1,7 @@
 package com.manit.hostel.assist.students.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +19,9 @@ import com.manit.hostel.assist.students.data.EntryDetail;
 import com.manit.hostel.assist.students.data.StudentInfo;
 import com.manit.hostel.assist.students.database.MariaDBConnection;
 import com.manit.hostel.assist.students.databinding.ActivityEntryExitSlipBinding;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class EntryExitSlipActivityActivity extends AppCompatActivity {
     @NonNull
@@ -49,9 +53,8 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
         dbConnection.getStudentStatus(loggedInStudent.getScholarNo(), new MariaDBConnection.StatusCallback() {
             @Override
             public void outsideHostel(EntryDetail entryDetail) {
+                save(entryDetail);
                 fillDetails(entryDetail);
-                Animation watermarkAnimation = AnimationUtils.loadAnimation(EntryExitSlipActivityActivity.this, R.anim.watermark_animation);
-                lb.watermark.startAnimation(watermarkAnimation);
             }
 
             @Override
@@ -66,10 +69,29 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
 
             @Override
             public void insideHostel(String message) {
-                startActivity(new Intent(EntryExitSlipActivityActivity.this, HomeActivity.class));
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                if(!getIntent().hasExtra("LATEST")){
+                    startActivity(new Intent(EntryExitSlipActivityActivity.this, HomeActivity.class));
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                }else{
+                    Log.d(EntryExitSlipActivityActivity.class.getSimpleName(), "fetching latest slip ");
+                    try {
+                        EntryDetail entryDetail = AppPref.getLastEntryDetails(EntryExitSlipActivityActivity.this);
+                        fillDetails(entryDetail);
+                        enteredAgainUI(entryDetail);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         });
+    }
+
+    private void save(EntryDetail entryDetail) {
+        try {
+            AppPref.saveLastEntryDetails(EntryExitSlipActivityActivity.this, entryDetail);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void fillDetails(EntryDetail entryDetail) {
@@ -93,13 +115,13 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
         lb.scholarNo.setText(entryDetail.getScholarNo());
         lb.watermark.setText(entryDetail.getOpenTime());
         lb.mobileNo.setText("Mobile: " + loggedInStudent.getPhoneNo());
-        lb.mobileNo.setText("Mobile: " + loggedInStudent.getPhoneNo());
         lb.slipframe.setVisibility(View.VISIBLE);
         lb.slipframe.setAlpha(0f);
         lb.slipframe.animate().alpha(1f).setDuration(500).start();
         lb.slipframe.setTranslationY(500);
         lb.slipframe.animate().translationY(0).setDuration(500).start();
-
+        Animation watermarkAnimation = AnimationUtils.loadAnimation(EntryExitSlipActivityActivity.this, R.anim.watermark_animation);
+        lb.watermark.startAnimation(watermarkAnimation);
         // Assuming you're using a URL for the photo and have an image loading library like Glide or Picasso
         Glide.with(this).load(loggedInStudent.getPhotoUrl()).placeholder(R.drawable.img) // Add a placeholder image in case the URL is null or slow to load
                 .into(lb.stuPic); // The ImageView bound by LayoutBinding
@@ -108,8 +130,14 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
             dbConnection.closeEntryStudent(loggedInStudent.getScholarNo(), new MariaDBConnection.CloseEntryCallback() {
                 @Override
                 public void onSuccess(String response) {
-                    startActivity(new Intent(EntryExitSlipActivityActivity.this, HomeActivity.class));
-                    finish();
+                    // show time in hh:mm:ss format
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        entryDetail.setCloseTime(jsonObject.getString("close_time"));
+                        enteredAgainUI(entryDetail);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 @Override
@@ -118,6 +146,15 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
                 }
             });
         });
+    }
+
+    private void enteredAgainUI(EntryDetail entryDetail) {
+        lb.entryTime.setText(entryDetail.getCloseTime().split(" ")[1]);
+        lb.enterAgain.setText("Show Above to Guard");
+        Toast.makeText(EntryExitSlipActivityActivity.this, "Entry Closed", Toast.LENGTH_SHORT).show();
+        lb.watermark.setText("Entered back");
+        lb.watermark.setTextColor(Color.GREEN);
+        lb.imgBorder.setCardBackgroundColor(Color.green(Color.GREEN));
     }
 
 }
