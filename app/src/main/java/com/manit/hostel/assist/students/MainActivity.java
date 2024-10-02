@@ -45,7 +45,9 @@ import com.manit.hostel.assist.students.data.StudentInfo;
 import com.manit.hostel.assist.students.database.MariaDBConnection;
 import com.manit.hostel.assist.students.utils.UpdateDownloader;
 import com.manit.hostel.assist.students.utils.Utility;
+import com.onesignal.Continue;
 import com.onesignal.OneSignal;
+import com.onesignal.debug.LogLevel;
 import com.permissionx.guolindev.PermissionX;
 import com.permissionx.guolindev.callback.RequestCallback;
 
@@ -72,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         webview = findViewById(R.id.webview);
         splash = findViewById(R.id.splash);
+        OneSignal.getDebug().setLogLevel(LogLevel.VERBOSE);
+        OneSignal.initWithContext(this, "fcbc265e-5f69-4b52-8df2-7ccbf5940739");
+        OneSignal.getNotifications().requestPermission(false, Continue.none());
         dbConnection = new MariaDBConnection(this);
         splash.post(() -> {
             if (!isInternetAvailable(this)) {

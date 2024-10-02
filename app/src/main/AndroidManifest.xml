@@ -21,7 +21,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".ManitApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -58,7 +57,7 @@
             android:exported="false" />
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <meta-data
             android:name="preloaded_fonts"
