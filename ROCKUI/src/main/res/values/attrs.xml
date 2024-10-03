@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="GradientLayout">
+        <attr name="gradientStart" format="color" />
+        <attr name="gradientMiddle" format="color" />
+        <attr name="gradientEnd" format="color" />
+        <attr name="cornerRadius" format="dimension" />
+        <attr name="animDuration" format="integer" />
+
+    </declare-styleable>
+</resources>

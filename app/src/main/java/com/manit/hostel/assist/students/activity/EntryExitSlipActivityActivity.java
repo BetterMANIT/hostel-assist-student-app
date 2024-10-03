@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
@@ -33,12 +34,16 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dbConnection = new MariaDBConnection(this);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         lb = ActivityEntryExitSlipBinding.inflate(getLayoutInflater());
         setContentView(lb.getRoot());
         loggedInStudent = AppPref.getLoggedInStudent(this);
         lb.slipframe.setVisibility(View.GONE);
-        lb.heading.setTranslationY(-500);
-        lb.heading.animate().translationY(0).setDuration(1000).start();
+        lb.infoLayout.setVisibility(View.GONE);
+        lb.timeLayout.setVisibility(View.GONE);
+        lb.infoLayout.setAlpha(0);
+        lb.timeLayout.setAlpha(0);
+        lb.enterAgain.setVisibility(View.GONE);
         if (loggedInStudent != null) {
             showDetails();
         } else {
@@ -69,10 +74,10 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
 
             @Override
             public void insideHostel(String message) {
-                if(!getIntent().hasExtra("LATEST")){
+                if (!getIntent().hasExtra("LATEST")) {
                     startActivity(new Intent(EntryExitSlipActivityActivity.this, HomeActivity.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                }else{
+                } else {
                     Log.d(EntryExitSlipActivityActivity.class.getSimpleName(), "fetching latest slip ");
                     try {
                         EntryDetail entryDetail = AppPref.getLastEntryDetails(EntryExitSlipActivityActivity.this);
@@ -97,11 +102,11 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
     private void fillDetails(EntryDetail entryDetail) {
         // Assuming lb is already initialized in onCreate or elsewhere
         lb.studentName.setText(entryDetail.getName());
-        lb.title.setText(AppPref.getCurrentPlaceWent(this) + " Exit Slip");
-        lb.entryNo.setText("Entry No: " + entryDetail.getId());
-        lb.roomNo.setText("Room: " + entryDetail.getRoomNo());
+        lb.title.setText(String.format("%s Exit Slip", AppPref.getCurrentPlaceWent(this)));
+        lb.entryNo.setText(String.format("Entry No: %s", entryDetail.getId()));
+        lb.roomNo.setText(String.format("Room: %s", entryDetail.getRoomNo()));
         try {
-            lb.date.setText("Date: " + entryDetail.getOpenTime().split(" ")[0]); // Assuming date comes as part of openTime
+            lb.date.setText(String.format("Date: %s", entryDetail.getOpenTime().split(" ")[0])); // Assuming date comes as part of openTime
             lb.exitTime.setText(entryDetail.getOpenTime().split(" ")[1]); // Time part from openTime
             if (entryDetail.getCloseTime() != null) {
                 lb.entryTime.setText(entryDetail.getCloseTime().split(" ")[1]);
@@ -114,17 +119,10 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
         }
         lb.scholarNo.setText(entryDetail.getScholarNo());
         lb.watermark.setText(entryDetail.getOpenTime());
-        lb.mobileNo.setText("Mobile: " + loggedInStudent.getPhoneNo());
-        lb.slipframe.setVisibility(View.VISIBLE);
-        lb.slipframe.setAlpha(0f);
-        lb.slipframe.animate().alpha(1f).setDuration(500).start();
-        lb.slipframe.setTranslationY(500);
-        lb.slipframe.animate().translationY(0).setDuration(500).start();
-        Animation watermarkAnimation = AnimationUtils.loadAnimation(EntryExitSlipActivityActivity.this, R.anim.watermark_animation);
-        lb.watermark.startAnimation(watermarkAnimation);
-        // Assuming you're using a URL for the photo and have an image loading library like Glide or Picasso
-        Glide.with(this).load(loggedInStudent.getPhotoUrl()).placeholder(R.drawable.img) // Add a placeholder image in case the URL is null or slow to load
-                .into(lb.stuPic); // The ImageView bound by LayoutBinding
+        lb.mobileNo.setText(String.format("Mobile: %s", loggedInStudent.getPhoneNo()));
+
+        doUiAnim();
+        Glide.with(this).load(loggedInStudent.getPhotoUrl()).placeholder(R.drawable.img).into(lb.stuPic);
 
         lb.enterAgain.setOnClickListener(v -> {
             dbConnection.closeEntryStudent(loggedInStudent.getScholarNo(), new MariaDBConnection.CloseEntryCallback() {
@@ -148,8 +146,36 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
         });
     }
 
+    private void doUiAnim() {
+
+        lb.infoLayout.setVisibility(View.GONE);
+        lb.timeLayout.setVisibility(View.GONE);
+        lb.infoLayout.setAlpha(0);
+        lb.timeLayout.setAlpha(0);
+        lb.enterAgain.setVisibility(View.GONE);
+        lb.slipframe.setVisibility(View.VISIBLE);
+        lb.cardView.post(() -> lb.cardView.setupGradient());
+        lb.cardView.setTranslationY(-500);
+        lb.cardView.animate().translationY(-50).setDuration(500).start();
+        lb.cardView.postDelayed(() -> {
+            lb.infoLayout.setVisibility(View.VISIBLE);
+            lb.timeLayout.setVisibility(View.VISIBLE);
+            lb.timeLayout.animate().alpha(1).setDuration(300).start();
+            lb.infoLayout.animate().alpha(1).setDuration(300).start();
+            lb.enterAgain.setVisibility(View.VISIBLE);
+        }, 700);
+
+
+        Animation watermarkAnimation = AnimationUtils.loadAnimation(EntryExitSlipActivityActivity.this, R.anim.watermark_animation);
+        lb.watermark.startAnimation(watermarkAnimation);
+    }
+
     private void enteredAgainUI(EntryDetail entryDetail) {
-        lb.entryTime.setText(entryDetail.getCloseTime().split(" ")[1]);
+        try {
+            lb.entryTime.setText(entryDetail.getCloseTime().split(" ")[1]);
+        } catch (Exception e) {
+            lb.entryTime.setText("-----");
+        }
         lb.enterAgain.setText("Show Above to Guard");
         Toast.makeText(EntryExitSlipActivityActivity.this, "Entry Closed", Toast.LENGTH_SHORT).show();
         lb.watermark.setText("Entered back");

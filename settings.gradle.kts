@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "MANIT-Hostel-Assist-students"
 include(":app")
+include(":ROCKUI")

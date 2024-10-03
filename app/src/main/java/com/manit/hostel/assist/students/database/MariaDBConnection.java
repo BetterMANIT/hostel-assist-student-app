@@ -41,14 +41,12 @@ public class MariaDBConnection {
         this.mAppCompatActivity = mAppCompatActivity;
     }
 
-    // Fetch entry/exit list method
     public void fetchEntryExitList(Callback callback) {
         String url = BASE_URL + "/API/fetch_latest_entries.php";
         StringRequest mStringRequest = new StringRequest(Request.Method.GET, url, response -> callback.onResponse(response), error -> callback.onErrorResponse(error));
         mQueue.add(mStringRequest);
     }
 
-    // Fetch student info by scholar number
     public void fetchStudentInfo(String scholarNo, StudentCallback callback) {
         String url = BASE_URL + "/API/get_student_info.php?scholar_no=" + scholarNo;
         Log.d("URL", url);
@@ -259,7 +257,7 @@ public class MariaDBConnection {
         mQueue.add(jsonObjectRequest);
     }
 
-    public void openNewEntry(StudentInfo studentInfo, String table, AddNewEntryCallback callback) {
+    public void openNewEntry(StudentInfo studentInfo, HostelTable table, AddNewEntryCallback callback) {
         final String BASE_URL_PLUS_SUFFIX = BASE_URL + "API/open_new_entry.php";
 
         final StringRequest mStringRequest = new StringRequest(Request.Method.POST, BASE_URL_PLUS_SUFFIX, response -> {
@@ -279,7 +277,8 @@ public class MariaDBConnection {
                 params.put("room_no", studentInfo.getRoomNo());
                 params.put("photo_url", studentInfo.getPhotoUrl());
                 params.put("phone_no", studentInfo.getPhoneNo());
-                params.put("table_name", table);
+                params.put("table_name", table.getTableName());
+                params.put("purpose", table.getPurpose());
                 params.put("section", studentInfo.getSection());
                 params.put("hostel_name", studentInfo.getHostelName());
                 return params;

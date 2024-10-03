@@ -81,7 +81,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onSuccess(ArrayList<HostelTable> table) {
                 ArrayList<String> tableNames = new ArrayList<>();
                 for (HostelTable hostelTable : table) {
-                    tableNames.add(hostelTable.getCategoryName());
+                    tableNames.add(hostelTable.getPurpose());
                 }
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(HomeActivity.this, android.R.layout.simple_dropdown_item_1line, tableNames);
                 lb.placeSpinner.setAdapter(adapter);
@@ -92,7 +92,7 @@ public class HomeActivity extends AppCompatActivity {
                     lb.goout.setText("Exit for " + placeSelected);
                     lb.goout.setOnClickListener(v -> {
                         AppPref.setCurrentPlaceWent(HomeActivity.this, placeSelected);
-                        addNewEntry(table.get(position).getTableName());
+                        addNewEntry(table.get(position));
                     });
                 });
             }
@@ -106,8 +106,8 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
-    private void addNewEntry(String placeSelectedTable) {
-        dbConnection.openNewEntry(loggedInStudent, placeSelectedTable, new MariaDBConnection.AddNewEntryCallback() {
+    private void addNewEntry(HostelTable selectedTable) {
+        dbConnection.openNewEntry(loggedInStudent, selectedTable, new MariaDBConnection.AddNewEntryCallback() {
             @Override
             public void onAddedSuccess(String scholarNo) {
                 checkStatusOfStudent();
