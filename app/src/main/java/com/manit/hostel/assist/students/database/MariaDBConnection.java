@@ -4,6 +4,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class MariaDBConnection {
@@ -149,7 +151,7 @@ public class MariaDBConnection {
                         } else {
                             // Parse the 'data' object
                             JSONObject dataObject = response.getJSONObject("data");
-                            EntryDetail entryDetail = new EntryDetail(dataObject.getString("id"), dataObject.getString("scholar_no"), dataObject.getString("name"), dataObject.getString("room_no"), dataObject.getString("photo_url"), dataObject.getString("phone_no"), dataObject.getString("section"), dataObject.getString("open_time"), dataObject.optString("close_time"), dataObject.getString("updated_at"));
+                            EntryDetail entryDetail = getEntryDetail(dataObject);
                             // Student is outside the hostel
                             statusCallback.outsideHostel(entryDetail);
                         }
@@ -165,6 +167,52 @@ public class MariaDBConnection {
             mQueue.add(jsonObjectRequest);
         } else {
             statusCallback.onError("Scholar Number is required");
+        }
+    }
+
+    private static @NonNull EntryDetail getEntryDetail(JSONObject dataObject) throws JSONException {
+        EntryDetail entryDetail = new EntryDetail(dataObject.getString("id"), dataObject.getString("scholar_no"), dataObject.getString("name"), dataObject.getString("room_no"), dataObject.getString("photo_url"), dataObject.getString("phone_no"), dataObject.getString("section"), dataObject.getString("open_time"), dataObject.optString("close_time"), dataObject.getString("updated_at"), dataObject.getString("purpose"));
+        return entryDetail;
+    }
+
+    public void getStudentHistory(String scholarNo, HistoryCallback historyCallback) {
+        if (!scholarNo.isEmpty()) {
+            String url = BASE_URL + "API/get_history_of_entry_by_scholar_no.php?scholar_no=" + scholarNo;
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
+                try {
+                    Log.d("Response", response.toString());
+
+                    if (response.getString("status").equals("success")) {
+                        JSONObject data = response.getJSONObject("data");
+
+                        ArrayList<EntryDetail> entriesList = new ArrayList<>();
+                        Iterator<String> keys = data.keys();
+                        while (keys.hasNext()) {
+                            String tableName = keys.next();
+                            JSONArray entries = data.getJSONArray(tableName);
+
+                            for (int i = 0; i < entries.length(); i++) {
+                                JSONObject entry = entries.getJSONObject(i);
+                                EntryDetail entryDetail = getEntryDetail(entry);
+                                entriesList.add(entryDetail);
+                                Log.d("TAG", "Entry: " + entryDetail.getJSON());
+                            }
+                        }
+
+                        historyCallback.onSuccess(entriesList);
+                    } else {
+                        historyCallback.onError("Unexpected response from server.");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    historyCallback.onError(e.getMessage());
+                }
+            }, error -> historyCallback.onError(error.getMessage()));
+
+            mQueue.add(jsonObjectRequest);
+        } else {
+            historyCallback.onError("Scholar Number is required");
         }
     }
 
@@ -231,8 +279,7 @@ public class MariaDBConnection {
                 e.printStackTrace();
                 updateCallback.onError(e.getMessage());
             }
-        }, error -> updateCallback.onError(error.getMessage()))
-        {
+        }, error -> updateCallback.onError(error.getMessage())) {
             @Override
             public byte[] getBody() {
                 PackageInfo pInfo = null;
@@ -429,4 +476,9 @@ public class MariaDBConnection {
         void onError(String error);
     }
 
+    public interface HistoryCallback {
+        void onSuccess(ArrayList<EntryDetail> entries);
+
+        void onError(String error);
+    }
 }

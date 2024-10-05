@@ -13,10 +13,10 @@ public class EntryDetail {
     private String section;
     private String openTime;
     private String closeTime;
+    private String purpose;
     private String updatedAt;
 
-    public EntryDetail(String id, String scholarNo, String name, String roomNo, String photoUrl,
-                       String phoneNo, String section, String openTime, String closeTime, String updatedAt) {
+    public EntryDetail(String id, String scholarNo, String name, String roomNo, String photoUrl, String phoneNo, String section, String openTime, String closeTime, String updatedAt, String purpose) {
         this.id = id;
         this.scholarNo = scholarNo;
         this.name = name;
@@ -27,6 +27,7 @@ public class EntryDetail {
         this.openTime = openTime;
         this.closeTime = closeTime;
         this.updatedAt = updatedAt;
+        this.purpose = purpose;
     }
 
     // Getters
@@ -111,6 +112,14 @@ public class EntryDetail {
         this.updatedAt = updatedAt;
     }
 
+    public String getPurpose() {
+        return purpose;
+    }
+
+    public void setPurpose(String purpose) {
+        this.purpose = purpose;
+    }
+
     public String getJSON() throws JSONException {
         // Implement this method to convert the object to a JSON string using JSONObject
         JSONObject entry = new JSONObject();
@@ -122,6 +131,7 @@ public class EntryDetail {
         entry.put("phoneNo", phoneNo);
         entry.put("section", section);
         entry.put("openTime", openTime);
+        entry.put("purpose", purpose);
         entry.put("closeTime", closeTime);
         entry.put("updatedAt", updatedAt);
         return entry.toString();
@@ -129,7 +139,7 @@ public class EntryDetail {
 
     public static EntryDetail fromJSON(String json) throws JSONException {
         JSONObject entry = new JSONObject(json);
-        return new EntryDetail(entry.getString("id"), entry.getString("scholarNo"), entry.getString("name"),entry.getString("roomNo"),entry.getString("photoUrl"),entry.getString("phoneNo"),entry.getString("section"),entry.getString("openTime"),entry.getString("closeTime"),entry.getString("updatedAt"));
+        return new EntryDetail(entry.getString("id"), entry.getString("scholarNo"), entry.getString("name"), entry.getString("roomNo"), entry.getString("photoUrl"), entry.getString("phoneNo"), entry.getString("section"), entry.getString("openTime"), entry.getString("closeTime"), entry.getString("updatedAt"), entry.getString("purpose"));
     }
 
 }

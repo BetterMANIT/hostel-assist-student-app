@@ -9,9 +9,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.manit.hostel.assist.students.R;
+import com.manit.hostel.assist.students.adapter.EntryAdapter;
 import com.manit.hostel.assist.students.data.AppPref;
 import com.manit.hostel.assist.students.data.EntryDetail;
 import com.manit.hostel.assist.students.data.HostelTable;
@@ -45,6 +47,22 @@ public class HomeActivity extends AppCompatActivity {
         addClickLogic();
         updateStudentDetails();
         setupPlacesAdapter();
+        displayHistory();
+    }
+
+    private void displayHistory() {
+        dbConnection.getStudentHistory(loggedInStudent.getScholarNo(), new MariaDBConnection.HistoryCallback() {
+            @Override
+            public void onSuccess(ArrayList<EntryDetail> entries) {
+                lb.history.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                lb.history.setAdapter(new EntryAdapter(entries));
+            }
+
+            @Override
+            public void onError(String error) {
+
+            }
+        });
     }
 
 
@@ -93,6 +111,7 @@ public class HomeActivity extends AppCompatActivity {
                     lb.goout.setOnClickListener(v -> {
                         AppPref.setCurrentPlaceWent(HomeActivity.this, placeSelected);
                         addNewEntry(table.get(position));
+                        lb.goout.setEnabled(false);
                     });
                 });
             }
@@ -116,11 +135,14 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onError(String message) {
                 Toast.makeText(HomeActivity.this, message, Toast.LENGTH_SHORT).show();
+                lb.goout.setEnabled(true);
             }
 
             @Override
             public void networkError() {
                 Utility.showNoInternetDialog(HomeActivity.this);
+                lb.goout.setEnabled(true);
+                Toast.makeText(HomeActivity.this, "No Internet Connection", Toast.LENGTH_SHORT).show();
             }
         });
     }

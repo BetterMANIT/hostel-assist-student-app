@@ -5,6 +5,7 @@ public class Entries {
     private String roomNo;
     private String scholarNo;
     private String exitTime;
+    private String purpose;
     private String entryTime;
 
     // Constructor
@@ -73,5 +74,13 @@ public class Entries {
 
     public void setEntryTime(String entryTime) {
         this.entryTime = entryTime;
+    }
+
+    public String getPurpose() {
+        return purpose;
+    }
+
+    public void setPurpose(String purpose) {
+        this.purpose = purpose;
     }
 }
