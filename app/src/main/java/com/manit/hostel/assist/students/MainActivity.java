@@ -127,9 +127,11 @@ public class MainActivity extends AppCompatActivity {
     private void checkForStudentOut() {
         loggedInStudent = AppPref.getLoggedInStudent(this);
         if (loggedInStudent == null) {
+
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
             finish();
         } else {
+            setupOneSignal();
             checkStatusOfStudent();
         }
     }
@@ -193,8 +195,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void setupOneSignal() {
-        String externalId = "241100112233"; // You will supply the external id to the OneSignal SDK
-        OneSignal.login(externalId);
+        OneSignal.login(loggedInStudent.getScholarNo());
     }
 
     private void loadWebview() {
@@ -335,7 +336,6 @@ public class MainActivity extends AppCompatActivity {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         finish();
     }
-
 
     private void showUpdateDialog(String link) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

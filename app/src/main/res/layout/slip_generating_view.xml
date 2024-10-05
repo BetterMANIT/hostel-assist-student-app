@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:ignore="UseAppTint">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        android:fontFamily="@font/fredoka"
+        android:text="@string/generating_exit_slip"
+        android:textColor="#3E3E3E"
+        android:textFontWeight="1000"
+        android:textSize="22sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/history_24dp_5f6368_fill0_wght400_grad0_opsz24"
+            android:tint="@color/color1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:fontFamily="@font/fredoka"
+            android:text="Once generated you cannot enter again within 15 minutes"
+            android:textColor="#3E3E3E"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/person_check_24dp_5f6368_fill1_wght400_grad0_opsz24"
+            android:tint="@color/color1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:fontFamily="@font/fredoka"
+            android:text="Show the generated slip to guard"
+            android:textColor="#3E3E3E"
+            android:textSize="15sp" />
+    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:id="@+id/textViewGeneratingSlip"
+        android:fontFamily="@font/fredoka"
+        android:layout_marginTop="10dp"
+        android:text="Generating in 00:05"
+        android:translationY="8dp"
+        android:textColor="#3E3E3E"
+        android:textSize="12sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
+
+        <LinearLayout
+            android:id="@+id/progress_track"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_bg"
+            android:backgroundTint="#EBFFEB"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/progress_bar"
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:background="@drawable/rounded_bg"
+                android:backgroundTint="#E205A014"
+                android:orientation="horizontal">
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/cancelButton"
+            android:layout_marginLeft="10dp"
+            app:cornerRadius="10dp"
+            android:fontFamily="@font/fredoka"
+            app:strokeColor="#ff0000"
+            android:textColor="#ff0000"
+            app:strokeWidth="1dp"
+            app:shapeAppearance="@style/Widget.Material3.Button.OutlinedButton"
+            android:text="Cancel">
+
+        </com.google.android.material.button.MaterialButton>
+    </LinearLayout>
+
+
+</LinearLayout>

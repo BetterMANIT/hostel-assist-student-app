@@ -20,6 +20,7 @@ import com.manit.hostel.assist.students.data.HostelTable;
 import com.manit.hostel.assist.students.data.StudentInfo;
 import com.manit.hostel.assist.students.database.MariaDBConnection;
 import com.manit.hostel.assist.students.databinding.ActivityHomeBinding;
+import com.manit.hostel.assist.students.utils.SlipBottomSheet;
 import com.manit.hostel.assist.students.utils.Utility;
 
 import java.util.ArrayList;
@@ -110,7 +111,7 @@ public class HomeActivity extends AppCompatActivity {
                     lb.goout.setText("Exit for " + placeSelected);
                     lb.goout.setOnClickListener(v -> {
                         AppPref.setCurrentPlaceWent(HomeActivity.this, placeSelected);
-                        addNewEntry(table.get(position));
+                        showGeneratingSlipDialog(table, position);
                         lb.goout.setEnabled(false);
                     });
                 });
@@ -121,6 +122,23 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    private void showGeneratingSlipDialog(ArrayList<HostelTable> table, int position) {
+        lb.goout.setEnabled(false);
+        SlipBottomSheet slipBottomSheet = new SlipBottomSheet(this,table.get(position), new SlipBottomSheet.SlipListener() {
+            @Override
+            public void onSlipGenerated() {
+                addNewEntry(table.get(position));
+            }
+
+            @Override
+            public void onSlipCancelled() {
+                lb.goout.setEnabled(true);
+            }
+        });
+        slipBottomSheet.show();
 
     }
 
