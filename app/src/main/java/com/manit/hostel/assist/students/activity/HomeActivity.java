@@ -21,6 +21,7 @@ import com.manit.hostel.assist.students.data.StudentInfo;
 import com.manit.hostel.assist.students.database.MariaDBConnection;
 import com.manit.hostel.assist.students.databinding.ActivityHomeBinding;
 import com.manit.hostel.assist.students.utils.Utility;
+import com.onesignal.OneSignal;
 
 import java.util.ArrayList;
 
@@ -40,6 +41,7 @@ public class HomeActivity extends AppCompatActivity {
         loggedInStudent = AppPref.getLoggedInStudent(this);
         if (loggedInStudent != null) {
             updateInfo(loggedInStudent);
+            OneSignal.login(loggedInStudent.getScholarNo());
         } else {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
