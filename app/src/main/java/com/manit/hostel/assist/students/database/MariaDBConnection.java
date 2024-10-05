@@ -13,6 +13,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.manit.hostel.assist.students.data.EntryDetail;
 import com.manit.hostel.assist.students.data.HostelTable;
 import com.manit.hostel.assist.students.data.StudentInfo;
@@ -32,7 +33,9 @@ import java.util.Map;
 
 public class MariaDBConnection {
 
-    private static final String BASE_URL = "http:/4.186.57.254/";
+
+    private String BASE_URL;
+    private final FirebaseRemoteConfig mFirebaseRemoteConfig;
 
 
     private RequestQueue mQueue;
@@ -40,7 +43,9 @@ public class MariaDBConnection {
 
     public MariaDBConnection(AppCompatActivity mAppCompatActivity) {
         mQueue = Volley.newRequestQueue(mAppCompatActivity);
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         this.mAppCompatActivity = mAppCompatActivity;
+        BASE_URL = mFirebaseRemoteConfig.getString("BASE_URL");
     }
 
     public void fetchEntryExitList(Callback callback) {

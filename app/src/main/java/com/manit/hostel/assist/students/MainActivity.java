@@ -1,23 +1,15 @@
 package com.manit.hostel.assist.students;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.DownloadManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.net.wifi.ScanResult;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
@@ -33,9 +25,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.FileProvider;
 
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.manit.hostel.assist.students.activity.EntryExitSlipActivityActivity;
 import com.manit.hostel.assist.students.activity.HomeActivity;
 import com.manit.hostel.assist.students.activity.LoginActivity;
@@ -49,13 +41,12 @@ import com.onesignal.OneSignal;
 import com.permissionx.guolindev.PermissionX;
 import com.permissionx.guolindev.callback.RequestCallback;
 
-import java.io.File;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String URL = "http://4.186.57.254/for-app";
-    private String HOSTEL_WIFI_MAC_ADDRESS = "80:c5:f2:7b:ff:29";
+    public static final String URL = "not a web app";
+    private String HOSTEL_WIFI_MAC_ADDRESS = "00:00:00:00";
     private boolean allowInVicinity = true;
     private boolean isPresentAtGate = false;
     private WebView webview;
@@ -66,20 +57,18 @@ public class MainActivity extends AppCompatActivity {
 
     MariaDBConnection dbConnection;
 
+    FirebaseRemoteConfig mFirebaseRemoteConfig;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         webview = findViewById(R.id.webview);
         splash = findViewById(R.id.splash);
-        dbConnection = new MariaDBConnection(this);
-        splash.post(() -> {
-            if (!isInternetAvailable(this)) {
-                showNoInternetDialog(this);
-            } else {
-                checkForLatestVersion();
-            }
-        });
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder().setMinimumFetchIntervalInSeconds(36000).build();
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+        fetchRemoteConfig();
         /*  requestPermissions();
         Log.d(MainActivity.class.getSimpleName(), "Wifi Name list : " + new WifiScanner(this).getWifiList(this).toString());
         if (isLocationEnabled()) {
@@ -89,6 +78,25 @@ public class MainActivity extends AppCompatActivity {
             promptEnableLocation();
         }
         setupOneSignal();*/
+    }
+
+    private void fetchRemoteConfig() {
+        mFirebaseRemoteConfig.fetchAndActivate().addOnCompleteListener(this, task -> {
+            if (task.isSuccessful()) {
+                String BASE_URL = mFirebaseRemoteConfig.getString("BASE_URL");
+                Log.d(MainActivity.class.getSimpleName(), "BASE_URL: " + BASE_URL);
+                dbConnection = new MariaDBConnection(this);
+                splash.post(() -> {
+                    if (!isInternetAvailable(this)) {
+                        showNoInternetDialog(this);
+                    } else {
+                        checkForLatestVersion();
+                    }
+                });
+            } else {
+                Utility.showNoInternetDialog(this);
+            }
+        });
     }
 
     private void checkForLatestVersion() {
@@ -331,19 +339,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void showUpdateDialog(String link) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Update Available")
-                .setMessage("A new version is available. Do you want to update?")
-                .setPositiveButton("Update", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        downloadApk(link);
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
+        builder.setTitle("Update Available").setMessage("A new version is available. Do you want to update?").setPositiveButton("Update", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                downloadApk(link);
+            }
+        }).setNegativeButton("Cancel", null).show();
     }
 
-    private void downloadApk(String link) {; // Replace with your APK URL
+    private void downloadApk(String link) {
+        ; // Replace with your APK URL
         UpdateDownloader customDownloader = new UpdateDownloader(this, link);
         customDownloader.startDownload();
     }
