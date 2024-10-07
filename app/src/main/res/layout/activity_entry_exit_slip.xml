@@ -140,7 +140,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/time_layout"
                     android:background="@drawable/rounded_bg"
-                    android:backgroundTint="#37A55AFF"
+                    android:backgroundTint="@color/color3_light"
                     android:layout_margin="10dp"
                     android:padding="10dp">
 
@@ -213,9 +213,11 @@
                 <LinearLayout
                     android:id="@+id/info_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="500dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
+                    android:background="@drawable/rounded_bg"
+                    android:backgroundTint="@color/color3_light"
                     android:gravity="left"
                     android:orientation="vertical"
                     android:padding="20dp">
@@ -281,7 +283,7 @@
             android:alpha="0.7"
             android:animation="@anim/watermark_animation"
             android:elevation="10dp"
-            android:text="fdsfmdlkfjsjdl"
+            android:text="watermark"
             android:textColor="#FF0010"
             android:textSize="32sp" />
 
@@ -291,13 +293,17 @@
             android:layout_width="match_parent"
             android:layout_height="58dp"
             android:layout_gravity="bottom"
-            android:layout_margin="40dp"
-            android:backgroundTint="#C30859"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="@color/color3"
             android:padding="10dp"
             android:text="Enter Again"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="18sp"
-            app:elevation="4dp"
+            android:fontFamily="@font/fredoka"
+            android:textFontWeight="1000"
+            app:elevation="14dp"
             app:icon="@drawable/login_24dp_5f6368_fill0_wght400_grad0_opsz24"
             app:iconGravity="textStart"
             app:iconTint="@color/white" />

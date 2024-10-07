@@ -17,6 +17,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.manit.hostel.assist.students.data.EntryDetail;
 import com.manit.hostel.assist.students.data.HostelTable;
 import com.manit.hostel.assist.students.data.StudentInfo;
+import com.manit.hostel.assist.students.utils.Utility;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -204,7 +205,7 @@ public class MariaDBConnection {
                                 Log.d("TAG", "Entry: " + entryDetail.getJSON());
                             }
                         }
-
+                        entriesList = Utility.sortByOpenTime(entriesList);
                         historyCallback.onSuccess(entriesList);
                     } else {
                         historyCallback.onError("Unexpected response from server.");
@@ -412,6 +413,40 @@ public class MariaDBConnection {
         }
         return data;
     }
+
+    public void submitFeedback(String scholarNo, String name, String comments, int stars, String versionCode, Callback callback) {
+        final String BASE_URL_PLUS_SUFFIX = BASE_URL + "API/student/record_feedback.php";
+
+        final StringRequest mStringRequest = new StringRequest(Request.Method.POST, BASE_URL_PLUS_SUFFIX,
+                response -> {
+                    Log.d("Response", response);
+                    callback.onResponse(scholarNo);
+                },
+                error -> {
+                    callback.onErrorResponse(error);
+                }) {
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("scholar_no", scholarNo);
+                params.put("name", name);
+                params.put("comments", comments);
+                params.put("stars", String.valueOf(stars));
+                params.put("version_code", versionCode);
+                return params;
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded; charset=UTF-8";  // Proper content type for sending form data
+            }
+        };
+
+        // Add the request to the RequestQueue
+        mQueue.add(mStringRequest);
+    }
+
 
     public interface Callback {
         void onResponse(String result);

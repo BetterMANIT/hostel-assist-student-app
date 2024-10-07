@@ -13,6 +13,10 @@ public class HostelTable {
         this.purpose = purpose;
     }
 
+    public HostelTable(String purpose) {
+        this.purpose = purpose;
+    }
+
     // Getters (add setters if needed)
     public int getId() { return id; }
     public String getTableName() { return tableName; }

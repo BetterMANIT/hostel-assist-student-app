@@ -41,6 +41,12 @@ public class SettingsActivity extends AppCompatActivity {
         lb.loginButton.setOnClickListener(v -> {
             showLogoutDialog();
         });
+        lb.feedbackBtn.setOnClickListener(v -> {
+            startActivity(new Intent(this, FeedBackActivity.class));
+        });
+        lb.backbtn.setOnClickListener(v -> {
+            finish();
+        });
     }
 
     private void showLogoutDialog() {

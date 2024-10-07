@@ -57,8 +57,19 @@
             android:name=".activity.EntryExitSlipActivityActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.HistoryActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activity.FeedBackActivity"
+            android:exported="false" />
+
+
+
+
+        <activity
             android:name="com.yalantis.ucrop.UCropActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <meta-data
             android:name="preloaded_fonts"

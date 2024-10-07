@@ -5,7 +5,6 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
     android:orientation="vertical">
 
     <FrameLayout
@@ -30,6 +29,7 @@
                 android:background="#00000000"
                 android:src="@drawable/arrow_back_ios_24dp_5f6368_fill0_wght400_grad0_opsz24"
                 android:tint="@color/white"
+                android:visibility="gone"
                 tools:ignore="UseAppTint" />
 
             <TextView
@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="20dp"
-                android:text="Settings"
+                android:text="Feedback Form"
                 android:textColor="@color/white"
                 android:textSize="26sp"
                 android:textStyle="bold" />
@@ -55,20 +55,15 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginRight="20dp"
-            android:src="@drawable/manit_logo" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
-            android:text="Hostel Assist"
+            android:text="Report any problem or give any suggestions"
             android:textColor="@color/color1"
             android:textFontWeight="800"
-            android:textSize="22sp" />
+            android:textSize="18sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -78,64 +73,83 @@
         android:layout_marginRight="20dp"
         android:orientation="vertical">
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/titlebox"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Title"
+            app:boxBackgroundColor="#102A295E"
+            app:startIconDrawable="@drawable/alternate_email_24dp_5f6368_fill0_wght400_grad0_opsz24">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/titleEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:paddingStart="50dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Spacer -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="16dp" />
+
+        <!-- Password Input Field -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/bodyBox"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Explain the issue"
+            app:boxBackgroundColor="#102A295E">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/bodyEditText"
+                android:layout_width="match_parent"
+                android:layout_height="200dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:stepSize="1"
+            android:rating="0"
+            android:isIndicator="true"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"/>
+        <TextView
+            android:id="@+id/note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingTop="18dp"
+            android:text="Your valuable feedback will help us improve the system"
+            android:textColor="@color/color1" />
+
 
         <View
             android:layout_width="match_parent"
             android:layout_height="12dp" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/changeInfo"
+            android:id="@+id/sendFeedback"
             style="@style/Widget.Material3.Button.ElevatedButton.Icon"
             android:layout_width="match_parent"
             android:layout_height="58dp"
             android:backgroundTint="@color/color2"
             android:padding="10dp"
-            android:text="Change Information"
+            android:text="Send Feedback"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="20sp"
-            app:icon="@drawable/info_24dp_5f6368_fill0_wght400_grad0_opsz24"
-            app:iconGravity="textStart"
-            app:iconTint="@color/white" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/feedbackBtn"
-            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
-            android:layout_width="match_parent"
-            android:layout_height="58dp"
-            android:backgroundTint="@color/color2"
-            android:padding="10dp"
-            android:text="Send feedback"
-            android:layout_marginTop="10dp"
-            android:textColor="?attr/colorOnPrimary"
-            android:textSize="20sp"
-            app:icon="@drawable/rate_review_24dp_5f6368_fill0_wght400_grad0_opsz24"
-            app:iconGravity="textStart"
-            app:iconTint="@color/white" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/loginButton"
-            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
-            android:layout_width="match_parent"
-            android:layout_height="58dp"
-            android:layout_marginTop="10dp"
-            android:backgroundTint="@color/color2"
-            android:padding="10dp"
-            android:text="Logout"
-            android:textColor="?attr/colorOnPrimary"
-            android:textSize="20sp"
-            app:icon="@drawable/logout_24dp_5f6368_fill0_wght400_grad0_opsz24"
+            app:icon="@drawable/login_24dp_5f6368_fill0_wght400_grad0_opsz24"
             app:iconGravity="textStart"
             app:iconTint="@color/white" />
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:fontFamily="sans-serif"
-        android:gravity="center"
-        android:text="@string/about"
-        android:textColor="@color/color1"
-        android:textFontWeight="500"
-        android:textSize="18sp" />
 </LinearLayout>

@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <!-- Card to hold the content -->
 
+    <TextView
+        android:id="@+id/tvDateHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="8dp"
+        android:text=""
+        android:textColor="#0F5D01"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,20 +35,35 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
             android:text="Purpose"
-            android:textColor="@color/black"
+            android:textColor="#000000"
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <!-- Date -->
-        <TextView
-            android:id="@+id/tvDate"
-            android:layout_width="wrap_content"
+        <FrameLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:fontFamily="sans-serif-light"
-            android:text="Date"
-            android:textColor="@color/color1"
-            android:textSize="14sp" />
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="8dp">
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:text="Date"
+                android:textColor="@color/color1"
+                android:textSize="14sp" />
+            <TextView
+                android:id="@+id/totalTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:elevation="20dp"
+                android:fontFamily="sans-serif-light"
+                android:text="2 hrs 30 mins"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+        </FrameLayout>
+
 
         <!-- Time Section -->
         <LinearLayout
@@ -57,7 +83,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-medium"
-                    android:text="Start Time"
+                    android:text="Out Time"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
 
@@ -68,7 +94,7 @@
                     android:layout_marginTop="4dp"
                     android:fontFamily="sans-serif-light"
                     android:text="08:00 AM"
-                    android:textColor="@color/black"
+                    android:textColor="#990000"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -84,7 +110,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-medium"
-                    android:text="End Time"
+                    android:text="In Time"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
 
@@ -95,22 +121,11 @@
                     android:layout_marginTop="4dp"
                     android:fontFamily="sans-serif-light"
                     android:text="05:00 PM"
-                    android:textColor="@color/black"
+                    android:textColor="@color/teal_700"
                     android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/totalTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:elevation="20dp"
-        android:layout_gravity="right"
-        android:layout_margin="30dp"
-        android:fontFamily="sans-serif-light"
-        android:text="2 hrs 30 mins"
-        android:textColor="@color/black"
-        android:textSize="16sp" />
-</FrameLayout>
+
+</LinearLayout>

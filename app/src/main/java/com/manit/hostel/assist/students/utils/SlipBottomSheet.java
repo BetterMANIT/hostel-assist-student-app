@@ -17,25 +17,23 @@ public class SlipBottomSheet {
     private long bufferTime = 7000; // 5 seconds buffer time
     private boolean isCancelled = false;
     private SlipListener listener;
+    private boolean isEntryMode = false; // Added to differentiate between entry and exit
 
-    // Interface for events
     public interface SlipListener {
         void onSlipGenerated();
 
         void onSlipCancelled();
     }
 
-    // Constructor to set up the bottom sheet
-    public SlipBottomSheet(Context context, HostelTable hostelTable, SlipListener listener) {
+    public SlipBottomSheet(Context context, HostelTable hostelTable, SlipListener listener, boolean isEntryMode) {
         this.listener = listener;
-        this.selectedTable = hostelTable;        // Initialize view binding for the bottom sheet layout
+        this.selectedTable = hostelTable;
+        this.isEntryMode = isEntryMode;
         binding = SlipGeneratingViewBinding.inflate(LayoutInflater.from(context));
-        binding.title.setText(String.format("Generating Exit Slip for %s", selectedTable.getPurpose()));
-        // Create and configure the BottomSheetDialog
+        updateUIForMode();
         bottomSheetDialog = new BottomSheetDialog(context);
         bottomSheetDialog.setContentView(binding.getRoot());
         bottomSheetDialog.setCancelable(false);
-        // Handle the cancel button click
         binding.cancelButton.setOnClickListener(view -> {
             isCancelled = true;
             bottomSheetDialog.dismiss();
@@ -43,20 +41,28 @@ public class SlipBottomSheet {
         });
     }
 
-    // Show the bottom sheet dialog and start the timer
+    private void updateUIForMode() {
+        if (isEntryMode) {
+            binding.title.setText(String.format("Generating Entry Slip for %s", selectedTable.getPurpose()));
+            binding.textViewGeneratingSlip.setText("Generating entry slip in 00:05");
+            binding.note1.setText("Closing the entry requires you to be present at hostel gate");
+        } else {
+            binding.title.setText(String.format("Generating Exit Slip for %s", selectedTable.getPurpose()));
+            binding.textViewGeneratingSlip.setText("Generating exit slip in 00:05");
+        }
+    }
+
     public void show() {
         bottomSheetDialog.show();
         startBufferTimer();
     }
 
-    // Start the countdown for 5 seconds buffer time
     private void startBufferTimer() {
-        countDownTimer = new CountDownTimer(bufferTime, 1000) {
+        countDownTimer = new CountDownTimer(bufferTime, 10) { // Update every 10ms
             public void onTick(long millisUntilFinished) {
                 int secondsRemaining = (int) (millisUntilFinished / 1000);
-                binding.textViewGeneratingSlip.setText("Generating in 00:0" + secondsRemaining);
+                binding.textViewGeneratingSlip.setText(String.format("Generating in 00:0%d", secondsRemaining));
 
-                // Update the progress bar
                 float progressPercentage = (bufferTime - millisUntilFinished) / (float) bufferTime;
                 int progressWidth = (int) (binding.progressTrack.getWidth() * progressPercentage);
                 binding.progressBar.getLayoutParams().width = progressWidth;
@@ -72,13 +78,15 @@ public class SlipBottomSheet {
         }.start();
     }
 
-    // Logic for generating the slip
     private void generateSlip() {
-        binding.textViewGeneratingSlip.setText("Slip Generated!");
+        if (isEntryMode) {
+            binding.textViewGeneratingSlip.setText("Entry Slip Generated!");
+        } else {
+            binding.textViewGeneratingSlip.setText("Exit Slip Generated!");
+        }
         bottomSheetDialog.dismiss();
     }
 
-    // Dismiss the bottom sheet if needed
     public void dismiss() {
         if (bottomSheetDialog.isShowing()) {
             bottomSheetDialog.dismiss();

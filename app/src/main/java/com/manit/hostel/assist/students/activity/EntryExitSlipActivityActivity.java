@@ -1,6 +1,7 @@
 package com.manit.hostel.assist.students.activity;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,9 +18,11 @@ import com.bumptech.glide.Glide;
 import com.manit.hostel.assist.students.R;
 import com.manit.hostel.assist.students.data.AppPref;
 import com.manit.hostel.assist.students.data.EntryDetail;
+import com.manit.hostel.assist.students.data.HostelTable;
 import com.manit.hostel.assist.students.data.StudentInfo;
 import com.manit.hostel.assist.students.database.MariaDBConnection;
 import com.manit.hostel.assist.students.databinding.ActivityEntryExitSlipBinding;
+import com.manit.hostel.assist.students.utils.SlipBottomSheet;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +32,7 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
     ActivityEntryExitSlipBinding lb;
     MariaDBConnection dbConnection;
     StudentInfo loggedInStudent;
+    Boolean enteredBack = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +42,7 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
         lb = ActivityEntryExitSlipBinding.inflate(getLayoutInflater());
         setContentView(lb.getRoot());
         loggedInStudent = AppPref.getLoggedInStudent(this);
-        lb.slipframe.setVisibility(View.GONE);
-        lb.infoLayout.setVisibility(View.GONE);
-        lb.timeLayout.setVisibility(View.GONE);
-        lb.infoLayout.setAlpha(0);
-        lb.timeLayout.setAlpha(0);
-        lb.enterAgain.setVisibility(View.GONE);
+        hideUi();
         if (loggedInStudent != null) {
             showDetails();
         } else {
@@ -52,6 +51,15 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
             Log.d(EntryExitSlipActivityActivity.class.getSimpleName(), "Logged in student: " + loggedInStudent);
             finish();
         }
+    }
+
+    private void hideUi() {
+        lb.slipframe.setVisibility(View.GONE);
+        lb.infoLayout.setVisibility(View.GONE);
+        lb.timeLayout.setVisibility(View.GONE);
+        lb.infoLayout.setAlpha(0);
+        lb.timeLayout.setAlpha(0);
+        lb.enterAgain.setVisibility(View.GONE);
     }
 
     private void showDetails() {
@@ -74,21 +82,36 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
 
             @Override
             public void insideHostel(String message) {
-                if (!getIntent().hasExtra("LATEST")) {
-                    startActivity(new Intent(EntryExitSlipActivityActivity.this, HomeActivity.class));
-                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                } else {
+                if (getIntent().hasExtra("LATEST")) {
                     Log.d(EntryExitSlipActivityActivity.class.getSimpleName(), "fetching latest slip ");
                     try {
                         EntryDetail entryDetail = AppPref.getLastEntryDetails(EntryExitSlipActivityActivity.this);
                         fillDetails(entryDetail);
                         enteredAgainUI(entryDetail);
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        failTheActivity();
                     }
+                } else if (getIntent().hasExtra("VIEW")) {
+                    Log.d(EntryExitSlipActivityActivity.class.getSimpleName(), "fetching latest slip ");
+                    try {
+                        EntryDetail entryDetail = EntryDetail.fromJSON(getIntent().getStringExtra("VIEW"));
+                        fillDetails(entryDetail);
+                        enteredAgainUI(entryDetail);
+                    } catch (JSONException e) {
+                        failTheActivity();
+                    }
+                } else {
+                    startActivity(new Intent(EntryExitSlipActivityActivity.this, HomeActivity.class));
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    finish();
                 }
             }
         });
+    }
+
+    private void failTheActivity() {
+        Toast.makeText(EntryExitSlipActivityActivity.this, "Error in fetching slip", Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     private void save(EntryDetail entryDetail) {
@@ -125,24 +148,41 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
         Glide.with(this).load(loggedInStudent.getPhotoUrl()).placeholder(R.drawable.img).into(lb.stuPic);
 
         lb.enterAgain.setOnClickListener(v -> {
-            dbConnection.closeEntryStudent(loggedInStudent.getScholarNo(), new MariaDBConnection.CloseEntryCallback() {
+            SlipBottomSheet slipBottomSheet = new SlipBottomSheet(EntryExitSlipActivityActivity.this, new HostelTable(entryDetail.getPurpose()), new SlipBottomSheet.SlipListener() {
+
                 @Override
-                public void onSuccess(String response) {
-                    // show time in hh:mm:ss format
-                    try {
-                        JSONObject jsonObject = new JSONObject(response);
-                        entryDetail.setCloseTime(jsonObject.getString("close_time"));
-                        enteredAgainUI(entryDetail);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                public void onSlipGenerated() {
+                    enterAgain(entryDetail);
                 }
 
                 @Override
-                public void onErrorResponse(String error) {
-                    Toast.makeText(EntryExitSlipActivityActivity.this, error, Toast.LENGTH_SHORT).show();
+                public void onSlipCancelled() {
+
                 }
-            });
+            }, true);
+            slipBottomSheet.show();
+
+        });
+    }
+
+    private void enterAgain(EntryDetail entryDetail) {
+        dbConnection.closeEntryStudent(loggedInStudent.getScholarNo(), new MariaDBConnection.CloseEntryCallback() {
+            @Override
+            public void onSuccess(String response) {
+                // show time in hh:mm:ss format
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    entryDetail.setCloseTime(jsonObject.getString("close_time"));
+                    enteredAgainUI(entryDetail);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onErrorResponse(String error) {
+                Toast.makeText(EntryExitSlipActivityActivity.this, error, Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -171,16 +211,33 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
     }
 
     private void enteredAgainUI(EntryDetail entryDetail) {
+        enteredBack = true;
         try {
             lb.entryTime.setText(entryDetail.getCloseTime().split(" ")[1]);
         } catch (Exception e) {
             lb.entryTime.setText("-----");
         }
         lb.enterAgain.setText("Show Above to Guard");
+        lb.enterAgain.setBackgroundTintList(new ColorStateList(new int[][]{new int[]{android.R.attr.state_enabled}}, new int[]{Color.GREEN}));
+        lb.enterAgain.setOnClickListener(v -> {
+            startActivity(new Intent(EntryExitSlipActivityActivity.this, HomeActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
+        });
         Toast.makeText(EntryExitSlipActivityActivity.this, "Entry Closed", Toast.LENGTH_SHORT).show();
         lb.watermark.setText("Entered back");
         lb.watermark.setTextColor(Color.GREEN);
         lb.imgBorder.setCardBackgroundColor(Color.green(Color.GREEN));
     }
 
+    @Override
+    public void onBackPressed() {
+        if (enteredBack) {
+            startActivity(new Intent(EntryExitSlipActivityActivity.this, HomeActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
+        } else {
+            super.onBackPressed();
+        }
+    }
 }

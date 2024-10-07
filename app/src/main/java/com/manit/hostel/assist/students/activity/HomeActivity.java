@@ -9,11 +9,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.manit.hostel.assist.students.R;
-import com.manit.hostel.assist.students.adapter.EntryAdapter;
 import com.manit.hostel.assist.students.data.AppPref;
 import com.manit.hostel.assist.students.data.EntryDetail;
 import com.manit.hostel.assist.students.data.HostelTable;
@@ -48,22 +46,6 @@ public class HomeActivity extends AppCompatActivity {
         addClickLogic();
         updateStudentDetails();
         setupPlacesAdapter();
-        displayHistory();
-    }
-
-    private void displayHistory() {
-        dbConnection.getStudentHistory(loggedInStudent.getScholarNo(), new MariaDBConnection.HistoryCallback() {
-            @Override
-            public void onSuccess(ArrayList<EntryDetail> entries) {
-                lb.history.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                lb.history.setAdapter(new EntryAdapter(entries));
-            }
-
-            @Override
-            public void onError(String error) {
-
-            }
-        });
     }
 
 
@@ -99,6 +81,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onSuccess(ArrayList<HostelTable> table) {
                 ArrayList<String> tableNames = new ArrayList<>();
+                lb.gradientBack.setupGradient();
                 for (HostelTable hostelTable : table) {
                     tableNames.add(hostelTable.getPurpose());
                 }
@@ -127,7 +110,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void showGeneratingSlipDialog(ArrayList<HostelTable> table, int position) {
         lb.goout.setEnabled(false);
-        SlipBottomSheet slipBottomSheet = new SlipBottomSheet(this,table.get(position), new SlipBottomSheet.SlipListener() {
+        SlipBottomSheet slipBottomSheet = new SlipBottomSheet(this, table.get(position), new SlipBottomSheet.SlipListener() {
             @Override
             public void onSlipGenerated() {
                 addNewEntry(table.get(position));
@@ -137,7 +120,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onSlipCancelled() {
                 lb.goout.setEnabled(true);
             }
-        });
+        },false);
         slipBottomSheet.show();
 
     }
@@ -174,15 +157,9 @@ public class HomeActivity extends AppCompatActivity {
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
         lb.latestSlip.setOnClickListener(v -> {
-            try {
-                AppPref.getLastEntryDetails(HomeActivity.this);
-                Intent intent = new Intent(this, EntryExitSlipActivityActivity.class);
-                intent.putExtra("LATEST", "true");
-                startActivity(intent);
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-            } catch (Exception e) {
-                Toast.makeText(this, "No entry saved", Toast.LENGTH_SHORT).show();
-            }
+            startActivity(new Intent(this, HistoryActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+
         });
     }
 

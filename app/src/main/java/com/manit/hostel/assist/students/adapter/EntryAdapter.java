@@ -1,5 +1,6 @@
 package com.manit.hostel.assist.students.adapter;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,8 +8,11 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.manit.hostel.assist.students.activity.EntryExitSlipActivityActivity;
 import com.manit.hostel.assist.students.data.EntryDetail;
 import com.manit.hostel.assist.students.databinding.EntryListBinding;
+
+import org.json.JSONException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,7 +46,21 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.EntryViewHol
         holder.binding.tvStartTime.setText(entryDetail.getOpenTime());
         holder.binding.tvEndTime.setText(entryDetail.getCloseTime());
 
-        // Check if closeTime is not null
+        totalTimeLogic(holder, entryDetail);
+
+        dateHeaderLogic(holder, position, entryDetail);
+        holder.binding.getRoot().setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), EntryExitSlipActivityActivity.class);
+            try {
+                intent.putExtra("VIEW", entryDetail.getJSON());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            v.getContext().startActivity(intent);
+        });
+    }
+
+    private static void totalTimeLogic(@NonNull EntryViewHolder holder, EntryDetail entryDetail) {
         if (entryDetail.getCloseTime() != null && !entryDetail.getCloseTime().isEmpty()) {
             // Parse openTime and closeTime
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
@@ -70,8 +88,23 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.EntryViewHol
                 e.printStackTrace();
             }
         } else {
-            // Hide the totalTime TextView if closeTime is null or empty
             holder.binding.totalTime.setVisibility(View.GONE);
+        }
+    }
+
+    private void dateHeaderLogic(@NonNull EntryViewHolder holder, int position, EntryDetail entryDetail) {
+        String currentDate = entryDetail.getOpenTime().split(" ")[0];
+        if (position == 0) {
+            holder.binding.tvDateHeader.setVisibility(View.VISIBLE);
+            holder.binding.tvDateHeader.setText(currentDate);
+        } else {
+            String previousDate = entryDetailsList.get(position - 1).getOpenTime().split(" ")[0];
+            if (!currentDate.equals(previousDate)) {
+                holder.binding.tvDateHeader.setVisibility(View.VISIBLE);
+                holder.binding.tvDateHeader.setText(currentDate);
+            } else {
+                holder.binding.tvDateHeader.setVisibility(View.GONE);
+            }
         }
     }
 
