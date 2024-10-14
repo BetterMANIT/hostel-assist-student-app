@@ -86,7 +86,8 @@
                 android:id="@+id/titleEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
+                android:inputType="text"
+                android:singleLine="true"
                 android:paddingStart="50dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -107,6 +108,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/bodyEditText"
                 android:layout_width="match_parent"
+                android:gravity="top"
                 android:layout_height="200dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -117,7 +119,7 @@
             android:numStars="5"
             android:stepSize="1"
             android:rating="0"
-            android:isIndicator="true"
+            android:isIndicator="false"
             android:layout_marginTop="20dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="20dp"/>

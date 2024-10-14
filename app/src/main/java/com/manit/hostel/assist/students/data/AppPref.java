@@ -3,11 +3,9 @@ package com.manit.hostel.assist.students.data;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
+import android.content.Context;
 
-import com.manit.hostel.assist.students.activity.EntryExitSlipActivityActivity;
 import com.manit.hostel.assist.students.activity.HomeActivity;
-import com.manit.hostel.assist.students.activity.LoginActivity;
-import com.manit.hostel.assist.students.activity.SettingsActivity;
 
 import org.json.JSONException;
 
@@ -32,7 +30,7 @@ public class AppPref {
         }
     }
 
-    public static StudentInfo getLoggedInStudent(Activity activity) {
+    public static StudentInfo getLoggedInStudent(Context activity) {
         if(!activity.getSharedPreferences(APREF, MODE_PRIVATE).getString(STUDENT_LOGIN, "").isEmpty()){
             try {
                 return StudentInfo.fromJSON(activity.getSharedPreferences(APREF, MODE_PRIVATE).getString(STUDENT_LOGIN, ""));

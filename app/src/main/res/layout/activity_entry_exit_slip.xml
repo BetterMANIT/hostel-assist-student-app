@@ -141,6 +141,9 @@
                     android:id="@+id/time_layout"
                     android:background="@drawable/rounded_bg"
                     android:backgroundTint="@color/color3_light"
+                    android:elevation="10dp"
+                    android:outlineAmbientShadowColor="@color/color1"
+                    android:outlineSpotShadowColor="@color/color1"
                     android:layout_margin="10dp"
                     android:padding="10dp">
 

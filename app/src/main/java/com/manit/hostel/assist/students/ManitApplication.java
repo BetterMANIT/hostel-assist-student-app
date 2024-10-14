@@ -1,9 +1,12 @@
 package com.manit.hostel.assist.students;
 
 import android.app.Application;
+import android.util.Log;
+
+import com.manit.hostel.assist.students.data.AppPref;
+import com.onesignal.Continue;
 import com.onesignal.OneSignal;
 import com.onesignal.debug.LogLevel;
-import com.onesignal.Continue;
 
 public class ManitApplication extends Application {
 
@@ -19,6 +22,12 @@ public class ManitApplication extends Application {
         OneSignal.getDebug().setLogLevel(LogLevel.VERBOSE);
         OneSignal.initWithContext(this, ONESIGNAL_APP_ID);
         OneSignal.getNotifications().requestPermission(false, Continue.none());
-
+        try {
+            OneSignal.login(AppPref.getLoggedInStudent(this).getScholarNo());
+            Log.d(MainActivity.class.getSimpleName(), "Logged in student: " + AppPref.getLoggedInStudent(this));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d(MainActivity.class.getSimpleName(), "Error logging in: " + e.getMessage());
+        }
     }
 }

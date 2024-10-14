@@ -33,19 +33,35 @@ public class FeedBackActivity extends AppCompatActivity {
         setContentView(lb.getRoot());
 
         loggedInStudent = AppPref.getLoggedInStudent(this);
-        if (loggedInStudent == null) {
+        if (loggedInStudent != null) {
             addClickLogic();
         } else {
-
+            Toast.makeText(this, "Error in fetching logged in student", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void addClickLogic() {
+        lb.sendFeedback.setEnabled(true);
+        lb.sendFeedback.setAlpha(1f);
         lb.sendFeedback.setOnClickListener(v -> {
-            if(lb.ratingBar.getRating() == 0){
-                Toast.makeText(this, "Please rate your exper", Toast.LENGTH_SHORT).show();
+            Log.d(FeedBackActivity.class.getSimpleName(), "Sending feedback");
+            if (lb.titleEditText.getText().toString().isEmpty() || lb.bodyEditText.getText().toString().isEmpty()) {
+                Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
                 return;
             }
+            if(lb.titleEditText.getText().toString().length() > 100){
+                Toast.makeText(this, "Title should be less than 100 characters", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if(lb.bodyEditText.getText().toString().length() > 1000){
+                Toast.makeText(this, "Body should be less than 1000 characters", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if((int) lb.ratingBar.getRating() == 0){
+                Toast.makeText(this, "Please rate your experience", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            stars = (int) lb.ratingBar.getRating();
             lb.sendFeedback.setEnabled(false);
             lb.sendFeedback.setAlpha(0.5f);
             String version_code = "error";
