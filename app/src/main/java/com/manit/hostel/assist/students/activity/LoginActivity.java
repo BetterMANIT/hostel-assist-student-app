@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.manit.hostel.assist.students.BuildConfig;
 import com.manit.hostel.assist.students.data.AppPref;
 import com.manit.hostel.assist.students.data.EntryDetail;
 import com.manit.hostel.assist.students.data.StudentInfo;
@@ -88,15 +89,20 @@ public class LoginActivity extends AppCompatActivity {
         dbConnection.sendOtp(student.getPhoneNo(), new MariaDBConnection.OtpCallBack() {
             @Override
             public void otpSent(String otpId) {
+
+                //check if debug build
+                if (BuildConfig.DEBUG) {
+                    Toast.makeText(LoginActivity.this, "OTP: " + otpId, Toast.LENGTH_SHORT).show();
+                }
                 lb.loginButton.setText("Verify OTP");
                 lb.otpNoBox.setVisibility(View.VISIBLE);
                 lb.forgotPasswordTextView.setVisibility(View.VISIBLE);
                 lb.schnoEditText.setEnabled(false);
                 lb.loginButton.setOnClickListener(v -> {
                     if (!lb.otpEditText.getText().toString().isEmpty()) {
-                        // if(lb.otpEditText.getText().toString().equals(otpId)) {
-                        loginStudent(student);
-                        //}
+                        if (lb.otpEditText.getText().toString().equals(otpId)) {
+                            loginStudent(student);
+                        }
                     }
                 });
 
