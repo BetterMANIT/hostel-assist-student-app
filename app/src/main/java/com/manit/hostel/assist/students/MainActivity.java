@@ -83,9 +83,11 @@ public class MainActivity extends AppCompatActivity {
     private void fetchRemoteConfig() {
         mFirebaseRemoteConfig.fetchAndActivate().addOnCompleteListener(this, task -> {
             if (task.isSuccessful()) {
-                String BASE_URL = mFirebaseRemoteConfig.getString("BASE_URL");
-                Log.d(MainActivity.class.getSimpleName(), "BASE_URL: " + BASE_URL);
+
                 dbConnection = new MariaDBConnection(this);
+                String BASE_URL = dbConnection.getBaseURL();
+                Log.d(MainActivity.class.getSimpleName(), "BASE_URL: " + BASE_URL);
+
                 splash.post(() -> {
                     if (!isInternetAvailable(this)) {
                         showNoInternetDialog(this);

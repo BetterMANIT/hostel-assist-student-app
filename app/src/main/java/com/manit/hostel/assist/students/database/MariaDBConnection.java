@@ -1,5 +1,6 @@
 package com.manit.hostel.assist.students.database;
 
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
@@ -7,13 +8,16 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.manit.hostel.assist.students.data.AppPref;
 import com.manit.hostel.assist.students.data.EntryDetail;
 import com.manit.hostel.assist.students.data.HostelTable;
 import com.manit.hostel.assist.students.data.StudentInfo;
@@ -46,7 +50,14 @@ public class MariaDBConnection {
         mQueue = Volley.newRequestQueue(mAppCompatActivity);
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         this.mAppCompatActivity = mAppCompatActivity;
-        BASE_URL = mFirebaseRemoteConfig.getString("BASE_URL");
+        BASE_URL = getBaseURL();
+    }
+
+
+    public String getBaseURL(){
+        if(true)
+        return "http://4.186.57.254/";
+        return mFirebaseRemoteConfig.getString("BASE_URL");
     }
 
     public void fetchEntryExitList(Callback callback) {
@@ -78,9 +89,11 @@ public class MariaDBConnection {
                 callback.onError(e.getMessage());
             }
         }, error -> {
-            if (error.networkResponse.statusCode == 404) {
-                callback.networkError();
-            }
+            error.printStackTrace();
+            callback.onError(error.getMessage());
+//            if (error.networkResponse.statusCode == 404) {
+//                callback.networkError();
+//            }
         });
         mQueue.add(jsonObjectRequest);
     }
@@ -112,6 +125,40 @@ public class MariaDBConnection {
         mQueue.add(jsonObjectRequest);
     }
 
+    public void verifyOtp(String phone_no, Context mContext, String otp, String scholar_no, OtpVerificationCallBack otpVerificationCallBack){
+
+     //   http://localhost/hostel-assist-web/API/student/verify_otp.php?phone_no=19209229&otp=123456&scholar_no=129293238
+        final String url =
+                BASE_URL +
+                        "/API/student/verify_otp.php?phone_no=" + phone_no
+                + "&otp=" + otp
+                + "&scholar_no=" + scholar_no;
+        Log.d(MariaDBConnection.class.getSimpleName(), "Creating OTP Request, to URL "  + url);
+        JsonObjectRequest mJSONObject = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
+            Log.d(MariaDBConnection.class.getSimpleName(), "Response : " + response);
+            try {
+                if (response.has("status")) {
+                    if (response.getString("status").equals("success")) {
+                        AppPref.saveAuthToken(mContext, response.getString("token"));
+                        otpVerificationCallBack.onSuccessfulVerification();
+                    }
+                }
+                throw new Exception(response.getString("message"));
+            }catch (Exception e){
+                Log.e(MariaDBConnection.class.getSimpleName(), "Error",e);
+                e.printStackTrace();
+                otpVerificationCallBack.onError(e.getMessage());
+            }
+        },
+                error -> {
+            Log.d(MariaDBConnection.class.getSimpleName(), "Error message : " + error.getMessage());
+            error.printStackTrace();
+
+            otpVerificationCallBack.onError("Error : " + error.getMessage());
+        });
+
+        mQueue.add(mJSONObject);
+    }
     public void sendOtp(String mobile, OtpCallBack otpCallBack) {
         //===/API/send_otp_to_phone_no.php?phone_no=8021229292
         if (!mobile.isEmpty()) {
@@ -124,9 +171,9 @@ public class MariaDBConnection {
                     // Extract the 'data' object
                     Log.d("Response", response.toString());
 
-                    if (response.getString("otp") != null) {
-                        otpCallBack.otpSent(response.getString("otp"));
-                    } else {
+                    if(response.getString("status").equals("success"))
+                        otpCallBack.otpSent();
+                     else {
                         otpCallBack.onError("Error in sending OTP");
                     }
                 } catch (JSONException e) {
@@ -285,9 +332,13 @@ public class MariaDBConnection {
                 e.printStackTrace();
                 updateCallback.onError(e.getMessage());
             }
-        }, error -> updateCallback.onError(error.getMessage())) {
+        }, error ->{ updateCallback.onError(error.getMessage());
+        error.printStackTrace();}) {
+
             @Override
             public byte[] getBody() {
+                byte[] body = super.getBody();
+                Log.d(TAG, "Request body: " + (body != null ? new String(body) : "null"));
                 PackageInfo pInfo = null;
                 try {
                     pInfo = mAppCompatActivity.getPackageManager().getPackageInfo(mAppCompatActivity.getPackageName(), 0);
@@ -306,7 +357,36 @@ public class MariaDBConnection {
             public String getBodyContentType() {
                 return "application/x-www-form-urlencoded; charset=UTF-8";  // Proper content type for sending form data
             }
+
+
+            String TAG = MariaDBConnection.class.getSimpleName() + " volley";
+            @Override
+            protected void deliverResponse(JSONObject response) {
+                Log.d(TAG, "Response received: " + response.toString());
+                super.deliverResponse(response);
+                String contentType = super.getBodyContentType();
+                Log.d(TAG, "Body Content Type: " + contentType);
+            }
+
+            @Override
+            public void deliverError(VolleyError error) {
+                Log.e(TAG + " delivery", "Error occurred: " + error.toString());
+                if (error.networkResponse != null) {
+                    Log.e(TAG, "Status Code: " + error.networkResponse.statusCode);
+                    Log.e(TAG, "Response Data: " + new String(error.networkResponse.data));
+                }
+                super.deliverError(error);
+            }
+
+
+
+
         };
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                5000, // Timeout in milliseconds
+                3,    // Number of retries
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
         mQueue.add(jsonObjectRequest);
     }
 
@@ -463,12 +543,18 @@ public class MariaDBConnection {
     }
 
     public interface OtpCallBack {
-        void otpSent(String otpId);
+        void otpSent();
 
         void onError(String error);
 
         void networkError();
     }
+    public interface OtpVerificationCallBack {
+        void onSuccessfulVerification();
+
+        void onError(String error);
+    }
+
 
     public interface UpdateCallback {
         void onUpdateAvailable(boolean b, String link);
