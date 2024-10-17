@@ -14,4 +14,26 @@
         <item name="android:statusBarColor">@color/color1</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="entry_exit_slip_textview_headline_theme" parent="Widget.AppCompat.TextView">
+        <item name="fontFamily">@font/outfit_bold</item>
+        <item name="android:fontFamily">@font/outfit_bold</item>
+    </style>
+    <style name="entry_exit_slip_textview_regular_font" parent="Widget.AppCompat.TextView">
+        <item name="fontFamily">@font/outfit</item>
+        <item name="android:fontFamily">@font/outfit</item>
+    </style>
+    <style name="entry_exit_slip_textview_light_font" parent="Widget.AppCompat.TextView">
+        <item name="fontFamily">@font/outfit_light</item>
+        <item name="android:fontFamily">@font/outfit_light</item>
+    </style>
+
+    <style name="entry_exit_slip_textview_semi_bold_theme" parent="Widget.AppCompat.TextView">
+        <item name="fontFamily">@font/outfit_semibold</item>
+        <item name="android:fontFamily">@font/outfit_semibold</item>
+    </style>
+    <style name="entry_exit_slip_material_button_theme" parent="Widget.Material3.Button">
+        <item name="fontFamily">@font/outfit_semibold</item>
+        <item name="android:fontFamily">@font/outfit_semibold</item>
+    </style>
 </resources>

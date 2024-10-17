@@ -55,5 +55,9 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("com.github.yalantis:ucrop:2.2.8")
     implementation(project(":ROCKUI"))
+    implementation ("androidx.security:security-crypto:1.1.0-alpha06")
+    implementation ("com.google.android.material:material:1.8.0")
+
+
 
 }

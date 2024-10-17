@@ -17,5 +17,8 @@
     <color name="color5">#FFB75B</color>
     <color name="color6">#F9F871</color>
     <color name="color3_light">#FCE5FF</color>
+    <color name="color_reddish">#C30859</color>
+
+    <color name="color1_light">#E7E6FF</color>
 
 </resources>

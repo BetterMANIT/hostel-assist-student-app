@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="preloaded_fonts" translatable="false">
+        <item>@font/</item>
+        <item>@font/adlam_display</item>
+        <item>@font/arizonia</item>
         <item>@font/fredoka</item>
         <item>@font/noto_sans</item>
+        <item>@font/outfit</item>
+        <item>@font/outfit_bold</item>
+        <item>@font/outfit_light</item>
+        <item>@font/poppins_extrabold</item>
         <item>@font/roboto</item>
         <item>@font/roboto_bold</item>
     </array>

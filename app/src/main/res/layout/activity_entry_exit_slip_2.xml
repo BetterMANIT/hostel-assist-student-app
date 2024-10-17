@@ -1,73 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    
-    
-    <TextView
-        android:id="@+id/loading"
-        android:layout_width="wrap_content"
+    <FrameLayout
+        android:id="@+id/backspan"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="20dp"
-        android:text="Loading...."
+        android:background="@color/white">
 
-        android:textColor="@color/color2"
-        android:textSize="28sp"
-        android:textStyle="bold" />
+    </FrameLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/main"
+    <FrameLayout
+        android:id="@+id/exit_slip"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:background="@color/white">
 
-
-        <FrameLayout
-            android:id="@+id/backspan"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/loading"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_gravity="center"
+            android:layout_margin="20dp"
+            android:text="Loading...."
 
-        </FrameLayout>
-
+            android:textColor="@color/color2"
+            android:textSize="28sp"
+            android:textStyle="bold" />
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@id/enter_again"
-
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="match_parent"
+            android:layout_marginBottom="70dp">
 
             <LinearLayout
                 android:id="@+id/slipframe"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/white"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <androidx.cardview.widget.CardView
-                    android:outlineAmbientShadowColor="@color/color1"
-                    android:outlineSpotShadowColor="@color/color1"
-
-                    app:cardElevation="10dp"
+                <com.rock.rockui.layouts.GradientLayout
                     android:id="@+id/cardView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/rounded_bg"
                     android:elevation="10dp"
                     android:paddingTop="20dp"
-
                     android:translationY="-20dp"
                     app:animDuration="5000"
-                    app:cardBackgroundColor="@color/color1"
-                    app:cardCornerRadius="20dp"
                     app:cornerRadius="20dp"
                     app:gradientEnd="#1A00B4"
                     app:gradientMiddle="#7212CC"
@@ -79,9 +65,9 @@
                         android:layout_height="match_parent"
                         android:background="#00000000"
                         android:elevation="10dp"
+                        android:paddingTop="60dp"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:paddingTop="60dp"
                         android:paddingBottom="20dp">
 
 
@@ -89,30 +75,28 @@
                             android:id="@+id/title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="18dp"
+                            android:layout_marginTop="10dp"
                             android:layout_marginBottom="30dp"
                             android:gravity="center"
                             android:text="Exit Slip"
                             android:textColor="#ffffff"
-
                             android:textSize="32sp"
-                            android:textStyle="bold"
-                            android:theme="@style/entry_exit_slip_textview_headline_theme" />
+                            android:textStyle="bold" />
 
                         <androidx.cardview.widget.CardView
                             android:id="@+id/img_border"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
+                            android:padding="10dp"
+                            app:cardBackgroundColor="#C30859"
                             app:cardCornerRadius="100dp">
-<!--                            android:padding="10dp"-->
-<!--                            app:cardBackgroundColor="#C30859"-->
 
                             <androidx.cardview.widget.CardView
                                 android:layout_width="120dp"
                                 android:layout_height="120dp"
+                                android:layout_margin="5dp"
                                 app:cardCornerRadius="100dp">
-<!--                                android:layout_margin="5dp"-->
 
                                 <ImageView
                                     android:id="@+id/stu_pic"
@@ -128,40 +112,39 @@
                             android:id="@+id/student_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Student Name"
+                            android:fontFamily="@font/roboto_bold"
+                            android:text="Salmon Khan"
                             android:textColor="#ffffff"
                             android:textFontWeight="1000"
-                            android:theme="@style/entry_exit_slip_textview_regular_font"
                             android:textSize="24sp"
-                         />
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/scholar_no"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:alpha="0.8"
+                            android:fontFamily="@font/roboto_bold"
                             android:paddingTop="10dp"
                             android:text="12345678901"
                             android:textColor="#ffffff"
                             android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:theme="@style/entry_exit_slip_textview_regular_font" />
+                            android:textStyle="bold" />
 
 
                     </LinearLayout>
 
-                </androidx.cardview.widget.CardView>
+                </com.rock.rockui.layouts.GradientLayout>
 
                 <LinearLayout
-                    android:id="@+id/time_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:id="@+id/time_layout"
                     android:background="@drawable/rounded_bg"
+                    android:backgroundTint="@color/color3_light"
                     android:elevation="10dp"
-                    android:backgroundTint="@color/color1_light"
                     android:outlineAmbientShadowColor="@color/color1"
                     android:outlineSpotShadowColor="@color/color1"
+                    android:layout_margin="10dp"
                     android:padding="10dp">
 
                     <LinearLayout
@@ -172,12 +155,10 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:theme="@style/entry_exit_slip_textview_semi_bold_theme"
-                            android:gravity="center_horizontal"
+                            android:fontFamily="@font/roboto_bold"
                             android:text="Exit Time"
-
                             android:textColor="#13141B"
                             android:textFontWeight="1000"
                             android:textSize="20sp"
@@ -187,20 +168,19 @@
                             android:id="@+id/exit_time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_bold"
                             android:text="10:30 AM"
                             android:textColor="#444444"
-                            android:theme="@style/entry_exit_slip_textview_semi_bold_theme"
-
                             android:textSize="18sp"
                             android:textStyle="bold" />
 
                     </LinearLayout>
 
                     <View
-                        android:layout_width="3.5dp"
+                        android:layout_width="5dp"
                         android:layout_height="match_parent"
                         android:background="@drawable/rounded_bg"
-                        android:backgroundTint="@color/color1" />
+                        android:backgroundTint="#C30859" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -212,8 +192,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-
-                            android:theme="@style/entry_exit_slip_textview_semi_bold_theme"
+                            android:fontFamily="@font/roboto_bold"
                             android:text="Entry Time"
                             android:textColor="#13141B"
                             android:textFontWeight="1000"
@@ -224,7 +203,7 @@
                             android:id="@+id/entry_time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:theme="@style/entry_exit_slip_textview_semi_bold_theme"
+                            android:fontFamily="@font/roboto_bold"
                             android:text="--------"
                             android:textColor="#444444"
                             android:textSize="18sp"
@@ -234,79 +213,64 @@
                 </LinearLayout>
 
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
+                    android:id="@+id/info_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_margin="10dp"
-                    android:elevation="10dp"
-                    app:cardCornerRadius="20dp">
+                    android:background="@drawable/rounded_bg"
+                    android:backgroundTint="@color/color3_light"
+                    android:gravity="left"
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
-                    <LinearLayout
-                        android:id="@+id/info_layout"
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="@drawable/rounded_bg"
-                        android:backgroundTint="@color/white"
-                        android:gravity="left"
-                        android:orientation="vertical"
-                        android:padding="20dp">
+                        android:layout_marginBottom="10dp"
+                        android:text="Student Details"
+                        android:textColor="#000"
+                        android:textFontWeight="1000"
+                        android:textSize="22sp" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:text="Student Details"
-                            android:textColor="#000"
-                            android:textFontWeight="1000"
+                    <TextView
+                        android:id="@+id/entry_no"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="Entry No: 22092024C1003"
+                        android:textColor="#444444"
+                        android:textSize="18sp" />
 
-                            android:textSize="24sp"
-                            android:theme="@style/entry_exit_slip_textview_regular_font" />
+                    <TextView
+                        android:id="@+id/room_no"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="Room: C101"
+                        android:textColor="#444444"
+                        android:textSize="18sp" />
 
-                        <TextView
-                            android:id="@+id/entry_no"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:theme="@style/entry_exit_slip_textview_light_font"
-                            android:text="Entry No: 22092024C1003"
-                            android:textColor="#444444"
-                            android:textSize="18sp" />
+                    <TextView
+                        android:id="@+id/date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="Date: 22/09/2024"
+                        android:textColor="#444444"
+                        android:textSize="18sp" />
 
-                        <TextView
-                            android:id="@+id/room_no"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:theme="@style/entry_exit_slip_textview_light_font"
+                    <TextView
+                        android:id="@+id/mobile_no"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="Mobile: 110022330022"
+                        android:textColor="#444444"
+                        android:textSize="18sp" />
 
-                            android:text="Room: C101"
-                            android:textColor="#444444"
-                            android:textSize="18sp" />
-
-                        <TextView
-                            android:id="@+id/date"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:text="Date: 22/09/2024"
-                            android:theme="@style/entry_exit_slip_textview_light_font"
-
-                            android:textColor="#444444"
-                            android:textSize="18sp" />
-
-                        <TextView
-                            android:id="@+id/mobile_no"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:text="Mobile: 110022330022"
-                            android:textColor="#444444"
-                            android:theme="@style/entry_exit_slip_textview_light_font"
-                            android:textSize="18sp" />
-
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
 
             </LinearLayout>
@@ -314,52 +278,39 @@
 
         <!-- Watermark -->
         <TextView
-
             android:id="@+id/watermark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="120dp"
             android:alpha="0.7"
             android:animation="@anim/watermark_animation"
             android:elevation="10dp"
             android:text="watermark"
-            android:textStyle="bold"
-            android:fontFamily="@font/poppins_black"
-            android:textColor="@android:color/darker_gray"
-            android:textSize="22sp"
-            app:layout_constraintBottom_toTopOf="@+id/enter_again"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:textColor="#FF0010"
+            android:textSize="32sp" />
 
-
-<!--        todo Remove the bottom margin and fix the issue-->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/enter_again"
-            android:layout_marginBottom="50dp"
             style="@style/Widget.Material3.Button.ElevatedButton.Icon"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="58dp"
             android:layout_gravity="bottom"
-            android:layout_marginHorizontal="10dp"
-            android:backgroundTint="@color/color1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="@color/color3"
             android:padding="10dp"
             android:text="Enter Again"
             android:textColor="?attr/colorOnPrimary"
-            android:textFontWeight="1000"
             android:textSize="18sp"
-            android:theme="@style/entry_exit_slip_material_button_theme"
+            android:fontFamily="@font/fredoka"
+            android:textFontWeight="1000"
             app:elevation="14dp"
             app:icon="@drawable/login_24dp_5f6368_fill0_wght400_grad0_opsz24"
             app:iconGravity="textStart"
-            app:iconTint="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:iconTint="@color/white" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    <View
-        android:id="@+id/view_overlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#80000000"
-        android:visibility="gone"/>
+    </FrameLayout>
 
-</FrameLayout>
+</LinearLayout>

@@ -1,272 +1,286 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.rock.rockui.layouts.GradientLayout
-        android:id="@+id/gradient_back"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal"
-        app:animDuration="6000"
-        app:gradientEnd="#FDF9FD"
-        app:gradientMiddle="#F3F3F6"
-        app:gradientStart="#F8F2F2"
-        tools:context=".MainActivity">
-
-        <FrameLayout
-            android:id="@+id/backspan"
-            android:layout_width="match_parent"
-            android:layout_height="130dp"
-            android:background="@drawable/rounded_bg"
-            android:elevation="10dp"
-            android:translationY="-20dp">
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="40dp">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/backbtn"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_gravity="center|left"
-                    android:layout_margin="20dp"
-                    android:background="#00000000"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/manit_logo"
-                    android:translationX="20dp" />
-
-                <TextView
-                    android:id="@+id/name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="20dp"
-                    android:text="HOSTEL ASSIST"
-                    android:textColor="@color/white"
-                    android:textSize="26sp"
-                    android:textStyle="bold" />
-
-                <ImageButton
-                    android:id="@+id/setting"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_gravity="center|right"
-                    android:layout_margin="20dp"
-                    android:background="#00000000"
-                    android:src="@drawable/settings"
-                    android:tint="@color/white"
-                    tools:ignore="UseAppTint" />
-            </FrameLayout>
-
-        </FrameLayout>
-
-        <ScrollView
+        android:layout_height="match_parent">
+        <com.rock.rockui.layouts.GradientLayout
+            android:id="@+id/gradient_back"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="100dp"
-            android:background="#00000000"
-            android:elevation="10dp">
+            android:layout_gravity="center_horizontal"
+            app:animDuration="6000"
+            app:gradientEnd="#FDF9FD"
+            app:gradientMiddle="#F3F3F6"
+            app:gradientStart="#F8F2F2"
+            tools:context=".MainActivity">
 
-            <LinearLayout
+            <FrameLayout
+                android:id="@+id/backspan"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="130dp"
+                android:backgroundTint="@color/color1"
+                android:background="@drawable/rounded_bg"
+                android:elevation="10dp"
+                android:translationY="-20dp">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="40dp">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/backbtn"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="center|left"
+                        android:layout_margin="20dp"
+                        android:background="#00000000"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/manit_logo"
+                        android:translationX="20dp" />
+
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="20dp"
+                        android:text="HOSTEL ASSIST"
+                        android:textColor="@color/white"
+                        android:textSize="26sp"
+                        android:textStyle="bold" />
+
+                    <ImageButton
+                        android:id="@+id/setting"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="center|right"
+                        android:layout_margin="20dp"
+                        android:background="#00000000"
+                        android:src="@drawable/settings"
+                        android:tint="@color/white"
+                        tools:ignore="UseAppTint" />
+                </FrameLayout>
+
+            </FrameLayout>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="100dp"
                 android:background="#00000000"
-                android:orientation="vertical">
+                android:elevation="10dp">
 
                 <LinearLayout
-                    android:id="@+id/quickCard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="32dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="@drawable/rounded_bg"
-                    android:backgroundTint="@color/white"
-                    android:elevation="24dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:outlineAmbientShadowColor="@color/color2"
-                    android:outlineSpotShadowColor="@color/color2"
-                    android:padding="16dp">
-
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:layout_marginRight="15dp"
-                        app:cardCornerRadius="100dp">
-
-                        <ImageView
-                            android:id="@+id/student_photo"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/img" />
-                    </androidx.cardview.widget.CardView>
+                    android:background="#00000000"
+                    android:orientation="vertical">
 
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:id="@+id/quickCard"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="start"
-                        android:orientation="vertical">
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="32dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:background="@drawable/rounded_bg"
+                        android:backgroundTint="@color/white"
+                        android:elevation="24dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:outlineAmbientShadowColor="@color/color2"
+                        android:outlineSpotShadowColor="@color/color2"
+                        android:padding="16dp">
 
-                        <!-- Scholar Number -->
-                        <TextView
-                            android:id="@+id/scholar_no"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Scholar No: 12345678901"
-                            android:textColor="@color/color1"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
 
-                        <!-- Name -->
-                        <TextView
-                            android:id="@+id/student_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:fontFamily="@font/fredoka"
-                            android:text="John Doe"
-                            android:textColor="@color/color1"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_marginRight="15dp"
+                            app:cardCornerRadius="100dp">
 
-                        <!-- Room Number -->
-                        <TextView
-                            android:id="@+id/room_no"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="Room No: 304C"
-                            android:textColor="@color/color2"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
+                            <ImageView
+                                android:id="@+id/student_photo"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/img" />
+                        </androidx.cardview.widget.CardView>
 
-                        <!-- Hostel Name -->
-                        <TextView
-                            android:id="@+id/hostel_name"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="Hostel Name: 238HD"
-                            android:textColor="@color/color2"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:layout_weight="1"
+                            android:gravity="start"
+                            android:orientation="vertical">
 
-                        <!-- Phone Number -->
-                        <TextView
-                            android:id="@+id/phone_no"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="Phone: +91 8765432109"
-                            android:textColor="@color/color2"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
+                            <!-- Scholar Number -->
+                            <TextView
+                                android:id="@+id/scholar_no"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Scholar No: 12345678901"
+                                android:textColor="@color/color1"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
 
-                        <!-- Section -->
-                        <TextView
-                            android:id="@+id/section"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="Section: A"
-                            android:textColor="@color/color2"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
+                            <!-- Name -->
+                            <TextView
+                                android:id="@+id/student_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:fontFamily="@font/fredoka"
+                                android:text="John Doe"
+                                android:textColor="@color/color1"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
 
-                        <!-- Guardian Number -->
-                        <TextView
-                            android:id="@+id/guardian_no"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="Guardian: +91 9876543210"
-                            android:textColor="@color/color2"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
+                            <!-- Room Number -->
+                            <TextView
+                                android:id="@+id/room_no"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Room No: 304C"
+                                android:textColor="@color/color2"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <!-- Hostel Name -->
+                            <TextView
+                                android:id="@+id/hostel_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Hostel Name: 238HD"
+                                android:textColor="@color/color2"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <!-- Phone Number -->
+                            <TextView
+                                android:id="@+id/phone_no"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Phone: +91 8765432109"
+                                android:textColor="@color/color2"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <!-- Section -->
+                            <TextView
+                                android:id="@+id/section"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Section: A"
+                                android:textColor="@color/color2"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <!-- Guardian Number -->
+                            <TextView
+                                android:id="@+id/guardian_no"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Guardian: +91 9876543210"
+                                android:textColor="@color/color2"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
                     </LinearLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:layout_margin="20dp"
+                        android:hint="Select Purpose"
+                        app:boxBackgroundColor="@color/color2_light"
+                        app:boxCornerRadiusBottomEnd="40dp"
+                        app:boxCornerRadiusBottomStart="40dp"
+                        app:boxCornerRadiusTopEnd="40dp"
+                        app:hintTextColor="@color/color1"
+                        app:boxStrokeColor="@color/color1"
+                        app:boxCornerRadiusTopStart="40dp"
+                        app:endIconMode="dropdown_menu">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/placeSpinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:inputType="none"
+                            android:paddingStart="50dp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/goout"
+                        style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="78dp"
+                        android:layout_margin="10dp"
+                        android:backgroundTint="@color/color1"
+                        android:outlineAmbientShadowColor="@color/color1"
+                        android:outlineSpotShadowColor="@color/color1"
+                        android:padding="10dp"
+                        android:text="Exit"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/fredoka"
+                        android:textColor="?attr/colorOnPrimary"
+                        android:textSize="20sp"
+                        app:elevation="24dp"
+                        app:icon="@drawable/logout_24dp_5f6368_fill0_wght400_grad0_opsz24"
+                        app:iconGravity="textStart"
+                        app:iconTint="@color/white" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/latestSlip"
+                        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="78dp"
+                        android:layout_margin="10dp"
+                        android:padding="10dp"
+                        android:text="View History"
+                        android:textColor="@color/color1"
+                        android:textSize="20sp"
+                        app:elevation="14dp"
+                        android:fontFamily="@font/fredoka"
+                        app:icon="@drawable/history_24dp_5f6368_fill0_wght400_grad0_opsz24"
+                        app:iconGravity="textStart"
+                        android:textStyle="bold"
+                        android:outlineAmbientShadowColor="@color/color1"
+                        android:outlineSpotShadowColor="@color/color1"
+                        app:strokeColor="@color/color1"
+                        app:strokeWidth="3dp"
+                        app:rippleColor="@color/color2_light"
+                        app:iconTint="@color/color1" />
+
                 </LinearLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:layout_margin="20dp"
-                    android:hint="Select Purpose"
-                    app:boxBackgroundColor="@color/color2_light"
-                    app:boxCornerRadiusBottomEnd="40dp"
-                    app:boxCornerRadiusBottomStart="40dp"
-                    app:boxCornerRadiusTopEnd="40dp"
-                    app:boxCornerRadiusTopStart="40dp"
-                    app:endIconMode="dropdown_menu">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/placeSpinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:inputType="none"
-                        android:paddingStart="50dp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/goout"
-                    style="@style/Widget.Material3.Button.ElevatedButton.Icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="78dp"
-                    android:layout_margin="10dp"
-                    android:backgroundTint="@color/color1"
-                    android:outlineAmbientShadowColor="@color/color1"
-                    android:outlineSpotShadowColor="@color/color1"
-                    android:padding="10dp"
-                    android:text="Exit"
-                    android:textStyle="bold"
-                    android:fontFamily="@font/fredoka"
-                    android:textColor="?attr/colorOnPrimary"
-                    android:textSize="20sp"
-                    app:elevation="24dp"
-                    app:icon="@drawable/logout_24dp_5f6368_fill0_wght400_grad0_opsz24"
-                    app:iconGravity="textStart"
-                    app:iconTint="@color/white" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/latestSlip"
-                    style="@style/Widget.Material3.Button.OutlinedButton.Icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="78dp"
-                    android:layout_margin="10dp"
-                    android:padding="10dp"
-                    android:text="View History"
-                    android:textColor="@color/color1"
-                    android:textSize="20sp"
-                    app:elevation="14dp"
-                    android:fontFamily="@font/fredoka"
-                    app:icon="@drawable/history_24dp_5f6368_fill0_wght400_grad0_opsz24"
-                    app:iconGravity="textStart"
-                    android:textStyle="bold"
-                    android:outlineAmbientShadowColor="@color/color1"
-                    android:outlineSpotShadowColor="@color/color1"
-                    app:strokeColor="@color/color1"
-                    app:strokeWidth="3dp"
-                    app:rippleColor="@color/color2_light"
-                    app:iconTint="@color/color1" />
-
-            </LinearLayout>
-
-        </ScrollView>
+            </ScrollView>
 
 
-    </com.rock.rockui.layouts.GradientLayout>
-</LinearLayout>
+        </com.rock.rockui.layouts.GradientLayout>
+
+    </LinearLayout>
+    <View
+        android:id="@+id/view_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:visibility="gone"/>
+</FrameLayout>

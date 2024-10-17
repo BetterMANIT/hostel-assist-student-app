@@ -83,7 +83,7 @@ public class HomeActivity extends AppCompatActivity {
                 ArrayList<String> tableNames = new ArrayList<>();
                 lb.gradientBack.setupGradient();
                 for (HostelTable hostelTable : table) {
-                    tableNames.add(hostelTable.getPurpose());
+                    tableNames.add(hostelTable.getPurpose().toUpperCase());
                 }
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(HomeActivity.this, android.R.layout.simple_dropdown_item_1line, tableNames);
                 lb.placeSpinner.setAdapter(adapter);
@@ -120,7 +120,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onSlipCancelled() {
                 lb.goout.setEnabled(true);
             }
-        },false);
+        },false, findViewById(R.id.view_overlay));
         slipBottomSheet.show();
 
     }

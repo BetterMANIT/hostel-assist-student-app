@@ -21,6 +21,7 @@ import com.manit.hostel.assist.students.data.EntryDetail;
 import com.manit.hostel.assist.students.data.HostelTable;
 import com.manit.hostel.assist.students.data.StudentInfo;
 import com.manit.hostel.assist.students.database.MariaDBConnection;
+import com.manit.hostel.assist.students.databinding.ActivityEntryExitSlip2Binding;
 import com.manit.hostel.assist.students.databinding.ActivityEntryExitSlipBinding;
 import com.manit.hostel.assist.students.utils.SlipBottomSheet;
 
@@ -39,8 +40,17 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         dbConnection = new MariaDBConnection(this);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+//        lb = ActivityEntryExitSlipBinding.inflate(getLayoutInflater());
+//        setContentView(lb.getRoot());
+
+//        lb = ActivityEntryExitSlipBinding.inflate()
+//        setContentView(R.layout.activity_entry_exit_slip_2);
+
         lb = ActivityEntryExitSlipBinding.inflate(getLayoutInflater());
+
+        // Set the content view to the root of the binding object
         setContentView(lb.getRoot());
+
         loggedInStudent = AppPref.getLoggedInStudent(this);
         hideUi();
         if (loggedInStudent != null) {
@@ -159,7 +169,7 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
                 public void onSlipCancelled() {
 
                 }
-            }, true);
+            }, true, findViewById(R.id.view_overlay));
             slipBottomSheet.show();
 
         });
@@ -194,7 +204,7 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
         lb.timeLayout.setAlpha(0);
         lb.enterAgain.setVisibility(View.GONE);
         lb.slipframe.setVisibility(View.VISIBLE);
-        lb.cardView.post(() -> lb.cardView.setupGradient());
+//        lb.cardView.post(() -> lb.cardView.setupGradient());
         lb.cardView.setTranslationY(-500);
         lb.cardView.animate().translationY(-50).setDuration(500).start();
         lb.cardView.postDelayed(() -> {
@@ -203,6 +213,7 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
             lb.timeLayout.animate().alpha(1).setDuration(300).start();
             lb.infoLayout.animate().alpha(1).setDuration(300).start();
             lb.enterAgain.setVisibility(View.VISIBLE);
+            lb.loading.setVisibility(View.GONE);
         }, 700);
 
 
@@ -217,17 +228,48 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
         } catch (Exception e) {
             lb.entryTime.setText("-----");
         }
+
+//        Color color = getColor(R.color.color_reddish);
+//        lb.enterAgain.setText("Show Above to Guard");
+//        lb.enterAgain.setBackgroundTintList(new ColorStateList(new int[][]{new int[]{android.R.attr.state_enabled}}, new int[]{Color.RED}));
+//        lb.enterAgain.setOnClickListener(v -> {
+//            startActivity(new Intent(EntryExitSlipActivityActivity.this, HomeActivity.class));
+//            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+//            finish();
+//        });
+//        Toast.makeText(EntryExitSlipActivityActivity.this, "Entry Closed", Toast.LENGTH_SHORT).show();
+//        lb.watermark.setText("Entered back");
+//        lb.watermark.setTextColor(Color.GREEN);
+//        lb.imgBorder.setCardBackgroundColor(Color.green(Color.GREEN));
+
+
+        Color color = Color.valueOf(getColor(R.color.color2));
+
+// Set text
         lb.enterAgain.setText("Show Above to Guard");
-        lb.enterAgain.setBackgroundTintList(new ColorStateList(new int[][]{new int[]{android.R.attr.state_enabled}}, new int[]{Color.GREEN}));
+
+// Set background color (programmatically)
+        lb.enterAgain.setBackgroundTintList(new ColorStateList(
+                new int[][] { new int[] { android.R.attr.state_enabled } },
+                new int[] { color.toArgb() }
+        ));
+
+// Set click listener
         lb.enterAgain.setOnClickListener(v -> {
             startActivity(new Intent(EntryExitSlipActivityActivity.this, HomeActivity.class));
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             finish();
         });
+
+// Show toast
         Toast.makeText(EntryExitSlipActivityActivity.this, "Entry Closed", Toast.LENGTH_SHORT).show();
+
+// Set watermark text and color
         lb.watermark.setText("Entered back");
-        lb.watermark.setTextColor(Color.GREEN);
-        lb.imgBorder.setCardBackgroundColor(Color.green(Color.GREEN));
+        lb.watermark.setTextColor(Color.GRAY);
+
+// Set card background color (using the retrieved color)
+        lb.imgBorder.setCardBackgroundColor(color.toArgb());
     }
 
     @Override
