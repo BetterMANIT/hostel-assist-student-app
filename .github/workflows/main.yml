@@ -69,6 +69,14 @@ jobs:
           echo "version.json content:"
           cat version.json
 
+      - name: Commit version.json
+        run: |
+          git config --local user.name "github-actions"
+          git config --local user.email "github-actions@github.com"
+          git add version.json
+          git commit -m "Update version.json with version code ${{ steps.get_version_code.outputs.version_code }}" || echo "No changes to commit"
+          git push origin main
+
       - name: Release APK
         uses: ncipollo/release-action@v1
         with:
@@ -86,4 +94,4 @@ jobs:
       - name: Output APK URL
         run: |
           echo "APK URL: ${{ steps.check_apk.outputs.apk_url }}"
-          echo "Version info available at: https://github.com/${{ github.repository }}/releases/latest/download/version.json"
+          echo "Version info available at: https://raw.githubusercontent.com/${{ github.repository }}/main/version.json"
