@@ -65,6 +65,7 @@ jobs:
           artifacts: app/build/outputs/apk/release/app-release-unsigned.apk  # Pointing to the unsigned APK
           makeLatest: true
           updateOnlyUnreleased: true  # Update the existing release if it exists
+          allowUpdates: true  # Allow updates to the release
         env:
           JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.13-11/x64
 
