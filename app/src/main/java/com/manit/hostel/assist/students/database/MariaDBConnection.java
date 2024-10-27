@@ -395,7 +395,7 @@ public class MariaDBConnection {
 
         final StringRequest mStringRequest = new StringRequest(Request.Method.POST, BASE_URL_PLUS_SUFFIX, response -> {
             // Handle successful response
-            Log.d("Response", response);
+            Log.d("Response", "open new entry : " + response);
             callback.onAddedSuccess(studentInfo.getScholarNo());
         }, error -> {
             // Handle error response
@@ -433,6 +433,7 @@ public class MariaDBConnection {
 
         final StringRequest mStringRequest = new StringRequest(Request.Method.POST, BASE_URL_PLUS_SUFFIX, response -> {
             // Handle successful response
+            Log.d(MariaDBConnection.class.getSimpleName(), "Response : " +response);
             callback.onSuccess(response);
         }, error -> {
             // Handle error response

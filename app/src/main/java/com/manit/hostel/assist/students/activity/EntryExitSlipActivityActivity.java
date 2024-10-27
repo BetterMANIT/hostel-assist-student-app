@@ -28,6 +28,11 @@ import com.manit.hostel.assist.students.utils.SlipBottomSheet;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class EntryExitSlipActivityActivity extends AppCompatActivity {
     @NonNull
     ActivityEntryExitSlipBinding lb;
@@ -131,25 +136,129 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
+    // Helper method to remove seconds from time
+    String removeSeconds(String time) {
+        String[] timeParts = time.split(":");
+        if (timeParts.length >= 2) {
+            return timeParts[0] + ":" + timeParts[1];  // Use HH:MM only
+        } else {
+            return time;  // Return the original time if format is unexpected
+        }
+    }
     private void fillDetails(EntryDetail entryDetail) {
         // Assuming lb is already initialized in onCreate or elsewhere
         lb.studentName.setText(entryDetail.getName());
         lb.title.setText(String.format("%s Exit Slip", AppPref.getCurrentPlaceWent(this)));
         lb.entryNo.setText(String.format("Entry No: %s", entryDetail.getId()));
         lb.roomNo.setText(String.format("Room: %s", entryDetail.getRoomNo()));
+        Log.d("OpenTime", "Opentime is : " + entryDetail.getOpenTime());
         try {
-            lb.date.setText(String.format("Date: %s", entryDetail.getOpenTime().split(" ")[0])); // Assuming date comes as part of openTime
-            lb.exitTime.setText(entryDetail.getOpenTime().split(" ")[1]); // Time part from openTime
-            if (entryDetail.getCloseTime() != null) {
-                lb.entryTime.setText(entryDetail.getCloseTime().split(" ")[1]);
-            } else {
-                lb.entryTime.setText("-----");
+            // Get today's date
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault()); // Use HH for 24-hour format
+
+            // Extract openTime and closeTime strings
+            String openTimeStr = entryDetail.getOpenTime(); // Format: "HH:mm dd-MM-yyyy"
+            String closeTimeStr = entryDetail.getCloseTime(); // Format: "HH:mm dd-MM-yyyy"
+
+            // Split openTime and closeTime into time and date components
+            String openTime = openTimeStr.split(" ")[0];  // Time part (HH:mm)
+            String openDate = openTimeStr.split(" ")[1];  // Date part (dd-MM-yyyy)
+
+            // Initialize closeTime and closeDate
+            String closeTime = null;
+            String closeDate = null;
+
+            if (closeTimeStr != null && !closeTimeStr.equals("null") && !closeTimeStr.isEmpty()) {
+                closeTime = closeTimeStr.split(" ")[0];  // Time part (HH:mm)
+                closeDate = closeTimeStr.split(" ")[1];  // Date part (dd-MM-yyyy)
             }
-        } catch (Exception e) {
+
+            // Format exitTime based on closeTime availability
+            Date openDateTime = dateFormat.parse(openDate);
+            Date openTimeDate = timeFormat.parse(openTime);
+            Date combinedOpenDateTime = new Date(openDateTime.getTime() + openTimeDate.getTime() % (24 * 60 * 60 * 1000)); // Combine date and time
+
+            lb.exitTime.setText(timeFormat.format(combinedOpenDateTime));
+
+            // Check if closeTime is null
+            if (closeTime == null) {
+                lb.entryTime.setText("-----");
+            } else {
+                // If closeTime is available, format the entryTime
+                Date closeDateTime = dateFormat.parse(closeDate);
+                Date closeTimeDate = timeFormat.parse(closeTime);
+                Date combinedCloseDateTime = new Date(closeDateTime.getTime() + closeTimeDate.getTime() % (24 * 60 * 60 * 1000)); // Combine date and time
+
+                lb.entryTime.setText(timeFormat.format(combinedCloseDateTime));
+            }
+
+            // Handle visibility for the date if needed (omitted for clarity)
+        } catch (ParseException e) {
+            Log.e(EntryExitSlipActivityActivity.class.getSimpleName(), "Error", e);
+            lb.exitTime.setText("-----");
             lb.entryTime.setText("-----");
-            // Time part from openTime
         }
+
+//        try {
+//            // Get today's date
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//            String todayDate = sdf.format(new Date());
+//
+//            // Extract date part from openTime
+//            String openDate = entryDetail.getOpenTime().split(" ")[1];
+//
+//            // Use closeTime if available, otherwise use today's date
+//            String closeDate;
+//            if (entryDetail.getCloseTime() != null && !entryDetail.getCloseTime().equals("null") && !entryDetail.getCloseTime().isEmpty()) {
+//                Log.d(EntryExitSlipActivityActivity.class.getSimpleName(), "Close date : " + entryDetail.getCloseTime());
+//                closeDate = entryDetail.getCloseTime().split(" ")[1];
+//            } else {
+//                closeDate = todayDate;
+//            }
+//
+//            // Compare dates and decide whether to display the date
+//            if (openDate.equals(closeDate)) {
+//                // Dates are the same, no need to show the date
+//                lb.date.setVisibility(View.GONE);  // Hides the date label
+//            } else {
+//                // Dates are different, show the date
+//                lb.date.setText(String.format("Date: %s", openDate));
+//                lb.date.setVisibility(View.VISIBLE);  // Make sure date label is visible
+//            }
+//
+//
+//
+//            // Set the openTime without seconds
+//            String openTime = entryDetail.getOpenTime().split(" ")[0];
+//            lb.exitTime.setText(removeSeconds(openTime));  // HH:MM format
+//
+//            // Set the closeTime if available, otherwise use a placeholder
+//            if (entryDetail.getCloseTime() != null && !entryDetail.getCloseTime().isEmpty()) {
+//                String closeTime = entryDetail.getCloseTime().split(" ")[1];
+//                lb.entryTime.setText(removeSeconds(closeTime));  // HH:MM format
+//            } else {
+//                lb.entryTime.setText("-----");
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            Log.e(EntryExitSlipActivityActivity.class.getSimpleName(), "Error : " + e.getMessage());
+//            lb.entryTime.setText("-----");
+//            lb.date.setVisibility(View.GONE);  // Hide date in case of an error
+//        }
+
+//        try {
+//            lb.date.setText(String.format("Date: %s", entryDetail.getOpenTime().split(" ")[0]));// Assuming date comes as part of openTime
+//            lb.exitTime.setText(entryDetail.getOpenTime().split(" ")[1]); // Time part from openTime
+//            if (entryDetail.getCloseTime() != null) {
+//                lb.entryTime.setText(entryDetail.getCloseTime().split(" ")[1]);
+//            } else {
+//                lb.entryTime.setText("-----");
+//            }
+//        } catch (Exception e) {
+//            lb.entryTime.setText("-----");
+//            // Time part from openTime
+//        }
         lb.scholarNo.setText(entryDetail.getScholarNo());
         lb.watermark.setText(entryDetail.getOpenTime());
         lb.mobileNo.setText(String.format("Mobile: %s", loggedInStudent.getPhoneNo()));

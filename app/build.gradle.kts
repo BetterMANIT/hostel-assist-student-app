@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.manit.hostel.assist.students"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 5
         versionName = "1.0"
