@@ -57,10 +57,11 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: latest
+          tag: latest  # Use the same tag as before
           name: Release on Main Branch
           artifacts: app/build/outputs/apk/release/app-release.apk
           makeLatest: true
+          updateOnlyUnreleased: true  # Update the existing release if it exists
         env:
           JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.13-11/x64
 
