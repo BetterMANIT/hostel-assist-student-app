@@ -32,6 +32,14 @@ jobs:
         run: |
           echo "${{ secrets.FIREBASE_CONFIG }}" > $GITHUB_WORKSPACE/app/google-services.json
 
+      # Step to debug google-services.json content (Masked Output)
+      - name: Debug google-services.json content
+        run: |
+          cat $GITHUB_WORKSPACE/app/google-services.json
+        env:
+          FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
+        continue-on-error: true  # Continue workflow even if this step fails
+
       - name: Build APK
         run: ./gradlew assembleRelease
 
