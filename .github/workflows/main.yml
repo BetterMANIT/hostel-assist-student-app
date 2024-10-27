@@ -64,13 +64,15 @@ jobs:
             echo "::set-output name=apk_url::APK_NOT_FOUND"
           fi
 
-      - name: Release APK
+      - name: Release APK and Version File
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: latest  # Use the same tag as before
           name: Release on Main Branch
-          artifacts: app/build/outputs/apk/release/app-release-unsigned.apk  # Pointing to the unsigned APK
+          artifacts: |
+            app/build/outputs/apk/release/app-release-unsigned.apk
+            version.json  # Include the version file in the release
           makeLatest: true
           updateOnlyUnreleased: false  # Allow updates to any existing release
           allowUpdates: true  # Allow updates to the release
@@ -86,6 +88,7 @@ jobs:
           git commit -m "Update version.json with version code ${{ steps.get_version_code.outputs.version_code }}"
           git push
 
-      - name: Output APK URL
+      - name: Output APK and Version File URLs
         run: |
           echo "APK URL: ${{ steps.check_apk.outputs.apk_url }}"
+          echo "Version JSON URL: https://github.com/${{ github.repository }}/releases/latest/download/version.json"
