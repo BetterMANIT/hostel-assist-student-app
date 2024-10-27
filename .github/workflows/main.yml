@@ -33,7 +33,7 @@ jobs:
       # Step 4: Create google-services.json from secret and debug the contents
       - name: Create google-services.json
         run: |
-          echo "${{ secrets.FIREBASE_CONFIG }}" | jq '.' > $GITHUB_WORKSPACE/app/google-services.json || echo "Failed to format JSON with jq"
+          echo '${{ secrets.FIREBASE_CONFIG }}' > $GITHUB_WORKSPACE/app/google-services.json
           echo "google-services.json content for debug:"
           cat $GITHUB_WORKSPACE/app/google-services.json
         shell: bash
