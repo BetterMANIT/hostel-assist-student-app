@@ -2,8 +2,8 @@ name: Build and Release APK
 
 on:
   push:
-    tags:
-      - '*'  # Trigger on version tags like v1.0.0
+    branches:
+      - main  # Triggers when pushing to the 'Release' branch
 
 jobs:
   build:
