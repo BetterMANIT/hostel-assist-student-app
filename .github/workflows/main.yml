@@ -1,4 +1,4 @@
-name: Build and Release Unsigned APK
+name: Build and Release APK
 
 on:
   push:
@@ -41,54 +41,49 @@ jobs:
         env:
           JAVA_HOME: ${{ runner.tool_cache }}/Java_Zulu_jdk/17.0.13-11/x64
 
-      - name: Get Version Code
-        id: get_version_code
-        run: |
-          # Extract versionCode from build.gradle
-          VERSION_CODE=$(grep versionCode app/build.gradle | awk '{print $2}')
-          echo "VERSION_CODE: $VERSION_CODE"
-          echo "{ \"version_code\": \"$VERSION_CODE\" }" > version.json
-
       - name: Check APK file exists
         id: check_apk
         run: |
-          if [ -f app/build/outputs/apk/release/app-release-unsigned.apk ]; then
-            echo "Unsigned APK file found at expected location."
-            echo "::set-output name=apk_url::https://github.com/${{ github.repository }}/releases/latest/download/app-release-unsigned.apk"
-          elif [ -f app/build/outputs/apk/release/app-release.apk ]; then
-            echo "Signed APK file found."
+          if [ -f app/build/outputs/apk/release/app-release.apk ]; then
+            echo "APK file found at expected location."
             echo "::set-output name=apk_url::https://github.com/${{ github.repository }}/releases/latest/download/app-release.apk"
+          elif [ -f app/build/outputs/apk/release/app-release-unsigned.apk ]; then
+            echo "Using unsigned APK."
+            echo "::set-output name=apk_url::https://github.com/${{ github.repository }}/releases/latest/download/app-release-unsigned.apk"
           else
             echo "APK file not found. Checking other possible locations..."
             find app/build/outputs -name "*.apk"
             echo "::set-output name=apk_url::APK_NOT_FOUND"
           fi
 
-      - name: Release APK and Version File
+      - name: Get Version Code
+        id: get_version_code
+        run: |
+          VERSION_CODE=$(grep -oPm1 "(?<=versionCode )\d+" app/build.gradle)
+          echo "Version Code: $VERSION_CODE"
+          echo "::set-output name=version_code::$VERSION_CODE"
+
+      - name: Create version.json
+        run: |
+          echo "{ \"version_code\": \"${{ steps.get_version_code.outputs.version_code }}\" }" > version.json
+          echo "version.json content:"
+          cat version.json
+
+      - name: Release APK
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: latest  # Use the same tag as before
+          tag: latest
           name: Release on Main Branch
           artifacts: |
+            app/build/outputs/apk/release/app-release.apk
             app/build/outputs/apk/release/app-release-unsigned.apk
-            version.json  # Include the version file in the release
+            version.json
           makeLatest: true
           updateOnlyUnreleased: false  # Allow updates to any existing release
-          allowUpdates: true  # Allow updates to the release
-        env:
-          JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.13-11/x64
+          allowUpdates: true  # Allow updates to the release 
 
-      - name: Commit Version Code
-        if: github.event.head_commit.message != 'Update version.json with version code'
-        run: |
-          git config --local user.name "github-actions"
-          git config --local user.email "github-actions@github.com"
-          git add version.json
-          git commit -m "Update version.json with version code ${{ steps.get_version_code.outputs.version_code }}"
-          git push
-
-      - name: Output APK and Version File URLs
+      - name: Output APK URL
         run: |
           echo "APK URL: ${{ steps.check_apk.outputs.apk_url }}"
-          echo "Version JSON URL: https://github.com/${{ github.repository }}/releases/latest/download/version.json"
+          echo "Version info available at: https://github.com/${{ github.repository }}/releases/latest/download/version.json"
