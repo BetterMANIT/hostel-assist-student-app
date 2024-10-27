@@ -47,4 +47,4 @@ jobs:
       # Step 6: Echo the download link
       - name: Output Download Link
         run: |
-          echo " APK download link: https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/app-release.apk"
+          echo "APK download link: https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/app-release.apk"
