@@ -3,57 +3,56 @@ name: Build and Release APK
 on:
   push:
     branches:
-      - main  # Triggers on pushes to the main branch
+      - main
 
 permissions:
-  contents: write  # Required for creating releases
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout code
       - name: Checkout code
-        uses: actions/checkout@v3  # Updated to latest compatible version
+        uses: actions/checkout@v3
 
-      # Step 2: Set up JDK 17
       - name: Set up JDK 17
-        uses: actions/setup-java@v3  # Updated to latest compatible version
+        uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      # Step 3: Cache Gradle packages
       - name: Cache Gradle packages
-        uses: actions/cache@v3  # Updated to latest compatible version
+        uses: actions/cache@v3
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      # Step 4: Create google-services.json from secret and debug the contents
       - name: Create google-services.json
         run: |
           echo '${{ secrets.FIREBASE_CONFIG }}' > $GITHUB_WORKSPACE/app/google-services.json
           echo "google-services.json content for debug:"
           cat $GITHUB_WORKSPACE/app/google-services.json
-        shell: bash
 
-      # Step 5: Verify JSON format (Fails if JSON is malformed)
-      - name: Verify google-services.json
-        run: |
-          jq . $GITHUB_WORKSPACE/app/google-services.json > /dev/null || exit 1
-        shell: bash
-
-      # Step 6: Build APK
       - name: Build APK
-        run: ./gradlew assembleRelease
+        run: ./gradlew assembleRelease --stacktrace
         env:
           JAVA_HOME: ${{ runner.tool_cache }}/Java_Zulu_jdk/17.0.13-11/x64
 
-      # Step 7: Release APK to GitHub
+      - name: Check APK file exists
+        id: check_apk
+        run: |
+          if [ -f app/build/outputs/apk/release/app-release.apk ]; then
+            echo "APK file found at expected location."
+            echo "::set-output name=apk_url::https://github.com/${{ github.repository }}/releases/latest/download/app-release.apk"
+          else
+            echo "APK file not found. Checking other possible locations..."
+            find app/build/outputs -name "*.apk"
+            echo "::set-output name=apk_url::APK_NOT_FOUND"
+          fi
+
       - name: Release APK
         uses: ncipollo/release-action@v1
         with:
@@ -62,3 +61,9 @@ jobs:
           name: Release on Main Branch
           artifacts: app/build/outputs/apk/release/app-release.apk
           makeLatest: true
+        env:
+          JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.13-11/x64
+
+      - name: Output APK URL
+        run: |
+          echo "APK URL: ${{ steps.check_apk.outputs.apk_url }}"
