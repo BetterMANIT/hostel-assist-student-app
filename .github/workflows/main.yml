@@ -1,4 +1,4 @@
-name: Build and Release APK
+name: Build and Release Unsigned APK
 
 on:
   push:
@@ -44,8 +44,11 @@ jobs:
       - name: Check APK file exists
         id: check_apk
         run: |
-          if [ -f app/build/outputs/apk/release/app-release.apk ]; then
-            echo "APK file found at expected location."
+          if [ -f app/build/outputs/apk/release/app-release-unsigned.apk ]; then
+            echo "Unsigned APK file found at expected location."
+            echo "::set-output name=apk_url::https://github.com/${{ github.repository }}/releases/latest/download/app-release-unsigned.apk"
+          elif [ -f app/build/outputs/apk/release/app-release.apk ]; then
+            echo "Signed APK file found."
             echo "::set-output name=apk_url::https://github.com/${{ github.repository }}/releases/latest/download/app-release.apk"
           else
             echo "APK file not found. Checking other possible locations..."
@@ -59,7 +62,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: latest  # Use the same tag as before
           name: Release on Main Branch
-          artifacts: app/build/outputs/apk/release/app-release.apk
+          artifacts: app/build/outputs/apk/release/app-release-unsigned.apk  # Pointing to the unsigned APK
           makeLatest: true
           updateOnlyUnreleased: true  # Update the existing release if it exists
         env:
