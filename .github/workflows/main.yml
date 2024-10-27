@@ -59,8 +59,8 @@ jobs:
       - name: Get Version Code
         id: get_version_code
         run: |
-          VERSION_CODE=$(grep -oPm1 "(?<=versionCode )\d+" app/build.gradle)
-          echo "Version Code: $VERSION_CODE"
+          VERSION_CODE=$(grep -oPm1 "(?<=versionCode = )\d+" app/build.gradle.kts)
+          echo "Version code is $VERSION_CODE"
           echo "::set-output name=version_code::$VERSION_CODE"
 
       - name: Create version.json
