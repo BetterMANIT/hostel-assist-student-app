@@ -41,6 +41,14 @@ jobs:
         env:
           JAVA_HOME: ${{ runner.tool_cache }}/Java_Zulu_jdk/17.0.13-11/x64
 
+      - name: Get Version Code
+        id: get_version_code
+        run: |
+          # Extract versionCode from build.gradle
+          VERSION_CODE=$(grep versionCode app/build.gradle | awk '{print $2}')
+          echo "VERSION_CODE: $VERSION_CODE"
+          echo "{ \"version_code\": \"$VERSION_CODE\" }" > version.json
+
       - name: Check APK file exists
         id: check_apk
         run: |
@@ -66,9 +74,17 @@ jobs:
           makeLatest: true
           updateOnlyUnreleased: false  # Allow updates to any existing release
           allowUpdates: true  # Allow updates to the release
-
         env:
           JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.13-11/x64
+
+      - name: Commit Version Code
+        if: github.event.head_commit.message !~ 'Update version.json with version code'
+        run: |
+          git config --local user.name "github-actions"
+          git config --local user.email "github-actions@github.com"
+          git add version.json
+          git commit -m "Update version.json with version code ${{ steps.get_version_code.outputs.version_code }}"
+          git push
 
       - name: Output APK URL
         run: |
