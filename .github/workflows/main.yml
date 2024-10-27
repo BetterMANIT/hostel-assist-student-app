@@ -80,7 +80,7 @@ jobs:
           JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.13-11/x64
 
       - name: Commit Version Code
-        if: github.event.head_commit.message !~ 'Update version.json with version code'
+        if: github.event.head_commit.message != 'Update version.json with version code'
         run: |
           git config --local user.name "github-actions"
           git config --local user.email "github-actions@github.com"
