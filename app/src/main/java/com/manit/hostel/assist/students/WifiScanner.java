@@ -20,7 +20,7 @@ public class WifiScanner {
     private WifiManager wifiManager;
 
     public WifiScanner(Context context) {
-        wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        wifiManager  = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
     }
 
     public List<ScanResult> getWifiList(AppCompatActivity mAppCompatActivity) {
