@@ -264,7 +264,7 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
         lb.mobileNo.setText(String.format("Mobile: %s", loggedInStudent.getPhoneNo()));
 
         doUiAnim();
-        Glide.with(this).load(loggedInStudent.getPhotoUrl()).placeholder(R.drawable.img).into(lb.stuPic);
+        Glide.with(this).load(loggedInStudent.getPhotoUrl()).placeholder(R.drawable.placeholder).into(lb.stuPic);
 
         lb.enterAgain.setOnClickListener(v -> {
             SlipBottomSheet slipBottomSheet = new SlipBottomSheet(EntryExitSlipActivityActivity.this, new HostelTable(entryDetail.getPurpose()), new SlipBottomSheet.SlipListener() {

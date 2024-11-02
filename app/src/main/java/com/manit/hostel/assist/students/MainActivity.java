@@ -88,13 +88,13 @@ public class MainActivity extends AppCompatActivity {
                 String BASE_URL = dbConnection.getBaseURL();
                 Log.d(MainActivity.class.getSimpleName(), "BASE_URL: " + BASE_URL);
 
-                splash.post(() -> {
+
                     if (!isInternetAvailable(this)) {
                         showNoInternetDialog(this);
                     } else {
                         checkForLatestVersion();
                     }
-                });
+
             } else {
                 Utility.showNoInternetDialog(this);
             }
@@ -129,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
     private void checkForStudentOut() {
         loggedInStudent = AppPref.getLoggedInStudent(this);
         if (loggedInStudent == null) {
-
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
             finish();
         } else {
@@ -289,20 +288,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showNoInternetDialog(Context context) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Cant reach the server").setMessage("Please check your internet connection or try again later").setCancelable(false).setNegativeButton("Exit", (dialog, which) -> {
-            finish();
-        }).setPositiveButton("try again", (dialog, which) -> {
-            dialog.dismiss();
-            if (!isInternetAvailable(this)) {
-                showNoInternetDialog(this);
-            } else {
-                startActivity(new Intent(this, LoginActivity.class));
+        runOnUiThread(()->{
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Cant reach the server").setMessage("Please check your internet connection or try again later").setCancelable(false).setNegativeButton("Exit", (dialog, which) -> {
                 finish();
-            }
+            }).setPositiveButton("try again", (dialog, which) -> {
+                dialog.dismiss();
+                if (!isInternetAvailable(this)) {
+                    showNoInternetDialog(this);
+                } else {
+                    startActivity(new Intent(this, LoginActivity.class));
+                    finish();
+                }
+            });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
         });
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
     }
 
     private void checkStatusOfStudent() {
@@ -324,12 +325,16 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void insideHostel(String message) {
-                startActivity(new Intent(MainActivity.this, HomeActivity.class));
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                Log.d(LoginActivity.class.getSimpleName(), "Logged in student: " + loggedInStudent);
-                finish();
+                openHome();
             }
         });
+    }
+
+    private void openHome() {
+        startActivity(new Intent(MainActivity.this, HomeActivity.class));
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        Log.d(LoginActivity.class.getSimpleName(), "Logged in student: " + loggedInStudent);
+        finish();
     }
 
     private void openSlipActivity(EntryDetail entryDetail) {

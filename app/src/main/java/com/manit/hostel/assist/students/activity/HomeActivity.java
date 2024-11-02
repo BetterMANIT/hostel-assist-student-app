@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.ObjectKey;
 import com.manit.hostel.assist.students.R;
 import com.manit.hostel.assist.students.data.AppPref;
 import com.manit.hostel.assist.students.data.EntryDetail;
@@ -38,16 +39,27 @@ public class HomeActivity extends AppCompatActivity {
         lb.quickCard.setVisibility(View.GONE);
         loggedInStudent = AppPref.getLoggedInStudent(this);
         if (loggedInStudent != null) {
-            updateInfo(loggedInStudent);
+            updateInfoInUi(loggedInStudent);
         } else {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         }
         addClickLogic();
-        updateStudentDetails();
         setupPlacesAdapter();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loggedInStudent = AppPref.getLoggedInStudent(this);
+        if (loggedInStudent != null) {
+            updateInfoInUi(loggedInStudent);
+            updateStudentDetails();
+        } else {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        }
+    }
 
     private void updateStudentDetails() {
         dbConnection.fetchStudentInfo(loggedInStudent.getScholarNo(), new MariaDBConnection.StudentCallback() {
@@ -70,13 +82,12 @@ public class HomeActivity extends AppCompatActivity {
 
     private void saveInPref(StudentInfo student) {
         AppPref.loginStudent(this, student);
-        updateInfo(loggedInStudent);
+        updateInfoInUi(loggedInStudent);
     }
 
     String placeSelected;
 
     private void setupPlacesAdapter() {
-
         dbConnection.getTablesForHostel(loggedInStudent.getHostelName(), new MariaDBConnection.TablesStatusCallback() {
             @Override
             public void onSuccess(ArrayList<HostelTable> table) {
@@ -105,7 +116,6 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
     private void showGeneratingSlipDialog(ArrayList<HostelTable> table, int position) {
@@ -159,11 +169,11 @@ public class HomeActivity extends AppCompatActivity {
         lb.latestSlip.setOnClickListener(v -> {
             startActivity(new Intent(this, HistoryActivity.class));
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-
         });
     }
 
-    private void updateInfo(StudentInfo studentInfo) {
+    private void updateInfoInUi(StudentInfo studentInfo) {
+        Log.d(HomeActivity.class.getSimpleName(), "infoRefreshed: " + studentInfo.getPhotoUrl());
         lb.scholarNo.setText("Scholar No: " + studentInfo.getScholarNo());
         lb.studentName.setText(studentInfo.getName());
         lb.roomNo.setText("Room No: " + studentInfo.getRoomNo());
@@ -174,7 +184,7 @@ public class HomeActivity extends AppCompatActivity {
         lb.quickCard.setVisibility(View.VISIBLE);
         // Use Glide to load the student's photo into ImageView
         Glide.with(this).load(studentInfo.getPhotoUrl()) // Assuming `photoUrl` is a valid URL or local URI
-                .placeholder(R.drawable.img) // Optional placeholder
+                .placeholder(R.drawable.placeholder).signature(new ObjectKey(System.currentTimeMillis()))  // Optional placeholder
                 .into(lb.studentPhoto);
     }
 

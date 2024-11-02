@@ -8,8 +8,12 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,6 +22,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.manit.hostel.assist.students.R;
 import com.manit.hostel.assist.students.data.AppPref;
 import com.manit.hostel.assist.students.data.StudentInfo;
 import com.manit.hostel.assist.students.database.MariaDBConnection;
@@ -39,6 +44,7 @@ public class UpdateInfoActivity extends AppCompatActivity {
     Bitmap profilePhoto;
     private Uri imageUri;
     File resultfile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +69,7 @@ public class UpdateInfoActivity extends AppCompatActivity {
         lb.roomEditText.setText(studentInfo.getRoomNo());
         lb.sectionEditText.setText(studentInfo.getSection());
         lb.guardianEditText.setText(studentInfo.getGuardianNo());
-        Glide.with(this).load(studentInfo.getPhotoUrl()).into(lb.profileImage);
+        Glide.with(this).load(studentInfo.getPhotoUrl()).placeholder(R.drawable.placeholder).into(lb.profileImage);
         resultUri = Uri.parse(studentInfo.getPhotoUrl());
         lb.uploadProfileBtn.setOnClickListener(v -> {
             showImagePickerDialog();
@@ -72,9 +78,9 @@ public class UpdateInfoActivity extends AppCompatActivity {
             if ((!lb.guardianEditText.getText().toString().isEmpty()) && (lb.guardianEditText.getText().toString().length() == 10)) {
                 if (resultUri != null) {
                     if (!resultUri.toString().equals(studentInfo.getPhotoUrl()))
-                        uploadPhoto(studentInfo);
+                        askPhotoUpload(studentInfo);
                     else uploadInfo(studentInfo);
-                }else {
+                } else {
                     Toast.makeText(getApplicationContext(), "Please upload photo", Toast.LENGTH_SHORT).show();
                 }
             } else {
@@ -84,12 +90,68 @@ public class UpdateInfoActivity extends AppCompatActivity {
         });
     }
 
+    private void askPhotoUpload(StudentInfo studentInfo) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Confirm Upload")
+                .setMessage("Once uploaded, this photo cannot be edited without admin approval. Do you want to proceed?")
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss(); // Dismiss if the user cancels
+                    }
+                })
+                .setPositiveButton("OK (5 sec)", null); // Set initial text with countdown
+
+        // Create and show the dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // Reference to the positive button
+        final Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+
+        // Disable the button initially and set its color to gray
+        positiveButton.setEnabled(false);
+        positiveButton.setTextColor(getResources().getColor(android.R.color.darker_gray));
+
+        // Countdown timer using a Handler
+        final Handler handler = new Handler(Looper.getMainLooper());
+        final int[] countdown = {5}; // Start countdown from 5 seconds
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (countdown[0] > 0) {
+                    // Update button text with remaining seconds
+                    positiveButton.setText("OK (" + countdown[0] + " sec)");
+                    countdown[0]--;
+
+                    // Continue countdown
+                    handler.postDelayed(this, 1000);
+                } else {
+                    // Enable button and set final text when countdown finishes
+                    positiveButton.setEnabled(true);
+                    positiveButton.setText("Yes, Upload");
+                    positiveButton.setTextColor(getResources().getColor(android.R.color.holo_blue_light)); // Set to active color
+
+                    // Set click listener to proceed with upload when button is enabled
+                    positiveButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            uploadPhoto(studentInfo); // Proceed with upload
+                            dialog.dismiss(); // Dismiss the dialog
+                        }
+                    });
+                }
+            }
+        });
+    }
+
     private void uploadPhoto(StudentInfo studentInfo) {
         Log.e("api", String.valueOf(resultUri));
         dbConnection.uploadPhoto(studentInfo.getScholarNo(), resultfile, new MariaDBConnection.PhotoUploadCallBack() {
             @Override
             public void onAddedSuccess(String response) {
-                studentInfo.setPhotoUrl("");
+                clearGlideCache();
                 uploadInfo(studentInfo);
             }
 
@@ -103,6 +165,13 @@ public class UpdateInfoActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void clearGlideCache() {
+        Glide.get(UpdateInfoActivity.this).clearMemory();
+        new Thread(() -> {
+            Glide.get(UpdateInfoActivity.this).clearDiskCache();
+        }).start();
     }
 
     private void uploadInfo(StudentInfo studentInfo) {
