@@ -190,7 +190,7 @@
                             android:text="---------"
                             android:textColor="#444444"
                             android:theme="@style/entry_exit_slip_textview_semi_bold_theme"
-
+                            android:gravity="center"
                             android:textSize="18sp"
                             android:textStyle="bold" />
 
@@ -223,9 +223,10 @@
                         <TextView
                             android:id="@+id/entry_time"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="50dp"
                             android:theme="@style/entry_exit_slip_textview_semi_bold_theme"
                             android:text="--------"
+                            android:gravity="center"
                             android:textColor="#444444"
                             android:textSize="18sp"
                             android:textStyle="bold" />

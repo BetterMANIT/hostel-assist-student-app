@@ -163,11 +163,15 @@ public class HomeActivity extends AppCompatActivity {
             Toast.makeText(this, "select place you are going!", Toast.LENGTH_SHORT).show();
         });
         lb.setting.setOnClickListener(v -> {
-            startActivity(new Intent(this, SettingsActivity.class));
+            Intent intent = new Intent(this, SettingsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
         lb.latestSlip.setOnClickListener(v -> {
-            startActivity(new Intent(this, HistoryActivity.class));
+            Intent intent = new Intent(this, HistoryActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
     }
@@ -207,16 +211,14 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public void insideHostel(String message) {
-                startActivity(new Intent(HomeActivity.this, HomeActivity.class));
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                Log.d(LoginActivity.class.getSimpleName(), "Logged in student: " + loggedInStudent);
-                finish();
+
             }
         });
     }
 
     private void openSlipActivity(EntryDetail entryDetail) {
         Intent intent = new Intent(this, EntryExitSlipActivityActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         finish();

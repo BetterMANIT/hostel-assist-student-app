@@ -59,7 +59,7 @@
                 android:layout_gravity="right"
                 android:elevation="20dp"
                 android:fontFamily="sans-serif-light"
-                android:text="2 hrs 30 mins"
+                android:text=""
                 android:textColor="@color/black"
                 android:textSize="16sp" />
         </FrameLayout>
