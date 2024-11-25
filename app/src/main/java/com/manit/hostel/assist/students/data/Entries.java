@@ -8,7 +8,7 @@ public class Entries {
     private String purpose;
     private String entryTime;
 
-    // Constructor
+
     public Entries(String entryNo, String name, String roomNo, String scholarNo, String exitTime, String entryTime) {
         this.entryNo = entryNo;
         this.name = name;
@@ -27,7 +27,6 @@ public class Entries {
         this.entryTime = "";
     }
 
-    // Getters and Setters
     public String getEntryNo() {
         return entryNo;
     }

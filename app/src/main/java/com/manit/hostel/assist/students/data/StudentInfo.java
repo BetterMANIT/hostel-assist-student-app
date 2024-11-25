@@ -14,7 +14,7 @@ public class StudentInfo {
     private String guardianNo;
     private String entryExitTableName;
 
-    // Constructor
+
     public StudentInfo(String scholarNo, String name, String roomNo, String hostelName, String photoUrl, String phoneNo, String section, String guardianNo, String entryExitTableName) {
         this.scholarNo = scholarNo;
         this.name = name;
@@ -27,7 +27,6 @@ public class StudentInfo {
         this.entryExitTableName = entryExitTableName;
     }
 
-    // Getters
     public String getScholarNo() {
         return scholarNo;
     }

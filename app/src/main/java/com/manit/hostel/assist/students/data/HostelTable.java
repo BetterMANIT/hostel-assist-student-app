@@ -17,7 +17,6 @@ public class HostelTable {
         this.purpose = purpose;
     }
 
-    // Getters (add setters if needed)
     public int getId() { return id; }
     public String getTableName() { return tableName; }
     public String getHostelName() { return hostelName; }

@@ -15,7 +15,6 @@ import com.manit.hostel.assist.students.data.StudentInfo;
 import com.manit.hostel.assist.students.database.MariaDBConnection;
 import com.manit.hostel.assist.students.databinding.ActivityFeedbackBinding;
 
-import java.io.UnsupportedEncodingException;
 
 public class FeedBackActivity extends AppCompatActivity {
     @NonNull

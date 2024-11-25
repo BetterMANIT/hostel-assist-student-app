@@ -21,11 +21,10 @@ public class AppPref {
     private static final String APREF = "apref";
     private static final String SELECTED_HOSTEL = "selected_hostel";
     private static final String STUDENT_LOGIN = "selected_hostel";
-    private static final String AUTH_TOKEN_KEY = "auth_token";  // Added for auth token
+    private static final String AUTH_TOKEN_KEY = "auth_token";
     private static final String PLACE_WENT = "place_went";
     private static final String UPDATED_INFO = "info_updated";
 
-    // Static method to get EncryptedSharedPreferences instance
     private static SharedPreferences getEncryptedSharedPreferences(Context context) {
         try {
             String masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC);
@@ -42,7 +41,6 @@ public class AppPref {
         }
     }
 
-    // Save the auth token securely (Static)
     public static void saveAuthToken(Context context, String authToken) {
         SharedPreferences sharedPreferences = getEncryptedSharedPreferences(context);
         if (sharedPreferences != null) {
@@ -50,7 +48,6 @@ public class AppPref {
         }
     }
 
-    // Retrieve the auth token securely (Static)
     public static String getAuthToken(Context context) {
         SharedPreferences sharedPreferences = getEncryptedSharedPreferences(context);
         if (sharedPreferences != null) {
@@ -58,8 +55,6 @@ public class AppPref {
         }
         return null;
     }
-
-    // Clear the auth token when no longer needed (Static)
     public static void clearAuthToken(Context context) {
         SharedPreferences sharedPreferences = getEncryptedSharedPreferences(context);
         if (sharedPreferences != null) {
@@ -67,8 +62,6 @@ public class AppPref {
         }
     }
 
-
-    // Existing methods
     public static void setSelectedHostel(HomeActivity c, String string) {
         c.getSharedPreferences(APREF, MODE_PRIVATE).edit().putString(SELECTED_HOSTEL, string).apply();
     }
