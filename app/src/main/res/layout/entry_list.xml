@@ -24,7 +24,7 @@
         android:layout_margin="12dp"
         android:background="@drawable/rounded_bg"
         android:backgroundTint="#FCF9FF"
-        android:elevation="6dp"
+        android:elevation="4dp"
         android:orientation="vertical"
         android:padding="16dp">
 

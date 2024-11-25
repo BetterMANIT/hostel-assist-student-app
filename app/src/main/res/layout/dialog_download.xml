@@ -6,6 +6,12 @@
     android:padding="20dp">
 
     <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Downloading latest version"
+        android:textSize="18sp" />
+    <TextView
         android:id="@+id/progressText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
