@@ -33,6 +33,7 @@
             android:textFontWeight="800"
             android:id="@+id/heading"
             android:text="Hostel Assist"
+            android:layout_marginTop="10dp"
             android:textSize="42sp"
             android:textColor="@color/color1"
             android:animation="@anim/fade_in"
