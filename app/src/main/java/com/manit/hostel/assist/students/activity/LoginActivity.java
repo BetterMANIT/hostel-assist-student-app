@@ -1,5 +1,6 @@
 package com.manit.hostel.assist.students.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -126,7 +127,8 @@ public class LoginActivity extends AppCompatActivity {
         }
         otp_sent_counter++;
         Toast.makeText(LoginActivity.this, "Sending OTP", Toast.LENGTH_LONG).show();
-        dbConnection.sendOtp(student.getPhoneNo(), new MariaDBConnection.OtpCallBack() {
+        dbConnection.sendOtp(student.getPhoneNo(),student.getScholarNo(), new MariaDBConnection.OtpCallBack() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void otpSent() {
                 lb.loginButton.setText("Verify OTP");
@@ -155,10 +157,6 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(LoginActivity.this, error, Toast.LENGTH_LONG).show();
                         }
                     });
-                    //TODO : REMOVE THIS IN RELEASE
-                    if(lb.otpEditText.getText().toString().contains("555588")){
-                        loginStudent(student);
-                    }
                 });
 
             }

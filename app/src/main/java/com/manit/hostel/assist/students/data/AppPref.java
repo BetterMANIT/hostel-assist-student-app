@@ -23,6 +23,7 @@ public class AppPref {
     private static final String STUDENT_LOGIN = "selected_hostel";
     private static final String AUTH_TOKEN_KEY = "auth_token";  // Added for auth token
     private static final String PLACE_WENT = "place_went";
+    private static final String UPDATED_INFO = "info_updated";
 
     // Static method to get EncryptedSharedPreferences instance
     private static SharedPreferences getEncryptedSharedPreferences(Context context) {
@@ -119,4 +120,12 @@ public class AppPref {
     public static EntryDetail getLastEntryDetails(Activity activity) throws JSONException {
         return EntryDetail.fromJSON(activity.getSharedPreferences(APREF, MODE_PRIVATE).getString("entry_details", ""));
     }
+
+    public static boolean isStudentInfoUpdated(Activity activity) {
+        return activity.getSharedPreferences(APREF, MODE_PRIVATE).getBoolean(UPDATED_INFO, false);
+    }
+    public static void setStudentInfoUpdated(Activity activity, boolean updated) {
+        activity.getSharedPreferences(APREF, MODE_PRIVATE).edit().putBoolean(UPDATED_INFO, updated).apply();
+    }
+
 }

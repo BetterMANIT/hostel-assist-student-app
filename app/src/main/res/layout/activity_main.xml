@@ -24,15 +24,19 @@
         <ImageView
             android:layout_width="120dp"
             android:src="@drawable/manit_logo"
+            android:animation="@anim/fade_in"
             android:layout_height="120dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textFontWeight="800"
+            android:id="@+id/heading"
             android:text="Hostel Assist"
             android:textSize="42sp"
             android:textColor="@color/color1"
+            android:animation="@anim/fade_in"
+            android:elevation="2dp"
             android:fontFamily="sans-serif"/>
     </LinearLayout>
 </FrameLayout>

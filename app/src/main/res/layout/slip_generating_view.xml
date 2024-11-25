@@ -123,6 +123,21 @@
             android:text="CANCEL">
 
         </com.google.android.material.button.MaterialButton>
+
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.Material3.Button.IconButton.Filled"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/doNow"
+            android:layout_marginLeft="10dp"
+            app:cornerRadius="10dp"
+            android:fontFamily="@font/fredoka"
+            app:backgroundTint="#297802"
+            android:textColor="#ffffff"
+            app:shapeAppearance="@style/Widget.Material3.Button.OutlinedButton"
+            android:text="NOW">
+
+        </com.google.android.material.button.MaterialButton>
     </LinearLayout>
 
 

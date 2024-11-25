@@ -1,5 +1,6 @@
 package com.manit.hostel.assist.students.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +25,7 @@ import com.manit.hostel.assist.students.utils.Utility;
 
 import java.util.ArrayList;
 
+@SuppressLint("SetTextI18n")
 public class HomeActivity extends AppCompatActivity {
     @NonNull
     ActivityHomeBinding lb;
@@ -39,7 +41,7 @@ public class HomeActivity extends AppCompatActivity {
         lb.quickCard.setVisibility(View.GONE);
         loggedInStudent = AppPref.getLoggedInStudent(this);
         if (loggedInStudent != null) {
-            updateInfoInUi(loggedInStudent);
+            updateStudentDetails();
         } else {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
@@ -53,7 +55,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onResume();
         loggedInStudent = AppPref.getLoggedInStudent(this);
         if (loggedInStudent != null) {
-            updateInfoInUi(loggedInStudent);
+            if (AppPref.isStudentInfoUpdated(this))
             updateStudentDetails();
         } else {
             startActivity(new Intent(this, LoginActivity.class));
@@ -82,6 +84,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void saveInPref(StudentInfo student) {
         AppPref.loginStudent(this, student);
+        AppPref.setStudentInfoUpdated(this, false);
         updateInfoInUi(loggedInStudent);
     }
 
@@ -188,7 +191,7 @@ public class HomeActivity extends AppCompatActivity {
         lb.quickCard.setVisibility(View.VISIBLE);
         // Use Glide to load the student's photo into ImageView
         Glide.with(this).load(studentInfo.getPhotoUrl()) // Assuming `photoUrl` is a valid URL or local URI
-                .placeholder(R.drawable.placeholder).signature(new ObjectKey(System.currentTimeMillis()))  // Optional placeholder
+                .placeholder(R.drawable.placeholder)// Optional placeholder
                 .into(lb.studentPhoto);
     }
 

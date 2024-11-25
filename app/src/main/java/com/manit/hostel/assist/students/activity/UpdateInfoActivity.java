@@ -157,7 +157,7 @@ public class UpdateInfoActivity extends AppCompatActivity {
 
             @Override
             public void onError(String message) {
-
+                Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -183,6 +183,7 @@ public class UpdateInfoActivity extends AppCompatActivity {
                 if (AppPref.getLoggedInStudent(UpdateInfoActivity.this) != null) {
                     Toast.makeText(getApplicationContext(), "Update Successful", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                    AppPref.setStudentInfoUpdated(UpdateInfoActivity.this, true);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivity(intent);
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);

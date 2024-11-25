@@ -22,7 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -37,9 +36,9 @@ import com.manit.hostel.assist.students.data.StudentInfo;
 import com.manit.hostel.assist.students.database.MariaDBConnection;
 import com.manit.hostel.assist.students.utils.UpdateDownloader;
 import com.manit.hostel.assist.students.utils.Utility;
+import com.onesignal.Continue;
 import com.onesignal.OneSignal;
 import com.permissionx.guolindev.PermissionX;
-import com.permissionx.guolindev.callback.RequestCallback;
 
 import java.util.List;
 
@@ -65,10 +64,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         webview = findViewById(R.id.webview);
         splash = findViewById(R.id.splash);
-        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder().setMinimumFetchIntervalInSeconds(36000).build();
-        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
-        fetchRemoteConfig();
+
         /*  requestPermissions();
         Log.d(MainActivity.class.getSimpleName(), "Wifi Name list : " + new WifiScanner(this).getWifiList(this).toString());
         if (isLocationEnabled()) {
@@ -80,6 +76,15 @@ public class MainActivity extends AppCompatActivity {
         setupOneSignal();*/
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder().setMinimumFetchIntervalInSeconds(36000).build();
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+        fetchRemoteConfig();
+    }
+
     private void fetchRemoteConfig() {
         mFirebaseRemoteConfig.fetchAndActivate().addOnCompleteListener(this, task -> {
             if (task.isSuccessful()) {
@@ -89,11 +94,11 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(MainActivity.class.getSimpleName(), "BASE_URL: " + BASE_URL);
 
 
-                    if (!isInternetAvailable(this)) {
-                        showNoInternetDialog(this);
-                    } else {
-                        checkForLatestVersion();
-                    }
+                if (!isInternetAvailable(this)) {
+                    showNoInternetDialog(this);
+                } else {
+                    checkForLatestVersion();
+                }
 
             } else {
                 Utility.showNoInternetDialog(this);
@@ -137,10 +142,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
+        findViewById(R.id.heading).setAlpha(0);
+        findViewById(R.id.heading).animate().alpha(1).setDuration(500).start();
        /* if (isComingBack) {
             isComingBack = false;
             if (isLocationEnabled()) {
@@ -196,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void setupOneSignal() {
+        OneSignal.getNotifications().requestPermission(false, Continue.none());
         OneSignal.login(loggedInStudent.getScholarNo());
     }
 
@@ -219,15 +226,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestPermissions() {
-        PermissionX.init(this).permissions(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET).request(new RequestCallback() {
-            @Override
-            public void onResult(boolean allGranted, @NonNull List<String> grantedList, @NonNull List<String> deniedList) {
-                if (allGranted) {
-                    Toast.makeText(MainActivity.this, "All permissions are granted", Toast.LENGTH_LONG).show();
+        PermissionX.init(this).permissions(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET).request((allGranted, grantedList, deniedList) -> {
+            if (allGranted) {
+                Toast.makeText(MainActivity.this, "All permissions are granted", Toast.LENGTH_LONG).show();
 
-                } else {
-                    Toast.makeText(MainActivity.this, "These permissions are denied: $deniedList", Toast.LENGTH_LONG).show();
-                }
+            } else {
+                Toast.makeText(MainActivity.this, "These permissions are denied: $deniedList", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -288,7 +292,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showNoInternetDialog(Context context) {
-        runOnUiThread(()->{
+        runOnUiThread(() -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("Cant reach the server").setMessage("Please check your internet connection or try again later").setCancelable(false).setNegativeButton("Exit", (dialog, which) -> {
                 finish();

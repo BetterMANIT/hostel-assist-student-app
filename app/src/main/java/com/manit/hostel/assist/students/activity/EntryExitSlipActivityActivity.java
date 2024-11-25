@@ -317,20 +317,6 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
             lb.entryTime.setText("-----");
         }
 
-//        Color color = getColor(R.color.color_reddish);
-//        lb.enterAgain.setText("Show Above to Guard");
-//        lb.enterAgain.setBackgroundTintList(new ColorStateList(new int[][]{new int[]{android.R.attr.state_enabled}}, new int[]{Color.RED}));
-//        lb.enterAgain.setOnClickListener(v -> {
-//            startActivity(new Intent(EntryExitSlipActivityActivity.this, HomeActivity.class));
-//            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-//            finish();
-//        });
-//        Toast.makeText(EntryExitSlipActivityActivity.this, "Entry Closed", Toast.LENGTH_SHORT).show();
-//        lb.watermark.setText("Entered back");
-//        lb.watermark.setTextColor(Color.GREEN);
-//        lb.imgBorder.setCardBackgroundColor(Color.green(Color.GREEN));
-
-
         lb.enterAgain.setText("Show Above to Guard");
 
         lb.enterAgain.setBackgroundTintList(new ColorStateList(

@@ -21,7 +21,6 @@ public class ManitApplication extends Application {
         // Verbose Logging set to help debug issues, remove before releasing your app.
         OneSignal.getDebug().setLogLevel(LogLevel.VERBOSE);
         OneSignal.initWithContext(this, ONESIGNAL_APP_ID);
-        OneSignal.getNotifications().requestPermission(false, Continue.none());
         try {
             OneSignal.login(AppPref.getLoggedInStudent(this).getScholarNo());
             Log.d(MainActivity.class.getSimpleName(), "Logged in student: " + AppPref.getLoggedInStudent(this));

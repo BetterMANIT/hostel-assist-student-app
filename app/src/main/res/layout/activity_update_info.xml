@@ -24,6 +24,7 @@
                 android:id="@+id/backbtn"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
+                android:visibility="gone"
                 android:layout_gravity="center|left"
                 android:layout_margin="20dp"
                 android:background="#00000000"

@@ -1,9 +1,14 @@
 package com.manit.hostel.assist.students.utils;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.provider.Settings;
+import android.util.Log;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.manit.hostel.assist.students.data.AppPref;
 import com.manit.hostel.assist.students.data.EntryDetail;
 
 import java.text.ParseException;
@@ -38,5 +43,12 @@ public class Utility {
             return 0;
         });
         return entriesList;
+    }
+
+    @SuppressLint("HardwareIds")
+    public static String getDeviceId(ContentResolver contentResolver){
+        String deviceId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID);
+        Log.d("Utility", "getDeviceId: "+deviceId);
+        return deviceId;
     }
 }

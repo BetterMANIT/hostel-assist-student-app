@@ -1,8 +1,6 @@
 package com.manit.hostel.assist.students.utils;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.CountDownTimer;
@@ -13,15 +11,9 @@ import android.widget.FrameLayout;
 
 import androidx.cardview.widget.CardView;
 
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.shape.MaterialShapeDrawable;
-import com.google.android.material.shape.ShapeAppearanceModel;
-import com.manit.hostel.assist.students.R;
 import com.manit.hostel.assist.students.data.HostelTable;
 import com.manit.hostel.assist.students.databinding.SlipGeneratingViewBinding;
-
-import org.checkerframework.common.subtyping.qual.Bottom;
 
 public class SlipBottomSheet {
 
@@ -41,6 +33,7 @@ public class SlipBottomSheet {
     }
 
     private View overlayView;
+
     public SlipBottomSheet(Context context,
                            HostelTable hostelTable,
                            SlipListener listener,
@@ -54,34 +47,18 @@ public class SlipBottomSheet {
 
         this.overlayView = overlayView;
         bottomSheetDialog = new BottomSheetDialog(context);
-        bottomSheetDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                if(overlayView!=null)
-                    overlayView.setVisibility(View.GONE);
-            }
+        bottomSheetDialog.setOnDismissListener(dialog -> {
+            if (overlayView != null)
+                overlayView.setVisibility(View.GONE);
         });
 
-// Create a FrameLayout for the dark background
-//        FrameLayout dialogBackground = new FrameLayout(context);
-//        dialogBackground.setLayoutParams(new FrameLayout.LayoutParams(
-//                FrameLayout.LayoutParams.MATCH_PARENT,
-//                FrameLayout.LayoutParams.MATCH_PARENT
-//        ));
-
-// Set a semi-transparent background color for the dark effect
-//        dialogBackground.setBackgroundColor(Color.parseColor("#80000000")); // Dark background
-
-// Create a CardView to hold your content
         CardView cardView = new CardView(context);
         cardView.setLayoutParams(new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT
         ));
-
-// Create a drawable with corner radii
         GradientDrawable drawable = new GradientDrawable();
-        drawable.setColor(Color.WHITE); // Set the background color of the CardView
+        drawable.setColor(Color.WHITE);
         float radius = dpToPx(16, context);
         drawable.setCornerRadii(new float[]{
                 radius, radius, // top left
@@ -90,109 +67,25 @@ public class SlipBottomSheet {
                 0f, 0f        // bottom left
         });
 
-// Set the background of the CardView to the drawable
         cardView.setBackground(drawable);
-        cardView.setCardElevation(dpToPx(8, context)); // Set elevation for shadow
-        cardView.addView(binding.getRoot()); // Add your content to the CardView
+        cardView.setCardElevation(dpToPx(8, context));
+        cardView.addView(binding.getRoot());
 
-// Add the CardView to the dialog background
-// Set the FrameLayout as the content view for the BottomSheetDialog
         bottomSheetDialog.setContentView(cardView);
-
-// Set the FrameLayout as the content view for the BottomSheetDialog
-//        bottomSheetDialog.setContentView(binding.getRoot());
-
-//        bottomSheetDialog.setOnShowListener(dialog -> {
-//            BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) dialog;
-//            FrameLayout bottomSheet = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-//            if (bottomSheet != null) {
-//                BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED); // Expand the bottom sheet
-//                bottomSheet.setBackgroundColor(Color.TRANSPARENT); // Make the bottom sheet background transparent
-//            }
-//        });
-
-//        bottomSheetDialog = new BottomSheetDialog(context);
-//
-//
-//        FrameLayout dialogBackground = new FrameLayout(context);
-//        dialogBackground.setLayoutParams(new FrameLayout.LayoutParams(
-//                FrameLayout.LayoutParams.MATCH_PARENT,
-//                FrameLayout.LayoutParams.MATCH_PARENT
-//        ));
-//
-//        // Set a semi-transparent background color
-//        dialogBackground.setBackgroundColor(Color.parseColor("#80000000")); // Dark background
-//
-//        // Create a CardView to hold your content
-//        CardView cardView = new CardView(context);
-//        cardView.setLayoutParams(new FrameLayout.LayoutParams(
-//                FrameLayout.LayoutParams.MATCH_PARENT,
-//                FrameLayout.LayoutParams.WRAP_CONTENT
-//        ));
-//
-//        // Create a drawable with corner radii
-//        GradientDrawable drawable = new GradientDrawable();
-//        drawable.setColor(Color.WHITE); // Set the background color of the CardView
-//        float radius = dpToPx(16, context);
-//        drawable.setCornerRadii(new float[]{
-//                radius, radius, // top left
-//                radius, radius, // top right
-//                0f, 0f, // bottom right
-//                0f, 0f, // bottom left
-//        });
-//
-//        // Set the background of the CardView to the drawable
-//        cardView.setBackground(drawable);
-//        cardView.setCardElevation(dpToPx(8, context)); // Set elevation for shadow
-//        cardView.addView(binding.getRoot()); // Add your content to the CardView
-//
-//        // Add the CardView to the dialog background
-//        dialogBackground.addView(cardView);
-//
-//        // Set the FrameLayout as the content view for the BottomSheetDialog
-//        bottomSheetDialog.setContentView(dialogBackground);
-
-//        bottomSheetDialog = new BottomSheetDialog(context);
-////        bottomSheetDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-//
-////        bottomSheetDialog.setContentView(binding.getRoot());
-//
-//        CardView cardView = new CardView(context);
-//        cardView.setLayoutParams(new FrameLayout.LayoutParams(
-//                FrameLayout.LayoutParams.MATCH_PARENT,
-//                FrameLayout.LayoutParams.WRAP_CONTENT
-//        ));
-//
-//        GradientDrawable drawable = new GradientDrawable();
-//        drawable.setColor(Color.WHITE); // Set the background color
-//        float radius = dpToPx(16, context);
-//        drawable.setCornerRadii(new float[]{
-//                radius, radius,
-//                radius, radius,
-//                0f, 0f,
-//                0f, 0f,
-//                0f, 0f,
-//                0f, 0f
-//        });
-//
-//        // Set the background of the CardView to the drawable
-//        cardView.setBackground(drawable);
-//
-//        // Apply the shape appearance model to the CardView
-//        cardView.setCardElevation(dpToPx(8, context));
-//
-//        cardView.setCardBackgroundColor(Color.WHITE);
-//
-//        cardView.addView(binding.getRoot());
-//
-//        bottomSheetDialog.setContentView(cardView);
 
 
         bottomSheetDialog.setCancelable(false);
         binding.cancelButton.setOnClickListener(view -> {
             isCancelled = true;
             bottomSheetDialog.dismiss();
-            listener.onSlipCancelled(); // Notify listener of cancellation
+            listener.onSlipCancelled();
+        });
+        binding.doNow.setOnClickListener(view -> {
+            if(!isCancelled){
+                countDownTimer.cancel();
+                listener.onSlipGenerated();
+                generateSlip();
+            }
         });
     }
 
@@ -204,16 +97,16 @@ public class SlipBottomSheet {
     private void updateUIForMode() {
         if (isEntryMode) {
             binding.title.setText(String.format("Generating Entry Slip for %s", selectedTable.getPurpose().toUpperCase()));
-            binding.textViewGeneratingSlip.setText("Generating entry slip in 00:05");
+            binding.textViewGeneratingSlip.setText("Auto-Generating entry slip in 00:05");
             binding.note1.setText("Closing the entry requires you to be present at hostel gate");
         } else {
             binding.title.setText(String.format("Generating Exit Slip for %s", selectedTable.getPurpose()));
-            binding.textViewGeneratingSlip.setText("Generating exit slip in 00:05");
+            binding.textViewGeneratingSlip.setText("Auto-Generating exit slip in 00:05");
         }
     }
 
     public void show() {
-        if(overlayView!=null)
+        if (overlayView != null)
             overlayView.setVisibility(View.VISIBLE);
         bottomSheetDialog.show();
         startBufferTimer();
@@ -223,7 +116,7 @@ public class SlipBottomSheet {
         countDownTimer = new CountDownTimer(bufferTime, 10) { // Update every 10ms
             public void onTick(long millisUntilFinished) {
                 int secondsRemaining = (int) (millisUntilFinished / 1000);
-                binding.textViewGeneratingSlip.setText(String.format("Generating in 00:0%d", secondsRemaining));
+                binding.textViewGeneratingSlip.setText(String.format("Auto-Generating in 00:0%d", secondsRemaining));
 
                 float progressPercentage = (bufferTime - millisUntilFinished) / (float) bufferTime;
                 int progressWidth = (int) (binding.progressTrack.getWidth() * progressPercentage);

@@ -194,9 +194,10 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
         public DataPart() {
         }
 
-        DataPart(String name, byte[] data) {
+        DataPart(String name, byte[] data, String type) {
             fileName = name;
             content = data;
+            this.type = type;
         }
 
         String getFileName() {
