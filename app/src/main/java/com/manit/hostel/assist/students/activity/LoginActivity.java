@@ -91,33 +91,6 @@ public class LoginActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-//    public static void allowAllSSL() {
-//        try {
-//            TrustManager[] trustAllCerts = new TrustManager[]{
-//                    new X509TrustManager() {
-//                        public void checkClientTrusted(X509Certificate[] chain, String authType) {
-//                        }
-//
-//                        public void checkServerTrusted(X509Certificate[] chain, String authType) {
-//                        }
-//
-//                        public X509Certificate[] getAcceptedIssuers() {
-//                            return new X509Certificate[0];
-//                        }
-//                    }
-//            };
-//
-//            SSLContext sc = SSLContext.getInstance("SSL");
-//            sc.init(null, trustAllCerts, new java.security.SecureRandom());
-//            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-//            HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
-//        } catch (Exception e) {
-//            Log.e(LoginActivity.class.getSimpleName(), "SSL error", e);
-//            e.printStackTrace();
-//        }
-//    }
-
-
     int otp_sent_counter = 0;
 
     private void sendOtp(StudentInfo student) {

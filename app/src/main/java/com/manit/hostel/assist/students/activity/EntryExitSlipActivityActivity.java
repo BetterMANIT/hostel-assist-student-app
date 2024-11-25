@@ -34,7 +34,6 @@ import java.util.Date;
 import java.util.Locale;
 
 public class EntryExitSlipActivityActivity extends AppCompatActivity {
-    @NonNull
     ActivityEntryExitSlipBinding lb;
     MariaDBConnection dbConnection;
     StudentInfo loggedInStudent;
@@ -45,17 +44,8 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         dbConnection = new MariaDBConnection(this);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-//        lb = ActivityEntryExitSlipBinding.inflate(getLayoutInflater());
-//        setContentView(lb.getRoot());
-
-//        lb = ActivityEntryExitSlipBinding.inflate()
-//        setContentView(R.layout.activity_entry_exit_slip_2);
-
         lb = ActivityEntryExitSlipBinding.inflate(getLayoutInflater());
-
-        // Set the content view to the root of the binding object
         setContentView(lb.getRoot());
-
         loggedInStudent = AppPref.getLoggedInStudent(this);
         hideUi();
         if (loggedInStudent != null) {
@@ -172,72 +162,6 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
         } else {
             lb.entryTime.setText(closeTimeStr);
         }
-
-        // Handle visibility for the date if needed (omitted for clarity)
-        /*        try {
-            // Get today's date
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            String todayDate = sdf.format(new Date());
-
-            // Extract date part from openTime
-            String openDate = entryDetail.getOpenTime().split(" ")[1];
-
-            // Use closeTime if available, otherwise use today's date
-            String closeDate;
-            if (entryDetail.getCloseTime() != null && !entryDetail.getCloseTime().equals("null") && !entryDetail.getCloseTime().isEmpty()) {
-                Log.d(EntryExitSlipActivityActivity.class.getSimpleName(), "Close date : " + entryDetail.getCloseTime());
-                closeDate = entryDetail.getCloseTime().split(" ")[1];
-            } else {
-                closeDate = todayDate;
-            }
-
-            // Compare dates and decide whether to display the date
-            if (openDate.equals(closeDate)) {
-                // Dates are the same, no need to show the date
-                lb.date.setVisibility(View.GONE);  // Hides the date label
-            } else {
-                // Dates are different, show the date
-                lb.date.setText(String.format("Date: %s", openDate));
-                lb.date.setVisibility(View.VISIBLE);  // Make sure date label is visible
-            }
-
-
-
-            // Set the openTime without seconds
-            String openTime = entryDetail.getOpenTime().split(" ")[0];
-            lb.exitTime.setText(removeSeconds(openTime));  // HH:MM format
-
-            // Set the closeTime if available, otherwise use a placeholder
-            if (entryDetail.getCloseTime() != null && !entryDetail.getCloseTime().isEmpty()) {
-                String closeTime = entryDetail.getCloseTime().split(" ")[1];
-                lb.entryTime.setText(removeSeconds(closeTime));  // HH:MM format
-            } else {
-                lb.entryTime.setText("-----");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(EntryExitSlipActivityActivity.class.getSimpleName(), "Error : " + e.getMessage());
-            lb.entryTime.setText("-----");
-            lb.date.setVisibility(View.GONE);  // Hide date in case of an error
-        }
-
-        try {
-            lb.date.setText(String.format("Date: %s", entryDetail.getOpenTime().split(" ")[0]));// Assuming date comes as part of openTime
-            lb.exitTime.setText(entryDetail.getOpenTime().split(" ")[1]); // Time part from openTime
-            if (entryDetail.getCloseTime() != null) {
-                lb.entryTime.setText(entryDetail.getCloseTime().split(" ")[1]);
-            } else {
-                lb.entryTime.setText("-----");
-            }
-        } catch (Exception e) {
-            lb.entryTime.setText("-----");
-            // Time part from openTime
-        }*/
-
-
-
-
-
         lb.scholarNo.setText(entryDetail.getScholarNo());
         lb.watermark.setText(entryDetail.getOpenTime());
         lb.mobileNo.setText(String.format("Mobile: %s", loggedInStudent.getPhoneNo()));
@@ -335,8 +259,7 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
         Toast.makeText(EntryExitSlipActivityActivity.this, "Entry Closed", Toast.LENGTH_SHORT).show();
 
         lb.watermark.setText("Entered back");
-        lb.watermark.setTextColor(Color.GRAY);
-
+        lb.watermark.setTextColor(Color.parseColor("#444444"));
         lb.imgBorder.setCardBackgroundColor(getColor(R.color.color2));
     }
 

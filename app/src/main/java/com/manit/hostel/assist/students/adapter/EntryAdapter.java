@@ -23,7 +23,6 @@ import java.util.Locale;
 public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.EntryViewHolder> {
     private ArrayList<EntryDetail> entryDetailsList;
 
-    // Constructor
     public EntryAdapter(ArrayList<EntryDetail> entryDetailsList) {
         this.entryDetailsList = entryDetailsList;
     }
@@ -38,9 +37,8 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.EntryViewHol
 
     @Override
     public void onBindViewHolder(@NonNull EntryViewHolder holder, int position) {
-        // Get current entry detail item
+
         EntryDetail entryDetail = entryDetailsList.get(position);
-        // Bind data to the view using View Binding
         holder.binding.tvPurpose.setText(entryDetail.getPurpose());
         holder.binding.tvDate.setText(entryDetail.getOpenTime().split(" ")[0]);
         holder.binding.tvStartTime.setText(entryDetail.getOpenTime());
