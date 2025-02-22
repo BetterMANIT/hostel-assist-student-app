@@ -47,7 +47,7 @@ public class EntryExitSlipActivityActivity extends AppCompatActivity {
         lb = ActivityEntryExitSlipBinding.inflate(getLayoutInflater());
         setContentView(lb.getRoot());
         loggedInStudent = AppPref.getLoggedInStudent(this);
-        hideUi();
+         hideUi();
         if (loggedInStudent != null) {
             showDetails();
         } else {

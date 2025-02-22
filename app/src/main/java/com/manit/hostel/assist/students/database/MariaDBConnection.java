@@ -7,11 +7,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -38,6 +35,7 @@ import java.util.Map;
 public class MariaDBConnection {
 
 
+    private final String API_KEY;
     private String BASE_URL;
     private final FirebaseRemoteConfig mFirebaseRemoteConfig;
 
@@ -51,12 +49,48 @@ public class MariaDBConnection {
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         this.mAppCompatActivity = mAppCompatActivity;
         BASE_URL = getBaseURL();
+        API_KEY = getApiKey();
+    }
+
+    private String getApiKey() {
+        return mFirebaseRemoteConfig.getString("X_KEY");
     }
 
 
     public String getBaseURL() {
-        if (true) return "http://4.186.57.254/";
         return mFirebaseRemoteConfig.getString("BASE_URL");
+    }
+
+
+    // Logging in user after google signing in app to server
+    public void loginUser(String scholarNo, String uid,Callback callback){
+        String url = BASE_URL + "/API/login_user.php?";
+        Map<String, String> query = new HashMap<>();
+        query.put("device_id", Utility.getDeviceId(mAppCompatActivity.getContentResolver()));
+        query.put("uid", uid);
+        query.put("scholar_no", scholarNo);
+        query.put("key",API_KEY);
+        for(Map.Entry<String, String> entry : query.entrySet()){
+            url =  url.concat(entry.getKey() + "=" + entry.getValue() + "&");
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
+            try {
+                Log.d("Response", response.toString());
+                if (response.getString("status").equals("success")) {
+                    AppPref.saveAuthToken(mAppCompatActivity, response.getString("token")+uid);
+                    callback.onResponse(response.getString("token"));
+                } else if (response.getString("status").equals("error")) {
+                    callback.onErrorResponse("error" + response.getString("message"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                callback.onErrorResponse("error" + e.getMessage());
+            }
+        }, error -> {
+            error.printStackTrace();
+            callback.onErrorResponse("error" + error.getMessage());
+        });
+        mQueue.add(jsonObjectRequest);
     }
 
 
@@ -80,21 +114,15 @@ public class MariaDBConnection {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-                callback.onError(e.getMessage());
+                callback.onError("error" + e.getMessage());
             }
         }, error -> {
             error.printStackTrace();
-            callback.onError(error.getMessage());
-//            if (error.networkResponse.statusCode == 404) {
-//                callback.networkError();
-//            }
+            callback.onError("error" + error.getMessage());
         }) {
             @Override
             public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("device_id", Utility.getDeviceId(mAppCompatActivity.getContentResolver()));
-                headers.put("token", AppPref.getAuthToken(mAppCompatActivity));
-                return headers;
+                return getHeadersDefault(scholarNo);
             }
         };
         mQueue.add(jsonObjectRequest);
@@ -106,8 +134,6 @@ public class MariaDBConnection {
         url = url + "&guardian_no=" + studentInfo.getGuardianNo();
         url = url + "&section=" + studentInfo.getSection();
         url = url + "&photo_url=" + studentInfo.getPhotoUrl();
-
-
         Log.d("URL", url);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
             try {
@@ -126,15 +152,13 @@ public class MariaDBConnection {
         }, error -> callback.onError(error.getMessage())) {
             @Override
             public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("device_id", Utility.getDeviceId(mAppCompatActivity.getContentResolver()));
-                headers.put("token", AppPref.getAuthToken(mAppCompatActivity));
-                return headers;
+                return getHeadersDefault(studentInfo.getScholarNo());
             }
         };
         mQueue.add(jsonObjectRequest);
     }
 
+    //deprecated
     public void verifyOtp(String phone_no, Context mContext, String otp, String scholar_no, OtpVerificationCallBack otpVerificationCallBack) {
 
         //http://localhost/hostel-assist-web/API/student/verify_otp.php?phone_no=19209229&otp=123456&scholar_no=129293238
@@ -171,6 +195,7 @@ public class MariaDBConnection {
         mQueue.add(mJSONObject);
     }
 
+    //deprecated
     public void sendOtp(String mobile, String scholarNo, OtpCallBack otpCallBack) {
         //===/API/send_otp_to_phone_no.php?phone_no=8021229292
         if (!mobile.isEmpty()) {
@@ -192,7 +217,7 @@ public class MariaDBConnection {
                 @Override
                 public Map<String, String> getHeaders() {
                     Map<String, String> headers = new HashMap<>();
-                    headers.put("device_id", Utility.getDeviceId(mAppCompatActivity.getContentResolver()));
+                    headers.put("device-id", Utility.getDeviceId(mAppCompatActivity.getContentResolver()));
                     return headers;
                 }
 
@@ -205,7 +230,7 @@ public class MariaDBConnection {
 
     public void getStudentStatus(String scholarNo, StatusCallback statusCallback) {
         if (!scholarNo.isEmpty()) {
-            String url = BASE_URL + "API/get_specific_entry_details_by_scholar_no.php?scholar_no=" + scholarNo;
+            String url = BASE_URL + "/API/get_specific_entry_details_by_scholar_no.php?scholar_no=" + scholarNo;
 
             Log.d("URL", url);
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
@@ -234,10 +259,7 @@ public class MariaDBConnection {
             }, error -> statusCallback.onError(error.getMessage())) {
                 @Override
                 public Map<String, String> getHeaders() {
-                    Map<String, String> headers = new HashMap<>();
-                    headers.put("device_id", Utility.getDeviceId(mAppCompatActivity.getContentResolver()));
-                    headers.put("token", AppPref.getAuthToken(mAppCompatActivity));
-                    return headers;
+                    return getHeadersDefault(scholarNo);
                 }
 
             };
@@ -254,7 +276,7 @@ public class MariaDBConnection {
 
     public void getStudentHistory(String scholarNo, HistoryCallback historyCallback) {
         if (!scholarNo.isEmpty()) {
-            String url = BASE_URL + "API/get_history_of_entry_by_scholar_no.php?scholar_no=" + scholarNo;
+            String url = BASE_URL + "/API/get_history_of_entry_by_scholar_no.php?scholar_no=" + scholarNo;
 
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
                 try {
@@ -288,10 +310,7 @@ public class MariaDBConnection {
             }, error -> historyCallback.onError(error.getMessage())) {
                 @Override
                 public Map<String, String> getHeaders() {
-                    Map<String, String> headers = new HashMap<>();
-                    headers.put("device_id", Utility.getDeviceId(mAppCompatActivity.getContentResolver()));
-                    headers.put("token", AppPref.getAuthToken(mAppCompatActivity));
-                    return headers;
+                    return getHeadersDefault(scholarNo);
                 }
 
             };
@@ -302,9 +321,9 @@ public class MariaDBConnection {
         }
     }
 
-    public void getTablesForHostel(String hostelName, TablesStatusCallback statusCallback) {
+    public void getTablesForHostel(String hostelName,String scholarNo, TablesStatusCallback statusCallback) {
         if (!hostelName.isEmpty()) {
-            String url = BASE_URL + "API/student/get_purposes_by_hostel_name.php?hostel_name=" + hostelName;
+            String url = BASE_URL + "/API/student/get_purposes_by_hostel_name.php?hostel_name=" + hostelName;
             Log.d("URL", url);
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
                 try {
@@ -333,10 +352,7 @@ public class MariaDBConnection {
             }, error -> statusCallback.onError(error.getMessage())) {
                 @Override
                 public Map<String, String> getHeaders() {
-                    Map<String, String> headers = new HashMap<>();
-                    headers.put("device_id", Utility.getDeviceId(mAppCompatActivity.getContentResolver()));
-                    headers.put("token", AppPref.getAuthToken(mAppCompatActivity));
-                    return headers;
+                    return getHeadersDefault(scholarNo);
                 }
 
             };
@@ -347,92 +363,49 @@ public class MariaDBConnection {
         }
     }
 
-
     public void checkForUpdate(UpdateCallback updateCallback) {
-        String url = BASE_URL + "API/student/is_app_update_available.php";
-
+        String url = BASE_URL + "/API/student/is_app_update_available.php";
         Log.d("URL", url);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null, response -> {
             try {
-                //{
-                //    "status": "success",
-                //    "is_update_available": true,
-                //    "apk_download_link": "https://example.com/latest_app.apk"
-                //}
                 Log.e("Response", response.toString());
-                if (response.getString("status").equals("success")) {
-                    if (response.getBoolean("is_update_available")) {
-                        updateCallback.onUpdateAvailable(true, response.getString("apk_download_link"));
-                    } else {
-                        updateCallback.onUpdateAvailable(false, response.getString("apk_download_link"));
-                    }
+                if ("success".equals(response.getString("status"))) {
+                    updateCallback.onUpdateAvailable(
+                            response.getBoolean("is_update_available"),
+                            response.getString("apk_download_link")
+                    );
                 } else {
                     updateCallback.onError("Unexpected response from server.");
                 }
             } catch (JSONException e) {
-                e.printStackTrace();
                 updateCallback.onError(e.getMessage());
             }
         }, error -> {
-            updateCallback.onError(error.getMessage());
-            error.printStackTrace();
+            if (error.networkResponse == null) { // Ensure only unreachable server errors are handled
+                updateCallback.networkError();
+            }
         }) {
-
             @Override
             public byte[] getBody() {
-                byte[] body = super.getBody();
-                Log.d(TAG, "Request body: " + (body != null ? new String(body) : "null"));
-                PackageInfo pInfo = null;
                 try {
-                    pInfo = mAppCompatActivity.getPackageManager().getPackageInfo(mAppCompatActivity.getPackageName(), 0);
-                    int versionCode = pInfo.versionCode;
-                    Log.d("Version Code", String.valueOf(versionCode));
-                    return ("version_code=" + versionCode).getBytes("UTF-8");
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
-                } catch (UnsupportedEncodingException e) {
+                    PackageInfo pInfo = mAppCompatActivity.getPackageManager().getPackageInfo(mAppCompatActivity.getPackageName(), 0);
+                    return ("version_code=" + pInfo.versionCode).getBytes("UTF-8");
+                } catch (PackageManager.NameNotFoundException | UnsupportedEncodingException e) {
                     throw new RuntimeException(e);
                 }
-                return super.getBody();
             }
 
             @Override
             public String getBodyContentType() {
-                return "application/x-www-form-urlencoded; charset=UTF-8";  // Proper content type for sending form data
+                return "application/x-www-form-urlencoded; charset=UTF-8";
             }
-
-
-            String TAG = MariaDBConnection.class.getSimpleName() + " volley";
-
-            @Override
-            protected void deliverResponse(JSONObject response) {
-                Log.d(TAG, "Response received: " + response.toString());
-                super.deliverResponse(response);
-                String contentType = super.getBodyContentType();
-                Log.d(TAG, "Body Content Type: " + contentType);
-            }
-
-            @Override
-            public void deliverError(VolleyError error) {
-                Log.e(TAG + " delivery", "Error occurred: " + error.toString());
-                if (error.networkResponse != null) {
-                    Log.e(TAG, "Status Code: " + error.networkResponse.statusCode);
-                    Log.e(TAG, "Response Data: " + new String(error.networkResponse.data));
-                }
-                super.deliverError(error);
-            }
-
-
         };
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000, // Timeout in milliseconds
-                3,    // Number of retries
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         mQueue.add(jsonObjectRequest);
     }
 
     public void openNewEntry(StudentInfo studentInfo, HostelTable table, AddNewEntryCallback callback) {
-        final String BASE_URL_PLUS_SUFFIX = BASE_URL + "API/open_new_entry.php";
+        final String BASE_URL_PLUS_SUFFIX = BASE_URL + "/API/open_new_entry.php";
 
         final StringRequest mStringRequest = new StringRequest(Request.Method.POST, BASE_URL_PLUS_SUFFIX, response -> {
             Log.d("Response", "open new entry : " + response);
@@ -463,10 +436,7 @@ public class MariaDBConnection {
 
             @Override
             public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("device_id", Utility.getDeviceId(mAppCompatActivity.getContentResolver()));
-                headers.put("token", AppPref.getAuthToken(mAppCompatActivity));
-                return headers;
+                return getHeadersDefault(studentInfo.getScholarNo());
             }
 
         };
@@ -474,7 +444,7 @@ public class MariaDBConnection {
     }
 
     public void closeEntryStudent(String scholarNo, CloseEntryCallback callback) {
-        final String BASE_URL_PLUS_SUFFIX = BASE_URL + "API/close_already_existing_entry.php";
+        final String BASE_URL_PLUS_SUFFIX = BASE_URL + "/API/close_already_existing_entry.php";
         Log.d(MariaDBConnection.class.getSimpleName(), "Sending request to: " + BASE_URL_PLUS_SUFFIX);
         final StringRequest mStringRequest = new StringRequest(Request.Method.POST, BASE_URL_PLUS_SUFFIX, response -> {
             Log.d(MariaDBConnection.class.getSimpleName(), "Response : " + response);
@@ -496,10 +466,7 @@ public class MariaDBConnection {
 
             @Override
             public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("device_id", Utility.getDeviceId(mAppCompatActivity.getContentResolver()));
-                headers.put("token", AppPref.getAuthToken(mAppCompatActivity));
-                return headers;
+                return getHeadersDefault(scholarNo);
             }
 
         };
@@ -507,7 +474,7 @@ public class MariaDBConnection {
     }
 
     public void uploadPhoto(String scholarNo, File imageFile, PhotoUploadCallBack callback) {
-        final String BASE_URL_PLUS_SUFFIX = BASE_URL + "API/student/upload_profile_photo.php?scholar_no=" + scholarNo;
+        final String BASE_URL_PLUS_SUFFIX = BASE_URL + "/API/student/upload_profile_photo.php?scholar_no=" + scholarNo;
 
         // Convert the image file to a Base64 string
         // Create a VolleyMultipartRequest
@@ -546,10 +513,7 @@ public class MariaDBConnection {
 
             @Override
             public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("device_id", Utility.getDeviceId(mAppCompatActivity.getContentResolver()));
-                headers.put("token", AppPref.getAuthToken(mAppCompatActivity));
-                return headers;
+                return getHeadersDefault(scholarNo);
             }
 
         };
@@ -568,13 +532,13 @@ public class MariaDBConnection {
     }
 
     public void submitFeedback(String scholarNo, String name, String comments, int stars, String versionCode, Callback callback) {
-        final String BASE_URL_PLUS_SUFFIX = BASE_URL + "API/student/record_feedback.php";
+        final String BASE_URL_PLUS_SUFFIX = BASE_URL + "/API/student/record_feedback.php";
 
         final StringRequest mStringRequest = new StringRequest(Request.Method.POST, BASE_URL_PLUS_SUFFIX, response -> {
             Log.d("Response", response);
             callback.onResponse(scholarNo);
         }, error -> {
-            callback.onErrorResponse(error);
+            callback.onErrorResponse(error.getMessage());
         }) {
 
             @Override
@@ -590,10 +554,7 @@ public class MariaDBConnection {
 
             @Override
             public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("device_id", Utility.getDeviceId(mAppCompatActivity.getContentResolver()));
-                headers.put("token", AppPref.getAuthToken(mAppCompatActivity));
-                return headers;
+                return getHeadersDefault(scholarNo);
             }
 
             @Override
@@ -606,11 +567,19 @@ public class MariaDBConnection {
         mQueue.add(mStringRequest);
     }
 
+    private @NonNull Map<String, String> getHeadersDefault(String scholarNo) {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("device-id", Utility.getDeviceId(mAppCompatActivity.getContentResolver()));
+        headers.put("token", AppPref.getAuthToken(mAppCompatActivity));
+        headers.put("scholar-no", scholarNo);
+        return headers;
+    }
+
 
     public interface Callback {
         void onResponse(String result);
 
-        void onErrorResponse(VolleyError error);
+        void onErrorResponse(String error);
     }
 
     public interface StudentCallback {

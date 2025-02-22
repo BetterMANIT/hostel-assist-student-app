@@ -198,7 +198,7 @@ public class UpdateInfoActivity extends AppCompatActivity {
 
             @Override
             public void networkError() {
-                Utility.showNoInternetDialog(UpdateInfoActivity.this);
+                Utility.showNoInternetDialog(UpdateInfoActivity.this,null);
             }
         });
     }
@@ -272,7 +272,7 @@ public class UpdateInfoActivity extends AppCompatActivity {
 
         resultfile = new File(getExternalCacheDir(), "croppedImage.jpg");
         Uri destinationUri = Uri.fromFile(resultfile);
-
+        Log.e("destinationUri", String.valueOf(destinationUri));
         UCrop.of(sourceUri, destinationUri).withAspectRatio(1, 1) // Adjust the aspect ratio here
                 .withMaxResultSize(1024, 1024) // Adjust the max size here
                 .start(this);
@@ -282,10 +282,13 @@ public class UpdateInfoActivity extends AppCompatActivity {
         if (data != null) {
 
             resultUri = UCrop.getOutput(data);
+            Log.e("resultUri", String.valueOf(resultUri));
             if (resultUri != null) {
                 // Set the cropped image to the ImageView
                 lb.profileImage.setImageURI(null);
-                lb.profileImage.setImageURI(resultUri);
+                Glide.with(this)
+                        .load(resultUri)
+                        .into(lb.profileImage);
             }
         }
     }

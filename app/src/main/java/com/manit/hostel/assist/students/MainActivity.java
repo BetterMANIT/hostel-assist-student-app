@@ -57,54 +57,63 @@ public class MainActivity extends AppCompatActivity {
     MariaDBConnection dbConnection;
 
     FirebaseRemoteConfig mFirebaseRemoteConfig;
+    Runnable exit = () -> {
+        finish();
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         webview = findViewById(R.id.webview);
         splash = findViewById(R.id.splash);
 
-        /*  requestPermissions();
-        Log.d(MainActivity.class.getSimpleName(), "Wifi Name list : " + new WifiScanner(this).getWifiList(this).toString());
-        if (isLocationEnabled()) {
-            // Start Wi-Fi scanning
-            showWifiCheckDialog();
-        } else {
-            promptEnableLocation();
-        }
-        setupOneSignal();*/
+        // Initialize Firebase Remote Config
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder().setFetchTimeoutInSeconds(5)// Reduced to 5 minutes
+                .build();
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+
+        // Initialize Database Connection Once
+        dbConnection = new MariaDBConnection(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder().setMinimumFetchIntervalInSeconds(36000).build();
-        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
-        fetchRemoteConfig();
+        splash.postDelayed(()->{
+            findViewById(R.id.loader).setVisibility(View.VISIBLE);
+        }, 3000);
+        webview.postDelayed(()->{
+            fetchRemoteConfig();
+        }, 500);
+        // Directly call it, no need for extra thread
     }
 
     private void fetchRemoteConfig() {
-        mFirebaseRemoteConfig.fetchAndActivate().addOnCompleteListener(this, task -> {
+        Log.e(MainActivity.class.getSimpleName(), "Fetching remote config");
+        mFirebaseRemoteConfig.fetch(5).addOnCompleteListener(this, task -> {
             if (task.isSuccessful()) {
-
-                dbConnection = new MariaDBConnection(this);
+                mFirebaseRemoteConfig.activate();
                 String BASE_URL = dbConnection.getBaseURL();
-                Log.d(MainActivity.class.getSimpleName(), "BASE_URL: " + BASE_URL);
-
-
-                if (!isInternetAvailable(this)) {
-                    showNoInternetDialog(this);
-                } else {
-                    checkForLatestVersion();
-                }
-
+                Log.e(MainActivity.class.getSimpleName(), "BASE_URL: " + BASE_URL);
+                runOnUiThread(()->{
+                    if (!isInternetAvailable(this)) {
+                        showNoInternetDialog(this);
+                    } else {
+                        checkForLatestVersion();
+                    }
+                });
             } else {
-                Utility.showNoInternetDialog(this);
+                Log.e(MainActivity.class.getSimpleName(), "Error fetching remote config: " + task.getException());
+                Utility.showNoInternetDialog(this, exit);
             }
         });
+
     }
+
 
     private void checkForLatestVersion() {
         dbConnection.checkForUpdate(new MariaDBConnection.UpdateCallback() {
@@ -122,14 +131,16 @@ public class MainActivity extends AppCompatActivity {
                 if (message != null)
                     Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                 checkForStudentOut();
+                Utility.showNoInternetDialog(MainActivity.this, exit);
             }
 
             @Override
             public void networkError() {
-                Utility.showNoInternetDialog(MainActivity.this);
+                Utility.showNoInternetDialog(MainActivity.this, exit);
             }
         });
     }
+
 
     private void checkForStudentOut() {
         loggedInStudent = AppPref.getLoggedInStudent(this);
@@ -309,6 +320,7 @@ public class MainActivity extends AppCompatActivity {
             alertDialog.show();
         });
     }
+
 
     private void checkStatusOfStudent() {
         dbConnection.getStudentStatus(loggedInStudent.getScholarNo(), new MariaDBConnection.StatusCallback() {

@@ -3,6 +3,7 @@ package com.manit.hostel.assist.students;
 import android.app.Application;
 import android.util.Log;
 
+import com.google.firebase.FirebaseApp;
 import com.manit.hostel.assist.students.data.AppPref;
 import com.onesignal.Continue;
 import com.onesignal.OneSignal;
@@ -17,7 +18,7 @@ public class ManitApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        FirebaseApp.initializeApp(this);
         // Verbose Logging set to help debug issues, remove before releasing your app.
         OneSignal.getDebug().setLogLevel(LogLevel.VERBOSE);
         OneSignal.initWithContext(this, ONESIGNAL_APP_ID);

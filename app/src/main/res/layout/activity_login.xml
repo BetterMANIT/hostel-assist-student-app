@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#47FBD5FF"
     android:orientation="vertical">
 
     <FrameLayout
@@ -24,13 +23,13 @@
             <ImageButton
                 android:id="@+id/backbtn"
                 android:layout_width="48dp"
-                android:visibility="gone"
                 android:layout_height="48dp"
                 android:layout_gravity="center|left"
                 android:layout_margin="20dp"
                 android:background="#00000000"
                 android:src="@drawable/arrow_back_ios_24dp_5f6368_fill0_wght400_grad0_opsz24"
                 android:tint="@color/white"
+                android:visibility="gone"
                 tools:ignore="UseAppTint" />
 
             <TextView
@@ -52,7 +51,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
-        android:background="@color/white"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -76,78 +74,73 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
+        android:layout_marginTop="60dp"
         android:layout_marginRight="20dp"
+        android:gravity="center"
         android:orientation="vertical">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/schnoBox"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Scholar No"
-            app:boxBackgroundColor="#102A295E"
-            app:startIconDrawable="@drawable/alternate_email_24dp_5f6368_fill0_wght400_grad0_opsz24">
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:id="@+id/welcome"
+            android:text="Login with MANIT Gmail ID"
+            android:textColor="@color/color1"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/schnoEditText"
-                android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/googleSignIn"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            android:background="@drawable/rounded_bg_outline"
+            android:backgroundTint="@color/white"
+            android:clickable="true"
+            android:elevation="5px"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="8dp">
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="12dp"
+                android:contentDescription="Google Logo"
+                android:src="@drawable/google_logo" />
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:inputType="number"
-                android:paddingStart="50dp" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:text="Sign in with Google"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
-        <!-- Spacer -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="16dp" />
-
-        <!-- Password Input Field -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/otpNoBox"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="OTP"
-            app:boxBackgroundColor="#102A295E"
-            app:startIconDrawable="@drawable/password_24dp_5f6368_fill0_wght400_grad0_opsz24">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/otpEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:gravity="center_vertical"
-                android:paddingStart="50dp" />
-        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-            android:id="@+id/resendOTPTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:clickable="true"
-            android:focusable="true"
-            android:paddingTop="18dp"
-            android:text="Resend OTP"
-            android:textColor="@color/color1" />
-
-        <View
             android:layout_width="match_parent"
-            android:layout_height="12dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/loginButton"
-            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+            android:layout_height="match_parent"
+            android:layout_marginTop="60dp"
+            android:gravity="center"
+            android:text=": Note : \n Only login with scholar_no@stu.manit.ac.in \n Google ID"
+            android:textColor="@color/color3"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="58dp"
-            android:backgroundTint="@color/color2"
-            android:padding="10dp"
-            android:text="Send OTP"
-            android:textColor="?attr/colorOnPrimary"
-            android:textSize="20sp"
-            app:icon="@drawable/login_24dp_5f6368_fill0_wght400_grad0_opsz24"
-            app:iconGravity="textStart"
-            app:iconTint="@color/white" />
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="Please ensure that your student Google account is signed in on your mobile device, as only accounts added to the device will be available for selection during sign-in."
+            android:textColor="@color/color2"
+            android:textSize="14sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
 </LinearLayout>

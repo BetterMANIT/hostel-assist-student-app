@@ -50,6 +50,7 @@ public class HomeActivity extends AppCompatActivity {
         setupPlacesAdapter();
     }
 
+    @SuppressLint("SuspiciousIndentation")
     @Override
     protected void onResume() {
         super.onResume();
@@ -77,7 +78,7 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public void networkError() {
-                Utility.showNoInternetDialog(HomeActivity.this);
+                Utility.showNoInternetDialog(HomeActivity.this,null);
             }
         });
     }
@@ -85,13 +86,14 @@ public class HomeActivity extends AppCompatActivity {
     private void saveInPref(StudentInfo student) {
         AppPref.loginStudent(this, student);
         AppPref.setStudentInfoUpdated(this, false);
-        updateInfoInUi(loggedInStudent);
+        loggedInStudent = AppPref.getLoggedInStudent(this);
+        updateInfoInUi(student);
     }
 
     String placeSelected;
 
     private void setupPlacesAdapter() {
-        dbConnection.getTablesForHostel(loggedInStudent.getHostelName(), new MariaDBConnection.TablesStatusCallback() {
+        dbConnection.getTablesForHostel(loggedInStudent.getHostelName(),loggedInStudent.getScholarNo(), new MariaDBConnection.TablesStatusCallback() {
             @Override
             public void onSuccess(ArrayList<HostelTable> table) {
                 ArrayList<String> tableNames = new ArrayList<>();
@@ -154,7 +156,7 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public void networkError() {
-                Utility.showNoInternetDialog(HomeActivity.this);
+                Utility.showNoInternetDialog(HomeActivity.this,null);
                 lb.goout.setEnabled(true);
                 Toast.makeText(HomeActivity.this, "No Internet Connection", Toast.LENGTH_SHORT).show();
             }

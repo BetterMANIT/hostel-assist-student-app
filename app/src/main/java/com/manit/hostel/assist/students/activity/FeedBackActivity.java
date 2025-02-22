@@ -81,7 +81,7 @@ public class FeedBackActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onErrorResponse(VolleyError error) {
+                public void onErrorResponse(String error) {
                     Toast.makeText(FeedBackActivity.this, "Error submitting feedback", Toast.LENGTH_SHORT).show();
                 }
             });

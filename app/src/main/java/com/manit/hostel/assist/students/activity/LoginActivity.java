@@ -1,22 +1,24 @@
 package com.manit.hostel.assist.students.activity;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.manit.hostel.assist.students.R;
 import com.manit.hostel.assist.students.data.AppPref;
 import com.manit.hostel.assist.students.data.EntryDetail;
 import com.manit.hostel.assist.students.data.StudentInfo;
@@ -29,6 +31,8 @@ public class LoginActivity extends AppCompatActivity {
     ActivityLoginBinding lb;
     MariaDBConnection dbConnection;
     StudentInfo loggedInStudent;
+    private static final int RC_SIGN_IN = 9001;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,141 +44,101 @@ public class LoginActivity extends AppCompatActivity {
 //      allowAllSSL();
         loggedInStudent = AppPref.getLoggedInStudent(this);
         if (loggedInStudent == null) {
-            setScholarNoEnteringView();
+            initGoogleLogin();
         } else {
             checkStatusOfStudent();
         }
+        Utility.coolButton(lb.googleSignIn);
     }
 
-    private void setScholarNoEnteringView() {
-        lb.loginButton.setText("Send OTP");
-        lb.otpNoBox.setVisibility(View.GONE);
-        lb.resendOTPTextView.setVisibility(View.GONE);
-        lb.schnoEditText.setEnabled(true);
-        lb.loginButton.setOnClickListener(v -> {
-            if (!lb.schnoEditText.getText().toString().isEmpty()) {
-                dbConnection.fetchStudentInfo(lb.schnoEditText.getText().toString(), new MariaDBConnection.StudentCallback() {
-                    @Override
-                    public void onStudentInfoReceived(StudentInfo student) {
-                        runOnUiThread(() -> displayConfirmOtpDialog(student));
-                    }
+    private void initGoogleLogin() {
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .setHostedDomain("stu.manit.ac.in")
+                .build();
 
-                    @Override
-                    public void onError(String error) {
-                        Toast.makeText(LoginActivity.this, error, Toast.LENGTH_SHORT).show();
-                    }
+        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
 
-                    @Override
-                    public void networkError() {
-                        Utility.showNoInternetDialog(LoginActivity.this);
-                    }
-                });
-            } else {
-                lb.schnoEditText.setError("Scholar no. is required");
+        lb.googleSignIn.setOnClickListener(v -> {
+
+            lb.googleSignIn.setEnabled(false);
+            Intent signInIntent = googleSignInClient.getSignInIntent();
+            startActivityForResult(signInIntent, RC_SIGN_IN);
+        });
+    }
+
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                firebaseAuthWithGoogle(account.getIdToken());
+            } catch (ApiException e) {
+                e.printStackTrace();
             }
-
-        });
-    }
-
-    private void displayConfirmOtpDialog(StudentInfo student) {
-        //show a alert dialog for confirming otp dialog
-        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle("Hello " + student.getName());
-        alertDialog.setMessage("Is " + student.getPhoneNo() + " your mobile number?");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes", (dialog, which) -> {
-            sendOtp(student);
-        });
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "No", (dialog, which) -> {
-            Toast.makeText(this, "Please contact admin for changing number", Toast.LENGTH_SHORT).show();
-            dialog.dismiss();
-        });
-        alertDialog.show();
-    }
-
-    int otp_sent_counter = 0;
-
-    private void sendOtp(StudentInfo student) {
-        if (otp_sent_counter >= 2) {
-            Toast.makeText(LoginActivity.this, "OTP Send limit exceeded, TRY LATER!", Toast.LENGTH_LONG).show();
-            return;
         }
-        otp_sent_counter++;
-        Toast.makeText(LoginActivity.this, "Sending OTP", Toast.LENGTH_LONG).show();
-        dbConnection.sendOtp(student.getPhoneNo(),student.getScholarNo(), new MariaDBConnection.OtpCallBack() {
-            @SuppressLint("SetTextI18n")
+    }
+
+    private void firebaseAuthWithGoogle(String idToken) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        mAuth.signInWithCredential(credential).addOnCompleteListener(this, task -> {
+            if (task.isSuccessful()) {
+                FirebaseUser user = mAuth.getCurrentUser();
+                if (user != null) {
+                    Log.e("TAG", "firebaseAuthWithGoogle:" + user.getEmail());
+                    Log.e("TAG", "firebaseAuthWithGoogle:" + user.getDisplayName());
+                    Log.e("TAG", "firebaseAuthWithGoogle:" + user.getUid());
+                    lb.welcome.setText("Welcome " + user.getDisplayName());
+                    Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
+                    loginUser(user.getEmail().substring(0, user.getEmail().indexOf("@")),user.getUid());
+                }
+            } else {
+                task.addOnFailureListener(e -> Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show());
+            }
+            lb.googleSignIn.setEnabled(true);
+        });
+    }
+
+    private void loginUser(String scholarNo, String uid) {
+        dbConnection.loginUser(scholarNo, uid, new MariaDBConnection.Callback() {
             @Override
-            public void otpSent() {
-                lb.loginButton.setText("Verify OTP");
-                lb.otpNoBox.setVisibility(View.VISIBLE);
-                lb.resendOTPTextView.setVisibility(View.VISIBLE);
-                lb.resendOTPTextView.setOnClickListener(v -> sendOtp(student));
-                lb.schnoEditText.setEnabled(false);
-                lb.loginButton.setOnClickListener(v -> {
-                    if (lb.otpEditText.getText() != null && lb.otpEditText.getText().toString().isEmpty()) {
-                        lb.otpEditText.requestFocus();
-                        lb.otpEditText.setError("OTP Required");
-                        return;
-                    }
-                    Dialog mOTPVerificationDialog = createVerificationDialog(LoginActivity.this);
-                    dbConnection.verifyOtp(student.getPhoneNo(), LoginActivity.this, lb.otpEditText.getText().toString(), student.getScholarNo(), new MariaDBConnection.OtpVerificationCallBack() {
-                        @Override
-                        public void onSuccessfulVerification() {
-                            Toast.makeText(LoginActivity.this, "OTP Verified Successfully", Toast.LENGTH_LONG).show();
-                            mOTPVerificationDialog.dismiss();
-                            loginStudent(student);
-                        }
-
-                        @Override
-                        public void onError(String error) {
-                            mOTPVerificationDialog.dismiss();
-                            Toast.makeText(LoginActivity.this, error, Toast.LENGTH_LONG).show();
-                        }
-                    });
-                });
-
+            public void onResponse(String result) {
+                fetchLoginDetails(scholarNo);
             }
 
             @Override
-            public void onError(String error) {
+            public void onErrorResponse(String error) {
                 Toast.makeText(LoginActivity.this, error, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void networkError() {
-                Utility.showNoInternetDialog(LoginActivity.this);
+                Log.d(LoginActivity.class.getSimpleName(), "Error: " + error);
+                FirebaseUser user = mAuth.getCurrentUser();
+                mAuth.signOut();
             }
         });
     }
 
+    private void fetchLoginDetails(String schNo) {
+        if (!schNo.isEmpty()) {
+            dbConnection.fetchStudentInfo(schNo, new MariaDBConnection.StudentCallback() {
+                @Override
+                public void onStudentInfoReceived(StudentInfo student) {
+                    runOnUiThread(() -> loginStudent(student));
+                }
 
-    public static AlertDialog createVerificationDialog(Activity activity) {
-        LinearLayout layout = new LinearLayout(activity);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(50, 50, 50, 50);  // Padding for better spacing
-        layout.setGravity(Gravity.CENTER);
+                @Override
+                public void onError(String error) {
+                    Toast.makeText(LoginActivity.this, error, Toast.LENGTH_SHORT).show();
+                }
 
-        ProgressBar progressBar = new ProgressBar(activity);
-        progressBar.setIndeterminate(true);  // Indeterminate spinner
-
-        TextView textView = new TextView(activity);
-        textView.setText("Verifying OTP...");
-        textView.setTextSize(18);
-        textView.setGravity(Gravity.CENTER);
-
-        layout.addView(progressBar);
-        layout.addView(textView);
-
-        // Create an AlertDialog to show the progress layout
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setCancelable(false);  // Prevent dialog from being canceled with back button
-        builder.setView(layout);  // Set the layout into the dialog
-
-        // Create the AlertDialog
-        AlertDialog dialog = builder.create();
-        dialog.show();  // Show the dialog immediately
-
-        // Return the dialog instance for later use (dismissal, etc.)
-        return dialog;
+                @Override
+                public void networkError() {
+                    Utility.showNoInternetDialog(LoginActivity.this,null);
+                }
+            });
+        } else {
+            Toast.makeText(this, "Scholar no. is wrong", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void loginStudent(StudentInfo student) {
@@ -220,4 +184,5 @@ public class LoginActivity extends AppCompatActivity {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         finish();
     }
+
 }

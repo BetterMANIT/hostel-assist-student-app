@@ -3,4 +3,5 @@
     <string name="wifi_instructions">If not working check :-\n1. All permissions are given to the app\n2. Location and wifi of device is enabled\n\nElse contact admin</string>
     <string name="about">"Developed by -\n2024 batch in first year \nAradhya Jain\nAnuj Shrivastava\nMithil\nAshish Mishra\nKrish\nunder the guidance of our respected \nBN Roy Sir\n© MANIT "</string>
     <string name="generating_exit_slip">Generating Exit Slip</string>
+    <string name="default_web_client_id">1024104966642-frjasd5kqpk6hmqenr3gt4doibs0r5oa.apps.googleusercontent.com</string>
 </resources>
