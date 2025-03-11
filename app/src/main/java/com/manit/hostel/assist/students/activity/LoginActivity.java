@@ -3,6 +3,7 @@ package com.manit.hostel.assist.students.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -53,6 +54,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void initGoogleLogin() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestProfile()
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .setHostedDomain("stu.manit.ac.in")
                 .build();
@@ -60,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
         GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
 
         lb.googleSignIn.setOnClickListener(v -> {
-
+            lb.loader.setVisibility(View.VISIBLE);
             lb.googleSignIn.setEnabled(false);
             Intent signInIntent = googleSignInClient.getSignInIntent();
             startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -86,15 +89,17 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.signInWithCredential(credential).addOnCompleteListener(this, task -> {
             if (task.isSuccessful()) {
                 FirebaseUser user = mAuth.getCurrentUser();
+                lb.loader.setVisibility(View.GONE);
                 if (user != null) {
                     Log.e("TAG", "firebaseAuthWithGoogle:" + user.getEmail());
                     Log.e("TAG", "firebaseAuthWithGoogle:" + user.getDisplayName());
                     Log.e("TAG", "firebaseAuthWithGoogle:" + user.getUid());
                     lb.welcome.setText("Welcome " + user.getDisplayName());
-                    Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "" + user.getEmail(), Toast.LENGTH_SHORT).show();
                     loginUser(user.getEmail().substring(0, user.getEmail().indexOf("@")),user.getUid());
                 }
             } else {
+                lb.loader.setVisibility(View.VISIBLE);
                 task.addOnFailureListener(e -> Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show());
             }
             lb.googleSignIn.setEnabled(true);

@@ -3,11 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#ffffff">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <com.rock.rockui.layouts.GradientLayout
             android:id="@+id/gradient_back"
             android:layout_width="match_parent"
@@ -23,8 +25,8 @@
                 android:id="@+id/backspan"
                 android:layout_width="match_parent"
                 android:layout_height="130dp"
-                android:backgroundTint="@color/color1"
                 android:background="@drawable/rounded_bg"
+                android:backgroundTint="@color/color1"
                 android:elevation="10dp"
                 android:translationY="-20dp">
 
@@ -212,10 +214,10 @@
                         app:boxCornerRadiusBottomEnd="40dp"
                         app:boxCornerRadiusBottomStart="40dp"
                         app:boxCornerRadiusTopEnd="40dp"
-                        app:hintTextColor="@color/color1"
-                        app:boxStrokeColor="@color/color1"
                         app:boxCornerRadiusTopStart="40dp"
-                        app:endIconMode="dropdown_menu">
+                        app:boxStrokeColor="@color/color1"
+                        app:endIconMode="dropdown_menu"
+                        app:hintTextColor="@color/color1">
 
                         <AutoCompleteTextView
                             android:id="@+id/placeSpinner"
@@ -234,14 +236,14 @@
                         android:layout_height="78dp"
                         android:layout_margin="10dp"
                         android:backgroundTint="@color/color1"
+                        android:fontFamily="@font/fredoka"
                         android:outlineAmbientShadowColor="@color/color1"
                         android:outlineSpotShadowColor="@color/color1"
                         android:padding="10dp"
                         android:text="Exit"
-                        android:textStyle="bold"
-                        android:fontFamily="@font/fredoka"
                         android:textColor="?attr/colorOnPrimary"
                         android:textSize="20sp"
+                        android:textStyle="bold"
                         app:elevation="24dp"
                         app:icon="@drawable/logout_24dp_5f6368_fill0_wght400_grad0_opsz24"
                         app:iconGravity="textStart"
@@ -253,21 +255,21 @@
                         android:layout_width="match_parent"
                         android:layout_height="78dp"
                         android:layout_margin="10dp"
+                        android:fontFamily="@font/fredoka"
+                        android:outlineAmbientShadowColor="@color/color1"
+                        android:outlineSpotShadowColor="@color/color1"
                         android:padding="10dp"
                         android:text="View History"
                         android:textColor="@color/color1"
                         android:textSize="20sp"
+                        android:textStyle="bold"
                         app:elevation="14dp"
-                        android:fontFamily="@font/fredoka"
                         app:icon="@drawable/history_24dp_5f6368_fill0_wght400_grad0_opsz24"
                         app:iconGravity="textStart"
-                        android:textStyle="bold"
-                        android:outlineAmbientShadowColor="@color/color1"
-                        android:outlineSpotShadowColor="@color/color1"
-                        app:strokeColor="@color/color1"
-                        app:strokeWidth="3dp"
+                        app:iconTint="@color/color1"
                         app:rippleColor="@color/color2_light"
-                        app:iconTint="@color/color1" />
+                        app:strokeColor="@color/color1"
+                        app:strokeWidth="3dp" />
 
                 </LinearLayout>
 
@@ -277,10 +279,11 @@
         </com.rock.rockui.layouts.GradientLayout>
 
     </LinearLayout>
+
     <View
         android:id="@+id/view_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#80000000"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 </FrameLayout>

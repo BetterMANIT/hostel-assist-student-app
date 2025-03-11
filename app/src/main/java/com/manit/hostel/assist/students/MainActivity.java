@@ -75,18 +75,15 @@ public class MainActivity extends AppCompatActivity {
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder().setFetchTimeoutInSeconds(5)// Reduced to 5 minutes
                 .build();
         mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
-
-        // Initialize Database Connection Once
-        dbConnection = new MariaDBConnection(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        splash.postDelayed(()->{
+        splash.postDelayed(() -> {
             findViewById(R.id.loader).setVisibility(View.VISIBLE);
         }, 3000);
-        webview.postDelayed(()->{
+        webview.postDelayed(() -> {
             fetchRemoteConfig();
         }, 500);
         // Directly call it, no need for extra thread
@@ -96,24 +93,46 @@ public class MainActivity extends AppCompatActivity {
         Log.e(MainActivity.class.getSimpleName(), "Fetching remote config");
         mFirebaseRemoteConfig.fetch(5).addOnCompleteListener(this, task -> {
             if (task.isSuccessful()) {
-                mFirebaseRemoteConfig.activate();
-                String BASE_URL = dbConnection.getBaseURL();
-                Log.e(MainActivity.class.getSimpleName(), "BASE_URL: " + BASE_URL);
-                runOnUiThread(()->{
-                    if (!isInternetAvailable(this)) {
-                        showNoInternetDialog(this);
-                    } else {
-                        checkForLatestVersion();
-                    }
+                mFirebaseRemoteConfig.activate().addOnSuccessListener(aVoid -> {
+                    dbConnection = new MariaDBConnection(this);
+                    String BASE_URL = dbConnection.getBaseURL();
+                    Log.e(MainActivity.class.getSimpleName(), "BASE_URL: " + BASE_URL);
+
+                    proceedWithRemoteConfig();
                 });
             } else {
-                Log.e(MainActivity.class.getSimpleName(), "Error fetching remote config: " + task.getException());
-                Utility.showNoInternetDialog(this, exit);
+                Log.e("TAG", "fetchRemoteConfig: ", task.getException());
+                if (mFirebaseRemoteConfig.getString("BASE_URL").isEmpty()) {
+
+                    Log.e(MainActivity.class.getSimpleName(), "Error fetching remote config: " + task.getException());
+                    Utility.showNoInternetDialog(this, exit);
+                } else {
+                    dbConnection = new MariaDBConnection(this);
+                    proceedWithRemoteConfig();
+                }
             }
         });
 
     }
 
+    private void proceedWithRemoteConfig() {
+        runOnUiThread(() -> {
+            if (!isInternetAvailable(this)) {
+                showNoInternetDialog(this);
+            } else {
+                checkForLatestVersion();
+            }
+        });
+    }
+
+    public void restartApp() {
+        Intent intent = getPackageManager().getLaunchIntentForPackage(getPackageName());
+        if (intent != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+        Runtime.getRuntime().exit(0); // Kill the process to ensure a clean restart
+    }
 
     private void checkForLatestVersion() {
         dbConnection.checkForUpdate(new MariaDBConnection.UpdateCallback() {

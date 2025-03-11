@@ -1,146 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#47FBD5FF"
-    android:orientation="vertical">
-
-    <FrameLayout
-        android:id="@+id/backspan"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rounded_bg"
-        android:elevation="10dp"
-        android:translationY="-20dp">
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="40dp">
-
-            <ImageButton
-                android:id="@+id/backbtn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_gravity="center|left"
-                android:layout_margin="20dp"
-                android:background="#00000000"
-                android:src="@drawable/arrow_back_ios_24dp_5f6368_fill0_wght400_grad0_opsz24"
-                android:tint="@color/white"
-                android:visibility="gone"
-                tools:ignore="UseAppTint" />
-
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="20dp"
-                android:text="Student Login"
-                android:textColor="@color/white"
-                android:textSize="26sp"
-                android:textStyle="bold" />
-        </FrameLayout>
-
-    </FrameLayout>
-
-    <LinearLayout
-        android:id="@+id/splash"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginRight="20dp"
-            android:src="@drawable/manit_logo" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif"
-            android:text="Hostel Assist"
-            android:textColor="@color/color1"
-            android:textFontWeight="800"
-            android:textSize="22sp" />
-    </LinearLayout>
+    android:background="#F6F0FB">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginRight="20dp"
-        android:gravity="center"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
+        <FrameLayout
+            android:id="@+id/backspan"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="10dp"
-            android:gravity="center"
-            android:id="@+id/welcome"
-            android:text="Login with MANIT Gmail ID"
-            android:textColor="@color/color1"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_bg"
+            android:elevation="10dp"
+            android:translationY="-20dp">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="40dp">
+
+                <ImageButton
+                    android:id="@+id/backbtn"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center|left"
+                    android:layout_margin="20dp"
+                    android:background="#00000000"
+                    android:src="@drawable/arrow_back_ios_24dp_5f6368_fill0_wght400_grad0_opsz24"
+                    android:tint="@color/white"
+                    android:visibility="gone"
+                    tools:ignore="UseAppTint" />
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="20dp"
+                    android:text="Student Login"
+                    android:textColor="@color/white"
+                    android:textSize="26sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+        </FrameLayout>
 
         <LinearLayout
-            android:id="@+id/googleSignIn"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:layout_margin="8dp"
-            android:background="@drawable/rounded_bg_outline"
-            android:backgroundTint="@color/white"
-            android:clickable="true"
-            android:elevation="5px"
-            android:focusable="true"
+            android:id="@+id/splash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
             android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingHorizontal="20dp"
-            android:paddingVertical="8dp">
+            android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="28dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="12dp"
-                android:contentDescription="Google Logo"
-                android:src="@drawable/google_logo" />
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginRight="20dp"
+                android:src="@drawable/manit_logo" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sign in with Google"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:fontFamily="sans-serif"
+                android:text="Hostel Assist"
+                android:textColor="@color/color1"
+                android:textFontWeight="800"
+                android:textSize="22sp" />
         </LinearLayout>
 
-
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
             android:layout_marginTop="60dp"
+            android:layout_marginRight="20dp"
             android:gravity="center"
-            android:text=": Note : \n Only login with scholar_no@stu.manit.ac.in \n Google ID"
-            android:textColor="@color/color3"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:text="Please ensure that your student Google account is signed in on your mobile device, as only accounts added to the device will be available for selection during sign-in."
-            android:textColor="@color/color2"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+            android:orientation="vertical">
 
-</LinearLayout>
+            <TextView
+                android:id="@+id/welcome"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:text="Login with MANIT Gmail ID"
+                android:textColor="@color/color1"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/googleSignIn"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                android:background="@drawable/rounded_bg_outline"
+                android:backgroundTint="#ffffff"
+                android:clickable="true"
+                android:elevation="5px"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="8dp">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="Google Logo"
+                    android:src="@drawable/google_logo" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sign in with Google"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="60dp"
+                android:gravity="center"
+                android:text=": Note : \n Only login with scholar_no@stu.manit.ac.in \n Google ID"
+                android:textColor="@color/color3"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="Please ensure that your student Google account is signed in on your mobile device, as only accounts added to the device will be available for selection during sign-in."
+                android:textColor="@color/color2"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+    <ProgressBar
+        android:id="@+id/loader"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:indeterminate="true"
+        android:background="@color/black"
+        android:backgroundTint="#16000000"
+        android:indeterminateTint="@color/color2"
+        android:padding="160dp"/>
+
+</FrameLayout>

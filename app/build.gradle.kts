@@ -12,19 +12,33 @@ android {
         applicationId = "com.manit.hostel.assist.students"
         minSdk = 26
         targetSdk = 34
-        versionCode = 5
+        versionCode = 6
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("default") {
+            storeFile = file("R:/Aprojects/manit.jks")
+            storePassword = "bettermanit"
+            keyAlias = "hostel"
+            keyPassword = "bettermanit"
+        }
+    }
     buildTypes {
+
+        debug {
+            signingConfig = signingConfigs.getByName("default")
+        }
         release {
+            signingConfig = signingConfigs.getByName("default")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
